@@ -24,6 +24,6 @@
     "react-native": "0.52.0",
     "react-native-audio-player": "0.0.2",
     "react-native-audio-toolkit": "^1.0.6",
-    "react-navigation": "^1.0.0-beta.27"
+    "react-navigation": "^1.0.0-beta.30"
   }
 }

@@ -1,21 +1,16 @@
-import { StackNavigator } from 'react-navigation';
-import {
-    Player,
-    Recorder,
-    MediaStates
-} from 'react-native-audio-toolkit';
-import HomeScreen from "./HomeScreen.js";
+import CountryScreen from "./CountryScreen.js";
 import GradeScreen from "./GradeScreen.js";
 import TopicScreen from "./TopicScreen.js";
-import LessonScreen from "./LessonScreen.js"; 
-//import FileSystem from 'react-native-filesystem';
+import LessonScreen from "./LessonScreen.js";
+import PlayerScreen from "./PlayerScreen.js";
+import { StackNavigator } from 'react-navigation';
 
-const RootNavigator = StackNavigator({
-	Home: {
-		screen: HomeScreen,
+const RootNavigator = StackNavigator({  
+	Country: {
+		screen: CountryScreen,
 		navigationOptions: {
 			headerTitleStyle: { alignSelf: 'center' },
-			title: 'Home',
+			title: 'Country',
 		},
 	},
 	Grade: { 
@@ -36,6 +31,12 @@ const RootNavigator = StackNavigator({
 			headerTitle: 'Lesson',
 		},
 	},
+	Player: {
+    	screen: PlayerScreen,
+    	navigationOptions: {
+    		headerTitle: 'Player',
+    	},
+    },
 });
 
 export default RootNavigator; 

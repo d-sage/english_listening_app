@@ -10,8 +10,12 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
 	  margin: 20,
-	  alignItems: 'center'
+	  alignItems: 'center',
+  },
+  dataContainer: {
+    flex: 1,
+    marginTop: 20,
   },
 })
 
-export default styles;
+export default styles; 
