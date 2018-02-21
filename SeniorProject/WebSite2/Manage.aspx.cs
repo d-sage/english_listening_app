@@ -27,13 +27,12 @@ public partial class Manage : System.Web.UI.Page
 
     private bool GetSession()
     {
-        if(string.IsNullOrEmpty((string)Session["password"]) || string.IsNullOrEmpty((string)Session["username"]))
+        if((Session["confirm"]) == null)
             return false;
         else
         {
-            String password = (String)Session["password"];
-            String username = (String)Session["username"];
-            if ((username == "user") && password == ("pass"))
+            bool matching = (bool)Session["confirm"];
+            if(matching)
                 return true;
         }//end else
         return false;
