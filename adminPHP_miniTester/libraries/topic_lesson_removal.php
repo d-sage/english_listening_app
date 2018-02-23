@@ -18,7 +18,7 @@
 		
 		if(strpos($filepath, '../Audio') === false)
 		{
-			//return false;
+			return false;
 		}
 		
 		if(file_exists($filepath))
