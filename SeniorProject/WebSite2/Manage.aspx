@@ -14,6 +14,11 @@
         }
     </style>
 
+	
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="./Manage.js"></script>
+	
 </head>
 <body>
     <form id="form1" runat="server">
@@ -53,6 +58,18 @@
 
         <!-- Submit button -->
         <asp:Button ID="Submit" runat="server" Text="Submit" style="z-index: 1; left: 390px; top: 300px; position: absolute" OnClick="Submit_Click" />
+		
+		
+		
+		
+		
+		<!-- Testing Ajax Button -->
+		<input id="btnTestAjax" type="button" value="Push To Test Ajax (Press F12 to see the console log)"></input>
+		
+		
+		
+		
+		
         
 
 
