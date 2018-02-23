@@ -1,6 +1,6 @@
 $(document).ready($init);
 
-function init($evt)
+function $init($evt)
 {
 	//setup buttons and events
 	$("#btnTestAjax").click($testAjaxButton_click);
