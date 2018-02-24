@@ -13,6 +13,8 @@ function $testAjaxButton_click($evt)
 			cache: false,
 			type: "GET",
 			success: $gotQuery,
+			error: $error,
+            complete: $complete,
 			dataType: "json"
 	});
 	
@@ -23,4 +25,14 @@ function $gotQuery($data)
 	//just as a test
 	//alert($data[0].name);
 	console.log($data);
+}
+function $error($data) {
+    //just as a test
+    //alert($data[0].name);
+    console.log($data);
+}
+function $complete($data) {
+    //just as a test
+    //alert($data[0].name);
+    console.log($data);
 }

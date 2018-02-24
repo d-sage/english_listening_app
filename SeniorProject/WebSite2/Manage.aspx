@@ -64,7 +64,7 @@
 		
 		
 		<!-- Testing Ajax Button -->
-		<input id="btnTestAjax" type="button" value="Push To Test Ajax (Press F12 to see the console log)"></input>
+		<input id="btnTestAjax" type="button" value="Push To Test Ajax (Press F12 to see the console log)"/>
 		
 		
 		
