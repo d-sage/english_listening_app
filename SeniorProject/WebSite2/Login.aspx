@@ -35,6 +35,10 @@
         <asp:Label ID="incorrectmsg" runat="server" style="z-index: 1; left: 340px; top: 460px; position: absolute"></asp:Label>
 
 
+
+        <asp:Label ID="Label2" runat="server" style="z-index: 1; left: 500px; top: 500px; position: absolute"></asp:Label>
+        <asp:Label ID="Label3" runat="server" style="z-index: 1; left: 550px; top: 550px; position: absolute"></asp:Label>
+
     </form>
 </body>
 </html>
