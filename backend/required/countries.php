@@ -1,8 +1,13 @@
 <?php
 
+	if(!defined('access'))
+	{
+		die("No Direct Access");
+	}
 
-	include_once "./icons/smileyFace.php";
-	include_once "./libraries/databases.php";
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/icons/smileyFace.php");
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/libraries/databases.php");
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/libraries/idCheck.php");
 	
 	
 	$verb = $_SERVER["REQUEST_METHOD"];
@@ -25,7 +30,7 @@
 		{
 			/*this is a get all*/
 			
-			$statementString = "SELECT cid, gid FROM country_grade_relationship";
+			$statementString = "SELECT cid FROM countries";
 			
 			try
 			{
@@ -34,14 +39,14 @@
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Country-Grade: get all failed";
+				$response['Response'] = "Countries: get all failed";
 			}
 		}
 		else if(isset($givenParams['cid']))
 		{
 			$cid = $givenParams['cid'];
 			
-			$statementString = "SELECT cid, gid FROM country_grade_relationship WHERE cid = :cid";
+			$statementString = "SELECT cid FROM countries WHERE cid = :cid";
 			$variables = ['cid' => $cid];
 			
 			try
@@ -51,12 +56,12 @@
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Country-Grade: get specific failed";
+				$response['Response'] = "Countries: get specific failed";
 			}
 		}
 		else
 		{
-			$response['Response'] = "Country-Grade: no valid parameter";
+			$response['Response'] = "Countries: no valid parameter";
 		}
 		
 		closeDB($pdo);
@@ -84,16 +89,14 @@
 		$givenParams = $_POST;
 		
 		//Paramter array used to check that all are present
-		$requiredParams = ["cid","gid"];
+		$requiredParams = ["cid"];
 		
 		$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
 		
 		if($httpCode == 200)
 		{
-			$statementString = "INSERT INTO country_grade_relationship (cid,gid) VALUES (:cid,:gid)";
-			$variables = ['cid' => $givenParams['cid'],
-						'gid' => $givenParams['gid'],
-			];
+			$statementString = "INSERT INTO countries (cid) VALUES (:cid)";
+			$variables = ['cid' => $givenParams['cid']];
 			
 			try
 			{
@@ -102,13 +105,13 @@
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Country-Grade: insert failed";
+				$response['Response'] = "Countries: insert failed";
 				//$response['Response'] = $e->getMessage();
 			}
 		}
 		else
 		{
-			$response['Response'] = "Country-Grade: insert failed";
+			$response['Response'] = "Countries: insert failed";
 		}
 		
 		closeDB($pdo);
@@ -133,19 +136,17 @@
 	else if($verb == 'PUT')																	//PUT
 	{
 		//Paramter array used to check that all are present
-		$requiredParams = ["oldCid", "newCid", "oldGid", "newGid"];
+		$requiredParams = ["oldCid", "newCid"];
 		
 		$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
 		
 		if($httpCode == 200)
 		{
 			
-			$statementString = "UPDATE country_grade_relationship SET cid = :newCid, gid = :newGid "
-								. "WHERE cid = :oldCid AND gid = :oldGid";
+			$statementString = "UPDATE countries SET cid = :newCid "
+								. "WHERE cid = :oldCid";
 			$variables = ['newCid' => $givenParams["newCid"],
-						'oldCid' => $givenParams["oldCid"],
-						'newGid' => $givenParams["newGid"],
-						'oldGid' => $givenParams["oldGid"]
+						'oldCid' => $givenParams["oldCid"]
 			];
 			
 			try
@@ -155,7 +156,7 @@
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Country-Grade: update failed";
+				$response['Response'] = "Countries: update failed";
 			}
 		}
 		
@@ -179,19 +180,12 @@
 	}
 	else if($verb == 'DELETE')																//DELETE
 	{
-		
-		//Paramter array used to check that all are present
-		$requiredParams = ["cid", "gid"];
-		
-		$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
-		
-		if($httpCode == 200)
+		if(isset($givenParams["cid"]))
 		{
+			$cid = $givenParams["cid"];
 			
-			$statementString = "DELETE FROM country_grade_relationship WHERE cid = :cid AND gid = :gid";
-			$variables = ['cid' => $givenParams['cid'],
-						'gid' => $givenParams['gid']
-			];
+			$statementString = "DELETE FROM countries WHERE cid = :cid";
+			$variables = ['cid' => $cid];
 			
 			try
 			{
@@ -200,12 +194,12 @@
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Country-Grade: delete failed";
+				$response['Response'] = "Countries: delete failed";
 			}
 		}
 		else
 		{
-			$response['Response'] = "Country-Grade: delete failed";
+			$response['Response'] = "Countries: no valid parameter";
 		}
 		
 		closeDB($pdo);

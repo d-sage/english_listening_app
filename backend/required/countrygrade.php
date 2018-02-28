@@ -1,9 +1,13 @@
 <?php
 
+	if(!defined('access'))
+	{
+		die("No Direct Access");
+	}
 
-	include_once "../icons/smileyFace.php";
-	include_once "../libraries/databases.php";
-	include_once "../libraries/topic_lesson_removal.php";
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/icons/smileyFace.php");
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/libraries/databases.php");
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/libraries/idCheck.php");
 	
 	
 	$verb = $_SERVER["REQUEST_METHOD"];
@@ -26,7 +30,7 @@
 		{
 			/*this is a get all*/
 			
-			$statementString = "SELECT cid, gid, tid FROM country_grade_topic_relation";
+			$statementString = "SELECT cid, gid FROM country_grade_relationship";
 			
 			try
 			{
@@ -35,37 +39,29 @@
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Country-Grade-Topic: get all failed";
+				$response['Response'] = "Country-Grade: get all failed";
+			}
+		}
+		else if(isset($givenParams['cid']))
+		{
+			$cid = $givenParams['cid'];
+			
+			$statementString = "SELECT cid, gid FROM country_grade_relationship WHERE cid = :cid";
+			$variables = ['cid' => $cid];
+			
+			try
+			{
+				$stmt = executeDbCall($pdo, $statementString, $variables);
+			}
+			catch(PDOException $e)
+			{
+				$stmt = false;
+				$response['Response'] = "Country-Grade: get specific failed";
 			}
 		}
 		else
 		{
-			//Paramter array used to check that all are present
-			$requiredParams = ["cid","gid"];
-			
-			$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
-				
-			if($httpCode == 200)
-			{
-				$statementString = "SELECT cid, gid, tid FROM country_grade_topic_relation WHERE cid = :cid AND gid = :gid";
-				$variables = ['cid' => $givenParams['cid'],
-							'gid' => $givenParams['gid']
-				];
-				
-				try
-				{
-					$stmt = executeDbCall($pdo, $statementString, $variables);
-				}
-				catch(PDOException $e)
-				{
-					$stmt = false;
-					$response['Response'] = "Country-Grade-Topic: get specific failed";
-				}
-			}
-			else
-			{
-				$response['Response'] = "Country-Grade-Topic: no valid parameter";
-			}
+			$response['Response'] = "Country-Grade: no valid parameter";
 		}
 		
 		closeDB($pdo);
@@ -93,16 +89,15 @@
 		$givenParams = $_POST;
 		
 		//Paramter array used to check that all are present
-		$requiredParams = ["cid","gid","tid"];
+		$requiredParams = ["cid","gid"];
 		
 		$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
 		
 		if($httpCode == 200)
 		{
-			$statementString = "INSERT INTO country_grade_topic_relation (cid,gid,tid) VALUES (:cid,:gid,:tid)";
+			$statementString = "INSERT INTO country_grade_relationship (cid,gid) VALUES (:cid,:gid)";
 			$variables = ['cid' => $givenParams['cid'],
 						'gid' => $givenParams['gid'],
-						'tid' => $givenParams['tid']
 			];
 			
 			try
@@ -112,13 +107,13 @@
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Country-Grade-Topic: insert failed";
+				$response['Response'] = "Country-Grade: insert failed";
 				//$response['Response'] = $e->getMessage();
 			}
 		}
 		else
 		{
-			$response['Response'] = "Country-Grade-Topic: insert failed";
+			$response['Response'] = "Country-Grade: insert failed";
 		}
 		
 		closeDB($pdo);
@@ -143,21 +138,19 @@
 	else if($verb == 'PUT')																	//PUT
 	{
 		//Paramter array used to check that all are present
-		$requiredParams = ["oldCid", "newCid", "oldGid", "newGid", "oldTid", "newTid"];
+		$requiredParams = ["oldCid", "newCid", "oldGid", "newGid"];
 		
 		$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
 		
 		if($httpCode == 200)
 		{
 			
-			$statementString = "UPDATE country_grade_topic_relation SET cid = :newCid, gid = :newGid, tid = :newTid "
-								. "WHERE cid = :oldCid AND gid = :oldGid AND tid = :oldTid";
+			$statementString = "UPDATE country_grade_relationship SET cid = :newCid, gid = :newGid "
+								. "WHERE cid = :oldCid AND gid = :oldGid";
 			$variables = ['newCid' => $givenParams["newCid"],
 						'oldCid' => $givenParams["oldCid"],
 						'newGid' => $givenParams["newGid"],
-						'oldGid' => $givenParams["oldGid"],
-						'newTid' => $givenParams["newTid"],
-						'oldTid' => $givenParams["oldTid"]
+						'oldGid' => $givenParams["oldGid"]
 			];
 			
 			try
@@ -167,7 +160,7 @@
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Country-Grade-Topic: update failed";
+				$response['Response'] = "Country-Grade: update failed";
 			}
 		}
 		
@@ -193,39 +186,31 @@
 	{
 		
 		//Paramter array used to check that all are present
-		$requiredParams = ["cid", "gid", "tid"];
+		$requiredParams = ["cid", "gid"];
 		
 		$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
 		
 		if($httpCode == 200)
 		{
-			if(removeTopic($pdo, $response, $givenParams))
+			
+			$statementString = "DELETE FROM country_grade_relationship WHERE cid = :cid AND gid = :gid";
+			$variables = ['cid' => $givenParams['cid'],
+						'gid' => $givenParams['gid']
+			];
+			
+			try
 			{
-				//If removeal of all lessons from the topic, then delete the actual record
-				$statementString = "DELETE FROM country_grade_topic_relation WHERE cid = :cid AND gid = :gid AND tid = :tid";
-				$variables = ['cid' => $givenParams['cid'],
-							'gid' => $givenParams['gid'],
-							'tid' => $givenParams['tid']
-				];
-				
-				try
-				{
-					$stmt = executeDbCall($pdo, $statementString, $variables);
-				}
-				catch(PDOException $e)
-				{
-					$stmt = false;
-					$response['Response'] = "Country-Grade-Topic: delete failed";
-				}
+				$stmt = executeDbCall($pdo, $statementString, $variables);
 			}
-			else
+			catch(PDOException $e)
 			{
-				$response['Response'] = "Country-Grade-Topic: delete failed, removal of all lessons failed, contact help";
+				$stmt = false;
+				$response['Response'] = "Country-Grade: delete failed";
 			}
 		}
 		else
 		{
-			$response['Response'] = "Country-Grade-Topic: delete failed";
+			$response['Response'] = "Country-Grade: delete failed";
 		}
 		
 		closeDB($pdo);

@@ -1,13 +1,14 @@
 <?php
 
-	/*
-	Credit to: https://stackoverflow.com/questions/18217964/upload-video-files-via-php-and-save-them-in-appropriate-folder-and-have-a-databa
-	Used for knowledge and implementation of uploading files in PHP
-	*/
+	if(!defined('access'))
+	{
+		die("No Direct Access");
+	}
 
-	include_once "../icons/smileyFace.php";
-	include_once "../libraries/databases.php";
-	include_once "../libraries/topic_lesson_removal.php";
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/icons/smileyFace.php");
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/libraries/databases.php");
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/libraries/topic_lesson_removal.php");
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/libraries/idCheck.php");
 	
 	
 	$verb = $_SERVER["REQUEST_METHOD"];
@@ -30,7 +31,7 @@
 		{
 			/*this is a get all*/
 			
-			$statementString = "SELECT cid, gid, tid, lid, text, path FROM lessons";
+			$statementString = "SELECT cid, gid, tid FROM country_grade_topic_relation";
 			
 			try
 			{
@@ -39,22 +40,21 @@
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Lessons: get all failed";
+				$response['Response'] = "Country-Grade-Topic: get all failed";
 			}
 		}
 		else
 		{
 			//Paramter array used to check that all are present
-			$requiredParams = ["cid","gid","tid"];
+			$requiredParams = ["cid","gid"];
 			
 			$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
 				
 			if($httpCode == 200)
 			{
-				$statementString = "SELECT cid, gid, tid, lid, text, path FROM lessons WHERE cid = :cid AND gid = :gid AND tid = :tid";
+				$statementString = "SELECT cid, gid, tid FROM country_grade_topic_relation WHERE cid = :cid AND gid = :gid";
 				$variables = ['cid' => $givenParams['cid'],
-							'gid' => $givenParams['gid'],
-							'tid' => $givenParams['tid']
+							'gid' => $givenParams['gid']
 				];
 				
 				try
@@ -64,12 +64,12 @@
 				catch(PDOException $e)
 				{
 					$stmt = false;
-					$response['Response'] = "Lessons: get specific failed";
+					$response['Response'] = "Country-Grade-Topic: get specific failed";
 				}
 			}
 			else
 			{
-				$response['Response'] = "Lessons: no valid parameter";
+				$response['Response'] = "Country-Grade-Topic: no valid parameter";
 			}
 		}
 		
@@ -98,74 +98,32 @@
 		$givenParams = $_POST;
 		
 		//Paramter array used to check that all are present
-		$requiredParams = ["cid","gid","tid","lid","text"];
+		$requiredParams = ["cid","gid","tid"];
 		
 		$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
 		
-		if(!isset($_FILES["file"]["name"]))
-		{
-			$response['Missing']['file'] = "not present";
-			$httpCode = 202;
-		}
-		
 		if($httpCode == 200)
 		{
-			
-			//TODO: scrub for malicious naming?
-			$path = "../Audio/" . $_FILES["file"]["name"];
-			
-			$statementString = "INSERT INTO lessons (cid,gid,tid,lid,text,path) VALUES (:cid,:gid,:tid,:lid,:text,:path)";
+			$statementString = "INSERT INTO country_grade_topic_relation (cid,gid,tid) VALUES (:cid,:gid,:tid)";
 			$variables = ['cid' => $givenParams['cid'],
 						'gid' => $givenParams['gid'],
-						'tid' => $givenParams['tid'],
-						'lid' => $givenParams['lid'],
-						'text' => $givenParams['text'],
-						'path' => $path
+						'tid' => $givenParams['tid']
 			];
-			
-			
-			$canAddToDB = false;
 			
 			try
 			{
-				
-				if (!file_exists("../Audio/" . $_FILES["file"]["name"]))
-				{
-					if(move_uploaded_file($_FILES["file"]["tmp_name"], "../Audio/" . $_FILES["file"]["name"]))
-					{
-						$canAddToDB = true;
-					}
-					else
-					{
-						$canAddToDB = false;
-					}
-				}
-				else
-				{
-					//TODO: inform there was already a file there????
-					$canAddToDB = true;
-				}
-				
-				if($canAddToDB)
-				{
-					$stmt = executeDbCall($pdo, $statementString, $variables);
-				}
-				else
-				{
-					$response['Response'] = "Lessons: insert failed, could not upload file";
-				}
-				
+				$stmt = executeDbCall($pdo, $statementString, $variables);
 			}
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Lessons: insert failed";
+				$response['Response'] = "Country-Grade-Topic: insert failed";
 				//$response['Response'] = $e->getMessage();
 			}
 		}
 		else
 		{
-			$response['Response'] = "Lessons: insert failed";
+			$response['Response'] = "Country-Grade-Topic: insert failed";
 		}
 		
 		closeDB($pdo);
@@ -183,16 +141,6 @@
 			//{
 			//	$response['Response'] = "'POST' unnsuccessful";
 			//}
-			
-			//if statement failed but an audio was uploaded, then remove the file
-			if(canAddToDB)
-			{
-				if(!removeFile("../Audio/" . $_FILES["file"]["name"]))
-				{
-					$response['Response'] .= " | Critical: could not remove file or file did not exist, contact help.";
-				}
-			}
-			
 			$response['Data'] = [];
 		}
 		
@@ -200,23 +148,21 @@
 	else if($verb == 'PUT')																	//PUT
 	{
 		//Paramter array used to check that all are present
-		$requiredParams = ["oldCid", "newCid", "oldGid", "newGid", "oldTid", "newTid", "oldLid", "newLid"];
+		$requiredParams = ["oldCid", "newCid", "oldGid", "newGid", "oldTid", "newTid"];
 		
 		$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
 		
 		if($httpCode == 200)
 		{
 			
-			$statementString = "UPDATE lessons SET cid = :newCid, gid = :newGid, tid = :newTid, lid = :newLid "
-								. "WHERE cid = :oldCid AND gid = :oldGid AND tid = :oldTid AND lid =:oldLid";
+			$statementString = "UPDATE country_grade_topic_relation SET cid = :newCid, gid = :newGid, tid = :newTid "
+								. "WHERE cid = :oldCid AND gid = :oldGid AND tid = :oldTid";
 			$variables = ['newCid' => $givenParams["newCid"],
 						'oldCid' => $givenParams["oldCid"],
 						'newGid' => $givenParams["newGid"],
 						'oldGid' => $givenParams["oldGid"],
 						'newTid' => $givenParams["newTid"],
-						'oldTid' => $givenParams["oldTid"],
-						'newLid' => $givenParams["newLid"],
-						'oldLid' => $givenParams["oldLid"]
+						'oldTid' => $givenParams["oldTid"]
 			];
 			
 			try
@@ -226,7 +172,7 @@
 			catch(PDOException $e)
 			{
 				$stmt = false;
-				$response['Response'] = "Lessons: update failed";
+				$response['Response'] = "Country-Grade-Topic: update failed";
 			}
 		}
 		
@@ -252,20 +198,19 @@
 	{
 		
 		//Paramter array used to check that all are present
-		$requiredParams = ["cid", "gid", "tid", "lid"];
+		$requiredParams = ["cid", "gid", "tid"];
 		
 		$httpCode = checkAllParamsPresent($requiredParams, $givenParams, $response);
 		
 		if($httpCode == 200)
 		{
-			if(removePaths($pdo, $response, $givenParams))
+			if(removeTopic($pdo, $response, $givenParams))
 			{
-				//If the removal of the path/file is successful then we can delete the record
-				$statementString = "DELETE FROM lessons WHERE cid = :cid AND gid = :gid AND tid = :tid AND lid = :lid";
+				//If removeal of all lessons from the topic, then delete the actual record
+				$statementString = "DELETE FROM country_grade_topic_relation WHERE cid = :cid AND gid = :gid AND tid = :tid";
 				$variables = ['cid' => $givenParams['cid'],
-					'gid' => $givenParams['gid'],
-					'tid' => $givenParams['tid'],
-					'lid' => $givenParams['lid']
+							'gid' => $givenParams['gid'],
+							'tid' => $givenParams['tid']
 				];
 				
 				try
@@ -275,17 +220,17 @@
 				catch(PDOException $e)
 				{
 					$stmt = false;
-					$response['Response'] = "Lessons: delete failed";
+					$response['Response'] = "Country-Grade-Topic: delete failed";
 				}
 			}
 			else
 			{
-				$response['Response'] = "Lessons: delete failed, removal of paths failed | contact help";
+				$response['Response'] = "Country-Grade-Topic: delete failed, removal of all lessons failed, contact help";
 			}
 		}
 		else
 		{
-			$response['Response'] = "Lessons: delete failed";
+			$response['Response'] = "Country-Grade-Topic: delete failed";
 		}
 		
 		closeDB($pdo);
@@ -293,7 +238,7 @@
 		if($stmt == true)
 		{
 			//$response['Error'] = "false";
-			$response['Response'] .= " | OK";
+			$response['Response'] = "OK";
 			$response['Data'] = [];
 		}
 		else

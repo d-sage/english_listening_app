@@ -1,8 +1,13 @@
 <?php
 
+	if(!defined('access'))
+	{
+		die("No Direct Access");
+	}
 
-	include_once "./icons/smileyFace.php";
-	include_once "./libraries/databases.php";
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/icons/smileyFace.php");
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/libraries/databases.php");
+	require_once($_SERVER["DOCUMENT_ROOT"] . "/seniorProj_testing/backend/required/libraries/idCheck.php");
 	
 	
 	$verb = $_SERVER["REQUEST_METHOD"];
