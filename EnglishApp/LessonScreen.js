@@ -23,6 +23,7 @@ class LessonScreen extends React.Component {
 									{country: this.props.navigation.state.params.country,
 									 grade: this.props.navigation.state.params.grade,
 									 topic: this.props.navigation.state.params.topic,
+									 lid: rowData.lid,
 									 path: rowData.path+""})}
 								title = {rowData.lid+""}
 							/>

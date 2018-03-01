@@ -1,8 +1,10 @@
 import React from 'react';
 import styles from "./Styles.js";
+import Expo, { SQLite } from 'expo';
 import { View, Text, Button, ListView } from 'react-native';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
+const db = SQLite.openDatabase({name: 'db.db'});
 
 class CountryScreen extends React.Component {
 

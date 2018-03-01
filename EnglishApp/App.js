@@ -3,9 +3,10 @@ import GradeScreen from "./GradeScreen.js";
 import TopicScreen from "./TopicScreen.js";
 import LessonScreen from "./LessonScreen.js";
 import PlayerScreen from "./PlayerScreen.js";
+import SQLTestScreen from "./SQLTestScreen.js";
 import { StackNavigator } from 'react-navigation';
 
-const RootNavigator = StackNavigator({  
+const RootNavigator = StackNavigator({
 	Country: {
 		screen: CountryScreen,
 		navigationOptions: {
@@ -13,21 +14,21 @@ const RootNavigator = StackNavigator({
 			title: 'Country',
 		},
 	},
-	Grade: { 
-		screen: GradeScreen, 
+	Grade: {
+		screen: GradeScreen,
 		navigationOptions: {
 			headerTitle: 'Grade',
 		},
 	},
 	Topic: {
 		screen: TopicScreen,
-		navigationOptions: { 
-			headerTitle: 'Topic', 
+		navigationOptions: {
+			headerTitle: 'Topic',
 		},
-	}, 
+	},
 	Lesson: {
 		screen: LessonScreen,
-		navigationOptions: { 
+		navigationOptions: {
 			headerTitle: 'Lesson',
 		},
 	},
@@ -37,6 +38,12 @@ const RootNavigator = StackNavigator({
     		headerTitle: 'Player',
     	},
     },
+		Test: {
+	 		 screen: SQLTestScreen,
+	 		 navigationOptions: {
+	 			 headerTitle: 'Test',
+	 		 },
+	 	 },
 });
 
-export default RootNavigator; 
+export default RootNavigator;

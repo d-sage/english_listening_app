@@ -1,16 +1,51 @@
-import React from 'react';
-import { View, Text, Button, ListView } from 'react-native';
+import React, { Component } from 'react';
+import { View, TouchableNativeFeedback,Text,Button, ListView  } from 'react-native';
+import { Audio } from 'expo';
 import styles from "./Styles.js";
-import Expo from 'expo';
 
-var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
-const soundObject = new Expo.Audio.Sound();
-loadMp3();
+class AudioPlayer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { isPlaying: false };
 
-class PlayerScreen extends React.Component {
+    this.loadAudio = this.loadAudio.bind(this);
+    this.toggleAudioPlayback = this.toggleAudioPlayback.bind(this);
+  }
+
+  componentDidMount() {
+    this.loadAudio();
+  }
+
+  componentWillUnmount() {
+    this.soundObject.stopAsync();
+  }
+
+  async loadAudio() {
+    this.soundObject = new Audio.Sound();
+    try {
+      await this.soundObject.loadAsync({ uri: this.props.navigation.state.params.path /* url for your audio file */ });
+    } catch (e) {
+      console.log('ERROR Loading Audio', e);
+    }
+  }
+
+	stopAudioPlayback()
+	{
+		this.soundObject.stopAsync();
+		this.setState({isPlaying: false});
+	}
+
+  toggleAudioPlayback() {
+    this.setState({
+      isPlaying: !this.state.isPlaying,
+    }, () => (this.state.isPlaying
+      ? this.soundObject.playAsync()
+      : this.soundObject.pauseAsync()));
+  }
 
 	render(){
 		return(
+
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
 					<Text>Player Screen</Text>
@@ -18,28 +53,28 @@ class PlayerScreen extends React.Component {
 				<View style={styles.buttonContainer}>
 					<Button
 						onPress={async() => {
-							try{ await soundObject.playAsync(); }
-							catch(error){ console.log("Error occurred!!!"); }
-						}}
-						title="Play Sound"
+							this.toggleAudioPlayback();  }
+						}
+						title="Play/Pause Sound"
 					/>
 				</View>
 				<View style={styles.buttonContainer}>
 					<Button
 						onPress={async() => {
-							try{ await soundObject.pauseAsync(); }
-							catch(error){ console.log("Error occurred!!!"); }
-						}}
-						title="Pause Sound"
-					/>
-				</View>
-				<View style={styles.buttonContainer}>
-					<Button
-						onPress={async() => {
-							try{ await soundObject.stopAsync(); }
-							catch(error){ console.log("Error occurred!!!"); }
-						}}
+							this.stopAudioPlayback(); }
+						}
 						title="Stop Sound"
+					/>
+				</View>
+        <View style={styles.buttonContainer}>
+					<Button
+						onPress={() => this.props.navigation.navigate('Test',
+            {country: this.props.navigation.state.params.country,
+             grade: this.props.navigation.state.params.grade,
+             topic: this.props.navigation.state.params.topic,
+             lid: this.props.navigation.state.params.lid,
+             path: this.props.navigation.state.params.path+""})}
+						title="Download"
 					/>
 				</View>
 				<View style={styles.buttonContainer}>
@@ -51,28 +86,6 @@ class PlayerScreen extends React.Component {
 			</View>
 		)
 	}
-
-	constructor(props){
-        super(props);
-        this.state = {
-          dataSource: ds.cloneWithRows([]),
-        };
-		alert(this.props.navigation.state.params.path);
-	}
-
-	componentWillMount() {
-		this.fetchData();
-	}
-
-	fetchData(){
-		return;
-	}
 }
 
-async function loadMp3() {
-	//var path = this.props.navigation.state.params.path;
-	try{ await soundObject.loadAsync(require('./media/SampleAudio_0.4mb.mp3')); }
-	catch(error){ console.log("Error occurred!!!"); }
-}
-
-export default PlayerScreen;
+export default AudioPlayer;
