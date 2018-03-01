@@ -1,5 +1,8 @@
-﻿using System;
+using System;
+using MySql.Data.MySqlClient;
+//using MySql.Web.*;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -11,7 +14,65 @@ public partial class _Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
+
+
+
+        string text = "Good";
+        string server = "localhost";
+        string database = "daricsag_ela";
+        string uid = "daricsag_ela";
+        string password = "english";
+        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        try
+        {
+            connection.Open();
+
+            string sql = "SELECT * FROM credentials";
+
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+            MySqlDataReader rdr = cmd.ExecuteReader();
+
+            while (rdr.Read())
+            {
+                text = rdr[0] + " | " + rdr[1] + " | " + rdr[2];
+            }
+            rdr.Close();
+
+        }
+        catch (MySqlException ex)
+        {
+            //When handling errors, you can your application's response based 
+            //on the error number.
+            //The two most common error numbers when connecting are as follows:
+            //0: Cannot connect to server.
+            //1045: Invalid user name and/or password.
+            switch (ex.Number)
+            {
+                case 0:
+                    text = "Cannot connect to server.  Contact administrator";
+                    break;
+
+                case 1045:
+                    text = "Invalid username/password, please try again";
+                    break;
+                default:
+                    text = "number: " + ex.Number;
+                    break;
+            }
+            text += " bad";
+        }
+
+        connection.Close();
+
+        Label2.Text = text;
+
+
     }//end method
 
     protected void Submit_Click(object sender, EventArgs e)
