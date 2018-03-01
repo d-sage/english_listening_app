@@ -14,6 +14,11 @@
         }
     </style>
 
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="./Manage.js"></script>
+
 </head>
 <body>
     <form id="form1" runat="server">
@@ -56,7 +61,8 @@
         
 
 
-        
+        <!-- Testing Ajax Button -->
+		<input id="btnTestAjax" type="button" value="Push To Test Ajax (Press F12 to see the console log)"/>
 
 
     </form>
