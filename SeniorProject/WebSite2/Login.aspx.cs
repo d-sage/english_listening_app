@@ -17,7 +17,7 @@ public partial class _Default : System.Web.UI.Page
 
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
 
-
+        /*
 
         string text = "Good";
         string server = "localhost";
@@ -26,13 +26,21 @@ public partial class _Default : System.Web.UI.Page
         string password = "english";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+        */
+        string text = "good";
+        string server = "162.241.244.59";
+        string database = "daricsag_movies";
+        string user = "daricsag_movies";
+        string pass = "movies";
+        string connectionString = "Server=" + server + ";Database=" + database + ";" + 
+                                "User=" + user + ";Password=" + pass + ";";
 
         MySqlConnection connection = new MySqlConnection(connectionString);
 
         try
         {
             connection.Open();
-
+            /*
             string sql = "SELECT * FROM credentials";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
@@ -43,7 +51,17 @@ public partial class _Default : System.Web.UI.Page
                 text = rdr[0] + " | " + rdr[1] + " | " + rdr[2];
             }
             rdr.Close();
+            */
+            string sql = "SELECT * FROM movies";
 
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+            MySqlDataReader rdr = cmd.ExecuteReader();
+
+            while (rdr.Read())
+            {
+                text = rdr[0] + " | " + rdr[1];
+            }
+            rdr.Close();
         }
         catch (MySqlException ex)
         {
