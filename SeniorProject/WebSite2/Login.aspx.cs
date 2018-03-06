@@ -12,57 +12,59 @@ using System.Web.UI.WebControls;
 
 public partial class _Default : System.Web.UI.Page
 {
+
+    private RNGCryptoServiceProvider Rand = new RNGCryptoServiceProvider();
+    private String dbUsername;
+    private String dbSalt;
+    private String dbPass;
+
     protected void Page_Load(object sender, EventArgs e)
     {
 
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
+        int num = RandomInteger(0, 100000000);
+        Session["number"] = num;
 
-        /*
-
-        string text = "Good";
-        string server = "localhost";
-        string database = "daricsag_ela";
-        string uid = "daricsag_ela";
-        string password = "english";
-        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
-        string text = "good";
+        /*string text = "Good";
         string server = "162.241.244.59";
         string database = "daricsag_movies";
-        string user = "daricsag_movies";
-        string pass = "movies";
-        string connectionString = "Server=" + server + ";Database=" + database + ";" + 
-                                "User=" + user + ";Password=" + pass + ";";
+        string uid = "daricsag_movies";
+        string password = "movies";
+        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";*/
+        
+        //This is for the credentials
+        string text = "Good";
+        string server = "162.241.244.134";
+        string database = "jordape8_EnglishApp";
+        string uid = "jordape8_Default";
+        string password = "Default1!";
+        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+        
 
         MySqlConnection connection = new MySqlConnection(connectionString);
 
         try
         {
             connection.Open();
-            /*
-            string sql = "SELECT * FROM credentials";
+
+            //string sql = "SELECT * FROM movies";
+            String sql = "SELECT * FROM credentials";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
             MySqlDataReader rdr = cmd.ExecuteReader();
 
             while (rdr.Read())
             {
-                text = rdr[0] + " | " + rdr[1] + " | " + rdr[2];
-            }
+                //text = rdr[0] + " | " + rdr[1] + " | " + rdr[2];
+                dbUsername = (String)rdr[0];
+                dbSalt = (String)rdr[1];
+                dbPass = (String)rdr[2];
+            }//end while
             rdr.Close();
-            */
-            string sql = "SELECT * FROM movies";
 
-            MySqlCommand cmd = new MySqlCommand(sql, connection);
-            MySqlDataReader rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
-            {
-                text = rdr[0] + " | " + rdr[1];
-            }
-            rdr.Close();
-        }
+        }//end try
         catch (MySqlException ex)
         {
             //When handling errors, you can your application's response based 
@@ -82,9 +84,9 @@ public partial class _Default : System.Web.UI.Page
                 default:
                     text = "number: " + ex.Number;
                     break;
-            }
+            }//end switch
             text += " bad";
-        }
+        }//end catch
 
         connection.Close();
 
@@ -104,9 +106,9 @@ public partial class _Default : System.Web.UI.Page
 
         else
         {
-            String dbPassword = "2442022411122349917696223246343111622219816422031511843150228361812417717097232104806116156106715981331392471161472361447076896854076189109105204170922261282018181126147209236142226824328583818221323126120108971201223861621451535121312919915"; //pull password from DB
-            String adminUsername = "user"; //pull username from DB
-            String saltDB = "81126147209236142226824328583818221323126120108971201223861621451535121312919915";
+            //String dbPassword = "2442022411122349917696223246343111622219816422031511843150228361812417717097232104806116156106715981331392471161472361447076896854076189109105204170922261282018181126147209236142226824328583818221323126120108971201223861621451535121312919915"; //pull password from DB
+            //String adminUsername = "user"; //pull username from DB
+            //String saltDB = "81126147209236142226824328583818221323126120108971201223861621451535121312919915";
             String adminPassword = pass.Text;
 
             //byte [] salt = System.Text.UnicodeEncoding.Unicode.GetBytes(saltDB);
@@ -127,19 +129,19 @@ public partial class _Default : System.Web.UI.Page
             String fin = "";
             foreach (byte i in encryptedpasswordAdmin)
                 fin += i;
-            Label2.Text = fin;
-            String cred = String.Concat(fin,saltDB);
+            //Label2.Text = fin;
+            String cred = String.Concat(fin,dbSalt);
             //string converteds = Convert.ToBase64String(encryptedpasswordAdmin);
             //foreach (byte i in encryptedpasswordDB2)
-            Label3.Text = cred;
+            //Label3.Text = cred;
 
             //use this to display the hash
             /*string converted = Convert.ToBase64String(encryptedpasswordAdmin);
             Label2.Text = converted; */
 
-            bool matchingpass = CompareByteArrays(cred, dbPassword);//encryptedpasswordAdmin, encryptedpasswordAdmin);
+            bool matchingpass = CompareByteArrays(cred, dbPass);//encryptedpasswordAdmin, encryptedpasswordAdmin);
 
-            if(matchingpass && adminUsername == user.Text)
+            if(matchingpass && dbUsername == user.Text)
             {
                 Session["confirm"] = matchingpass;
                 Response.Redirect("Manage.aspx");
@@ -218,6 +220,25 @@ public partial class _Default : System.Web.UI.Page
         }//end for
 
         return passwordWithSaltBytes;
+    }//end method
+    
+
+    // Return a random integer between a min and max value.
+    private int RandomInteger(int min, int max)
+    {
+        uint scale = uint.MaxValue;
+        while (scale == uint.MaxValue)
+        {
+            // Get four random bytes.
+            byte[] four_bytes = new byte[4];
+            Rand.GetBytes(four_bytes);
+
+            // Convert that into an uint.
+            scale = BitConverter.ToUInt32(four_bytes, 0);
+        }//end while
+
+        // Add min to the scaled difference between max and min.
+        return (int)(min + (max - min) * (scale / (double)uint.MaxValue));
     }//end method
 
 

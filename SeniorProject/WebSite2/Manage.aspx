@@ -18,6 +18,9 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="./Manage.js"></script>
+    <script type = "text/javascript">
+        var GettingValue = document.getElementById<%= ValueHiddenField.ClientID %>.value;
+    </script>
 
 </head>
 <body>
@@ -59,7 +62,8 @@
         <!-- Submit button -->
         <asp:Button ID="Submit" runat="server" Text="Submit" style="z-index: 1; left: 390px; top: 300px; position: absolute" OnClick="Submit_Click" />
         
-
+        <!--Hidden field for number-->
+        <asp:hiddenfield id="ValueHiddenField" value="" runat="server"/>
 
         <!-- Testing Ajax Button -->
 		<input id="btnTestAjax" type="button" value="Push To Test Ajax (Press F12 to see the console log)"/>
@@ -67,5 +71,11 @@
 
     </form>
 
+
+
+
 </body>
+
+
+
 </html>
