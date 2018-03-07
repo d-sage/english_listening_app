@@ -1,6 +1,5 @@
 using System;
 using MySql.Data.MySqlClient;
-//using MySql.Web.*;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -24,7 +23,8 @@ public partial class _Default : System.Web.UI.Page
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
         int num = RandomInteger(0, 100000000);
         Session["number"] = num;
-
+        
+        //this is a test for Darics DB
         /*string text = "Good";
         string server = "162.241.244.59";
         string database = "daricsag_movies";
@@ -34,7 +34,7 @@ public partial class _Default : System.Web.UI.Page
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";*/
         
         //This is for the credentials
-        string text = "Good";
+        string text = "";
         string server = "162.241.244.134";
         string database = "jordape8_EnglishApp";
         string uid = "jordape8_Default";
@@ -42,7 +42,6 @@ public partial class _Default : System.Web.UI.Page
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
         
-
         MySqlConnection connection = new MySqlConnection(connectionString);
 
         try
@@ -88,10 +87,8 @@ public partial class _Default : System.Web.UI.Page
             text += " bad";
         }//end catch
 
-        connection.Close();
-
-        Label2.Text = text;
-
+        connection.Close();    
+        errormsgDB.Text = text;
 
     }//end method
 
@@ -111,35 +108,17 @@ public partial class _Default : System.Web.UI.Page
             //String saltDB = "81126147209236142226824328583818221323126120108971201223861621451535121312919915";
             String adminPassword = pass.Text;
 
-            //byte [] salt = System.Text.UnicodeEncoding.Unicode.GetBytes(saltDB);
-
             //use this to gen the hash
             //byte[] salt = GenerateSalt();
 
-            //Use this when db is hooked up
-            //String cred = String.Concat(dbPassword,saltDB);
-            //byte[] encryptedpasswordDB = System.Text.UnicodeEncoding.Unicode.GetBytes(dbPassword);
-            //byte[] encryptedpasswordDB2 = Combine(encryptedpasswordDB, salt);
-            //string converted = Convert.ToBase64String(encryptedpasswordDB);
-            //Label2.Text = encryptedpasswordDB;
-            //foreach (byte i in salt)
-            //Label2.Text += i;
-            //byte[] encryptedpasswordDB = GenerateSaltedHash(dbPassword,salt);
             byte[] encryptedpasswordAdmin = GenerateSaltedHash(adminPassword);//,saltDB);
             String fin = "";
             foreach (byte i in encryptedpasswordAdmin)
                 fin += i;
             //Label2.Text = fin;
             String cred = String.Concat(fin,dbSalt);
-            //string converteds = Convert.ToBase64String(encryptedpasswordAdmin);
-            //foreach (byte i in encryptedpasswordDB2)
-            //Label3.Text = cred;
 
-            //use this to display the hash
-            /*string converted = Convert.ToBase64String(encryptedpasswordAdmin);
-            Label2.Text = converted; */
-
-            bool matchingpass = CompareByteArrays(cred, dbPass);//encryptedpasswordAdmin, encryptedpasswordAdmin);
+            bool matchingpass = ComparePasswords(cred, dbPass);//encryptedpasswordAdmin, encryptedpasswordAdmin);
 
             if(matchingpass && dbUsername == user.Text)
             {
@@ -183,9 +162,7 @@ public partial class _Default : System.Web.UI.Page
         return algorithm.ComputeHash(passwordbytes);
     }//end method
 
-
-
-    public static bool CompareByteArrays(String str, String str2)//byte[] array1, byte[] array2)
+    public static bool ComparePasswords(String str, String str2)//byte[] array1, byte[] array2)
     {
         /*if (array1.Length != array2.Length)
         {
@@ -203,27 +180,8 @@ public partial class _Default : System.Web.UI.Page
             return false;
 
         return true;
-    }//end method
-    
-
-    public static byte[] Combine(byte [] ara, byte [] salt)
-    {
-        byte[] passwordWithSaltBytes = new byte[ara.Length + salt.Length];
-
-        for (int i = 0; i < ara.Length; i++)
-        {
-            passwordWithSaltBytes[i] = ara[i];
-        }//end for
-        for (int i = 0; i < salt.Length; i++)
-        {
-            passwordWithSaltBytes[ara.Length + i] = salt[i];
-        }//end for
-
-        return passwordWithSaltBytes;
-    }//end method
-    
-
-    // Return a random integer between a min and max value.
+    }//end method  
+ 
     private int RandomInteger(int min, int max)
     {
         uint scale = uint.MaxValue;
@@ -240,6 +198,5 @@ public partial class _Default : System.Web.UI.Page
         // Add min to the scaled difference between max and min.
         return (int)(min + (max - min) * (scale / (double)uint.MaxValue));
     }//end method
-
 
 }//end class
