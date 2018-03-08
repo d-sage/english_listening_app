@@ -4,10 +4,9 @@ import Expo, { SQLite } from 'expo';
 import { View, Text, Button, ListView } from 'react-native';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
-const db = SQLite.openDatabase({name: 'db.db'});
+//const db = SQLite.openDatabase({name: 'db.db'});
 
 class CountryScreen extends React.Component {
-
 	render(){
 		return(
 			<View style={styles.mainContainer}>
@@ -27,6 +26,10 @@ class CountryScreen extends React.Component {
 							/>
 						</View>
 					}
+				/>
+				<Button
+					onPress={() => this.props.navigation.navigate('LocalCountry')}
+					title = {"LocalScreen"}
 				/>
 			</View>
 		)
