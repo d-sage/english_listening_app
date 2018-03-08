@@ -9,14 +9,14 @@
         #form1 {
             height: 617px;
             background-color: aqua;
-            width: 1305px;
+            width: 1330px;
         }
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
     <div>
-            <asp:Label ID="Label1" runat="server" Text="English Listening APP" style="z-index: 1; left: 290px; top: 5px; position: absolute" Font-Bold="true" Font-Size="XX-Large" Font-Underline="true" ></asp:Label>
+            <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 290px; top: 5px; position: absolute" Font-Bold="true" Font-Size="XX-Large" Font-Underline="true" ></asp:Label>
         </div>
     
         <asp:Label ID="lblTime" runat="server" style="z-index: 1; left: 15px; top: 50px; position: absolute" ></asp:Label>
@@ -33,12 +33,12 @@
         <asp:Button ID="Submit" runat="server" Text="Submit" style="z-index: 1; left: 430px; top: 370px; position: absolute" OnClick="Submit_Click" />
         <asp:Label ID="errormsg" runat="server" style="z-index: 1; left: 380px; top: 430px; position: absolute"></asp:Label>
         <asp:Label ID="incorrectmsg" runat="server" style="z-index: 1; left: 340px; top: 460px; position: absolute"></asp:Label>
+        <asp:Label ID="errormsgDB" runat="server" style="z-index: 1; left: 380px; top: 430px; position: absolute"></asp:Label>
 
-
-
+        <!--
         <asp:Label ID="Label2" runat="server" style="z-index: 1; left: 500px; top: 500px; position: absolute"></asp:Label>
         <asp:Label ID="Label3" runat="server" style="z-index: 1; left: 550px; top: 550px; position: absolute"></asp:Label>
-
+        -->
     </form>
 </body>
 </html>

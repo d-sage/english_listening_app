@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 23, 2018 at 02:41 AM
+-- Generation Time: Mar 03, 2018 at 10:58 PM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -62,10 +62,17 @@ CREATE TABLE `country_grade_topic_relation` (
 --
 
 CREATE TABLE `credentials` (
-  `username` varchar(15) NOT NULL,
-  `salt` binary(64) NOT NULL,
-  `password` binary(64) NOT NULL
+  `username` varchar(20) NOT NULL,
+  `salt` varchar(80) NOT NULL,
+  `hash` varchar(241) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `credentials`
+--
+
+INSERT INTO `credentials` (`username`, `salt`, `hash`) VALUES
+('AdminELA', '81126147209236142226824328583818221323126120108971201223861621451535121312919915', '2442022411122349917696223246343111622219816422031511843150228361812417717097232104806116156106715981331392471161472361447076896854076189109105204170922261282018181126147209236142226824328583818221323126120108971201223861621451535121312919915');
 
 -- --------------------------------------------------------
 
@@ -90,6 +97,17 @@ CREATE TABLE `lessons` (
   `lid` varchar(30) NOT NULL,
   `text` varchar(500) NOT NULL,
   `path` varchar(260) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `session`
+--
+
+CREATE TABLE `session` (
+  `id` varchar(80) NOT NULL,
+  `time` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -130,7 +148,7 @@ ALTER TABLE `country_grade_topic_relation`
 -- Indexes for table `credentials`
 --
 ALTER TABLE `credentials`
-  ADD PRIMARY KEY (`username`,`salt`,`password`);
+  ADD PRIMARY KEY (`username`,`salt`,`hash`);
 
 --
 -- Indexes for table `grades`
@@ -143,6 +161,12 @@ ALTER TABLE `grades`
 --
 ALTER TABLE `lessons`
   ADD PRIMARY KEY (`cid`,`gid`,`tid`,`lid`);
+
+--
+-- Indexes for table `session`
+--
+ALTER TABLE `session`
+  ADD PRIMARY KEY (`id`,`time`);
 
 --
 -- Indexes for table `topics`
