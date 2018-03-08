@@ -24,14 +24,6 @@ public partial class _Default : System.Web.UI.Page
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
         int num = RandomInteger(0, 100000000);
         Session["number"] = num;
-
-        /*string text = "Good";
-        string server = "162.241.244.59";
-        string database = "daricsag_movies";
-        string uid = "daricsag_movies";
-        string password = "movies";
-        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";*/
         
         //This is for the credentials
         string text = "Good";
@@ -48,8 +40,7 @@ public partial class _Default : System.Web.UI.Page
         try
         {
             connection.Open();
-
-            //string sql = "SELECT * FROM movies";
+            
             String sql = "SELECT * FROM credentials";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
@@ -57,7 +48,6 @@ public partial class _Default : System.Web.UI.Page
 
             while (rdr.Read())
             {
-                //text = rdr[0] + " | " + rdr[1] + " | " + rdr[2];
                 dbUsername = (String)rdr[0];
                 dbSalt = (String)rdr[1];
                 dbPass = (String)rdr[2];
