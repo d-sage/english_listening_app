@@ -36,9 +36,9 @@
         <asp:Label ID="lblCountryAdd" runat="server" Text="Country:" style="z-index: 1; left: 95px; top: 130px; position: absolute"></asp:Label>
         <asp:TextBox ID="txtcountryAdd" runat="server" style="z-index: 1; left: 155px; top: 130px; position: absolute" ></asp:TextBox>
     
-        <!-- Boxes and Labels for grade, add side -->
-        <asp:Label ID="lblgradeAdd" runat="server" Text="Grade:" style="z-index: 1; left: 95px; top: 170px; position: absolute"></asp:Label>
-        <asp:TextBox ID="txtgradeAdd" runat="server" style="z-index: 1; left: 155px; top: 170px; position: absolute" ></asp:TextBox>
+        <!-- Boxes and Labels for topic, add side -->
+        <asp:Label ID="lbltopicAdd" runat="server" Text="Topic:" style="z-index: 1; left: 95px; top: 170px; position: absolute"></asp:Label>
+        <asp:TextBox ID="txttopicAdd" runat="server" style="z-index: 1; left: 155px; top: 170px; position: absolute" ></asp:TextBox>
 
         <!-- Boxes and Labels for lessons, add side -->
         <asp:Label ID="lbllessonAdd" runat="server" Text="Lesson:" style="z-index: 1; left: 95px; top: 210px; position: absolute"></asp:Label>
@@ -58,7 +58,8 @@
         <asp:TextBox ID="txtlessonRem" runat="server" style="z-index: 1; left: 590px; top: 210px; position: absolute" ></asp:TextBox>
 
         <!-- Submit button -->
-        <asp:Button ID="Submit" runat="server" Text="Submit" style="z-index: 1; left: 390px; top: 300px; position: absolute" OnClick="Submit_Click" />
+        <asp:Button ID="addCountry" runat="server" Text="Add Country" style="z-index: 1; left: 390px; top: 300px; position: absolute" OnClick="AddCountry_Click" />
+        <asp:Button ID="addTopic" runat="server" Text="Add Topic" style="z-index: 1; left: 420px; top: 300px; position: absolute" OnClick="AddTopic_Click" />
         
         <!--Hidden field for number-->
         <asp:hiddenfield ID="ValueHiddenField" value="test" ClientIDMode="Static" runat="server"/>

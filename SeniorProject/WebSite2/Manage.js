@@ -34,6 +34,19 @@ function $success($data) {
     //just as a test
     console.log($data);
 
+    /*
+    $.ajax({
+        type: "POST",
+        url: 'Manage.aspx/AjaxSendTest',
+        data: JSON.stringify({data: $data }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        error: $error,
+        complete: $complete,
+    });
+    */
+
+
 }
 function $error($data) {
 
