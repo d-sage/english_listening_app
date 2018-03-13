@@ -19,6 +19,9 @@ public partial class Manage : System.Web.UI.Page
     private List<string> listlesson = new List<string>();
     private List<string> listtopic = new List<string>();
 
+
+    #region Page_Load
+
     protected void Page_Load(object sender, EventArgs e)
     {
         bool run = GetSession();
@@ -84,7 +87,7 @@ public partial class Manage : System.Web.UI.Page
                 rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
-                    stringhelper = (String)rdr[0];
+                    stringhelper = rdr[0] + " | " + rdr[1].ToString() + " | " + rdr[2] + " | " + rdr[3] + " | " + rdr[4] + " | " + rdr[5];
                     listlesson.Add(stringhelper);
                 }//end while
                 rdr.Close();
@@ -92,20 +95,11 @@ public partial class Manage : System.Web.UI.Page
             }//end try
             catch (MySqlException ex)
             {
-                switch (ex.Number)
-                {
-                    case 0:
-                        text = "Cannot connect to server.  Contact administrator";
-                        break;
 
-                    case 1045:
-                        text = "Invalid username/password, please try again";
-                        break;
-                    default:
-                        text = "number: " + ex.Number;
-                        break;
-                }//end switch
+                text += MySqlExceptionHandler(ex.Number);
+
                 text += " bad";
+
             }//end catch
 
             connection.Close();
@@ -122,18 +116,10 @@ public partial class Manage : System.Web.UI.Page
 
             bllessons.DataSource = listlesson;
             bllessons.DataBind();
-
-
-
-
-
-            if (!SetAjaxSession())
-            {
-                //TODO: did not set correctly
-                //TODO: handle
-            }
+            
 
             //*all code goes in here*
+
 
         }//end if
         else
@@ -141,19 +127,23 @@ public partial class Manage : System.Web.UI.Page
 
     }//end main method
 
-    protected void Page_Unload(object sender, EventArgs e)
-    {
-        
-        //TODO: delete session stuff
+    #endregion Page_Load
 
-        //!!not correct event, this gets called right after 'load' event!!
-
-    }
+    #region GetConnectionString
 
     private string GetConnectionString()
     {
 
-        string text = "Good";
+        /*
+         string text = "";
+            string server = "162.241.244.134";
+            string database = "jordape8_EnglishApp";
+            string uid = "jordape8_Default";
+            string password = "Default1!";
+            string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+        */
+        
         string server = "localhost";
         string database = "daricsag_ela";
         string uid = "daricsag_ela";
@@ -162,13 +152,15 @@ public partial class Manage : System.Web.UI.Page
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
 
         return connectionString;
-
     }
+
+    #endregion GetConnectionString
+
+    #region AddCountry_Click
 
     protected void AddCountry_Click(object sender, EventArgs e)
     {
-
-        bool isGood = true;
+        
         string text = "Good";
         
         string connectionString = GetConnectionString();
@@ -190,26 +182,11 @@ public partial class Manage : System.Web.UI.Page
         }//end try
         catch (MySqlException ex)
         {
-            //When handling errors, you can your application's response based 
-            //on the error number.
-            //The two most common error numbers when connecting are as follows:
-            //0: Cannot connect to server.
-            //1045: Invalid user name and/or password.
-            switch (ex.Number)
-            {
-                case 0:
-                    text = "Cannot connect to server.  Contact administrator";
-                    break;
 
-                case 1045:
-                    text = "Invalid username/password, please try again";
-                    break;
-                default:
-                    text = "number: " + ex.Number;
-                    break;
-            }//end switch
+            text += MySqlExceptionHandler(ex.Number);
+
             text += " bad";
-            isGood = false;
+
         }//end catch
 
         connection.Close();
@@ -218,10 +195,13 @@ public partial class Manage : System.Web.UI.Page
 
     }//end method
 
+    #endregion AddCountry_Click
+
+    #region AddTopic_Click
+
     protected void AddTopic_Click(object sender, EventArgs e)
     {
-
-        bool isGood = true;
+        
         string text = "Good";
 
         string connectionString = GetConnectionString();
@@ -243,26 +223,11 @@ public partial class Manage : System.Web.UI.Page
         }//end try
         catch (MySqlException ex)
         {
-            //When handling errors, you can your application's response based 
-            //on the error number.
-            //The two most common error numbers when connecting are as follows:
-            //0: Cannot connect to server.
-            //1045: Invalid user name and/or password.
-            switch (ex.Number)
-            {
-                case 0:
-                    text = "Cannot connect to server.  Contact administrator";
-                    break;
 
-                case 1045:
-                    text = "Invalid username/password, please try again";
-                    break;
-                default:
-                    text = "number: " + ex.Number;
-                    break;
-            }//end switch
+            text += MySqlExceptionHandler(ex.Number);
+
             text += " bad";
-            isGood = false;
+
         }//end catch
 
         connection.Close();
@@ -270,6 +235,22 @@ public partial class Manage : System.Web.UI.Page
         errormsgDB.Text = text;
 
     }//end method
+
+    #endregion AddTopic_Click
+
+    #region AddCountryGrade_Click
+
+    #endregion AddCountryGrade_Click
+
+    #region AddCountryGradeTopic_Click
+
+    #endregion AddCountryGradeTopic_Click
+
+    #region AddLesson_Click
+
+    #endregion AddLesson_Click
+
+    #region GetSession
 
     private bool GetSession()
     {
@@ -284,6 +265,33 @@ public partial class Manage : System.Web.UI.Page
         }//end else*/
         return true;
     }//end method
+
+    #endregion GetSession
+
+    #region MySqlExceptionHandler
+
+    private string MySqlExceptionHandler(int exceptionNum)
+    {
+        //When handling errors, you can your application's response based 
+        //on the error number.
+        //The two most common error numbers when connecting are as follows:
+        //0: Cannot connect to server.
+        //1045: Invalid user name and/or password.
+        switch (exceptionNum)
+        {
+            case 0:
+                return "Cannot connect to server.  Contact administrator";
+            case 1045:
+                return "Invalid username/password, please try again";
+            default:
+                return "number: " + exceptionNum;
+        }//end switch
+    }
+
+    #endregion MySqlExceptionHandler
+
+
+    #region Unused Ajax
 
     private bool SetAjaxSession()
     {
@@ -378,6 +386,8 @@ public partial class Manage : System.Web.UI.Page
         return "here";
 
     }
+
+    #endregion Unused Ajax
 
 
 }//end class
