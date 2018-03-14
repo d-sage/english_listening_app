@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Button, ListView } from 'react-native';
 import styles from "./Styles.js";
+import Expo, { SQLite } from 'expo';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
+const db = SQLite.openDatabase('db.db');
 
 class LessonScreen extends React.Component {
 
@@ -24,7 +26,10 @@ class LessonScreen extends React.Component {
 									 grade: this.props.navigation.state.params.grade,
 									 topic: this.props.navigation.state.params.topic,
 									 lid: rowData.lid,
-									 path: rowData.path+""})}
+									 textSubs: rowData.text+"",
+									 path: rowData.path,
+									 name: rowData.filename+"",
+									 connected: this.props.navigation.state.params.connected})}
 								title = {rowData.lid+""}
 							/>
 						</View>
@@ -42,10 +47,13 @@ class LessonScreen extends React.Component {
 	}
 
 	componentWillMount() {
-		this.fetchData();
+		if(this.props.navigation.state.params.connected)
+			this.fetchOnlineData();
+		else
+			this.fetchOfflineData();
 	}
 
-	fetchData(){
+	fetchOnlineData(){
 		return fetch('http://jordanlambertonline.com/EnglishApp/Lessons/lessonQuery.php?cid=' + this.props.navigation.state.params.country + ' &gid=' + this.props.navigation.state.params.grade + ' &tid=' + this.props.navigation.state.params.topic)
 		.then((response) => response.json())
 		.then((responseJson) => {
@@ -55,6 +63,12 @@ class LessonScreen extends React.Component {
 				});
 			}
 		}).done();
+	}
+
+	fetchOfflineData(){
+		db.transaction(tx => {
+			tx.executeSql('SELECT DISTINCT cid,gid,tid,lid,text,path FROM lessons WHERE cid = ? AND gid = ? AND tid = ?;', [this.props.navigation.state.params.country,this.props.navigation.state.params.grade,this.props.navigation.state.params.topic], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
+		});
 	}
 }
 

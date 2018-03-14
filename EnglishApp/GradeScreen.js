@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Button, ListView } from 'react-native';
+import Expo, { SQLite } from 'expo';
 import styles from "./Styles.js";
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
+const db = SQLite.openDatabase('db.db');
 
 class GradeScreen extends React.Component {
 
@@ -21,8 +23,9 @@ class GradeScreen extends React.Component {
 							<Button
 								onPress={() => this.props.navigation.navigate('Topic',
 									{country: this.props.navigation.state.params.country,
-									 grade: rowData.gid + ""})}
-								title = {rowData.gid + ""}
+									 grade: rowData.gid,
+									 connected: this.props.navigation.state.params.connected})}
+								title = {rowData.gid+""}
 							/>
 						</View>
 					}
@@ -39,10 +42,13 @@ class GradeScreen extends React.Component {
 	}
 
 	componentWillMount() {
-		this.fetchData();
+		if(this.props.navigation.state.params.connected)
+			this.fetchOnlineData();
+		else
+			this.fetchOfflineData();
 	}
 
-	fetchData(){
+	fetchOnlineData(){
 		return fetch('http://jordanlambertonline.com/EnglishApp/Grades/gradeQuery.php?cid=' + this.props.navigation.state.params.country)
 		.then((response) => response.json())
 		.then((responseJson) => {
@@ -52,6 +58,12 @@ class GradeScreen extends React.Component {
 				});
 			}
 		}).done();
+	}
+	
+	fetchOfflineData(){
+		db.transaction(tx => {
+			tx.executeSql('SELECT DISTINCT cid, gid FROM lessons WHERE cid = ?;', [this.props.navigation.state.params.country], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
+		});
 	}
 }
 

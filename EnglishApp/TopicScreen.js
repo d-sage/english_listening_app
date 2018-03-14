@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Button, ListView } from 'react-native';
 import styles from "./Styles.js";
+import Expo, { SQLite } from 'expo';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
+const db = SQLite.openDatabase('db.db');
 
 class TopicScreen extends React.Component {
 
@@ -22,7 +24,8 @@ class TopicScreen extends React.Component {
 								onPress={() => this.props.navigation.navigate('Lesson',
 									{country: this.props.navigation.state.params.country,
 									 grade: this.props.navigation.state.params.grade,
-									 topic: rowData.tid+""})}
+									 topic: rowData.tid,
+									 connected: this.props.navigation.state.params.connected})}
 								title = {rowData.tid+""}
 							/>
 						</View>
@@ -40,10 +43,13 @@ class TopicScreen extends React.Component {
 	}
 
 	componentWillMount() {
-		this.fetchData();
+		if(this.props.navigation.state.params.connected)
+			this.fetchOnlineData();
+		else
+			this.fetchOfflineData();
 	}
 
-	fetchData(){
+	fetchOnlineData(){
 		return fetch('http://jordanlambertonline.com/EnglishApp/Topics/topicQuery.php?cid=' + this.props.navigation.state.params.country + ' &gid=' + this.props.navigation.state.params.grade)
 		.then((response) => response.json())
 		.then((responseJson) => {
@@ -53,6 +59,12 @@ class TopicScreen extends React.Component {
 				});
 			}
 		}).done();
+	}
+	
+	fetchOfflineData(){
+		db.transaction(tx => {
+			tx.executeSql('SELECT DISTINCT cid,gid,tid FROM lessons WHERE cid = ? AND gid = ?;', [this.props.navigation.state.params.country,this.props.navigation.state.params.grade], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
+		});
 	}
 }
 
