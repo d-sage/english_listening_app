@@ -28,94 +28,14 @@ public partial class Manage : System.Web.UI.Page
         //makes sure they aren't going around the login
         if(run)
         {
+
             ValueHiddenField.Value = num.ToString();
-
-            string text = "";
-            string server = "162.241.244.134";
-            string database = "jordape8_EnglishApp";
-            string uid = "jordape8_Default";
-            string password = "Default1!";
-            string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-
-            MySqlConnection connection = new MySqlConnection(connectionString);
-
-            try
+            
+            if (!Page.IsPostBack)
             {
-                connection.Open();
-
-                //display the countries
-                String sql = "SELECT * FROM countries";
-
-                MySqlCommand cmd = new MySqlCommand(sql, connection);
-                MySqlDataReader rdr = cmd.ExecuteReader();
-                while (rdr.Read())
-                {
-                    stringhelper = (String)rdr[0];
-                    listcountry.Add(stringhelper);
-                }//end while
-                rdr.Close();
-
-                //display the grades
-                sql = "SELECT * FROM grades";
-
-                cmd = new MySqlCommand(sql, connection);
-                rdr = cmd.ExecuteReader();
-                while (rdr.Read())
-                {
-                    stringhelper = rdr[0].ToString();
-                    listgrade.Add(stringhelper);
-                }//end while
-                rdr.Close();
-
-                //display the topics
-                sql = "SELECT * FROM topics";
-
-                cmd = new MySqlCommand(sql, connection);
-                rdr = cmd.ExecuteReader();
-                while (rdr.Read())
-                {
-                    stringhelper = (String)rdr[0];
-                    listtopic.Add(stringhelper);
-                }//end while
-                rdr.Close();
-
-                //display the lessons
-                sql = "SELECT * FROM lessons";
-
-                cmd = new MySqlCommand(sql, connection);
-                rdr = cmd.ExecuteReader();
-                while (rdr.Read())
-                {
-                    stringhelper = rdr[0] + " | " + rdr[1].ToString() + " | " + rdr[2] + " | " + rdr[3] + " | " + rdr[4] + " | " + rdr[5];
-                    listlesson.Add(stringhelper);
-                }//end while
-                rdr.Close();
-
-            }//end try
-            catch (MySqlException ex)
-            {
-
-                text += MySqlExceptionHandler(ex.Number);
-
-                text += " bad";
-
-            }//end catch
-
-            connection.Close();
-            errormsgDB.Text = text;
-
-            blcountry.DataSource = listcountry;
-            blcountry.DataBind();
-
-            blgrades.DataSource = listgrade;
-            blgrades.DataBind();
-
-            bltopics.DataSource = listtopic;
-            bltopics.DataBind();
-
-            bllessons.DataSource = listlesson;
-            bllessons.DataBind();
+                UpdateAllData();
+            }
+            
             
 
             //*all code goes in here*
@@ -156,11 +76,237 @@ public partial class Manage : System.Web.UI.Page
 
     #endregion GetConnectionString
 
+    #region Get SQL Connection
+
+    private MySqlConnection GetSqlConnection()
+    {
+
+        string text = "";
+        string server = "162.241.244.134";
+        string database = "jordape8_EnglishApp";
+        string uid = "jordape8_Default";
+        string password = "Default1!";
+        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+
+        //local testing >>>
+        connectionString = GetConnectionString();
+        //local testing <<<
+
+        return new MySqlConnection(connectionString);
+    }
+
+    #endregion Get SQL Connection
+
+    #region UpdateData
+
+    private void UpdateAllData()
+    {
+
+        BlanksOnAllDropLists();
+
+        DisableBoxes();
+
+        String text = "Good";
+
+        MySqlConnection connection = GetSqlConnection();
+
+        try
+        {
+
+            UpdateCountries(connection);
+            
+            UpdateGrades(connection);
+            
+            UpdateTopics(connection);
+            
+            UpdateLessons(connection);
+            
+        }//end try
+        catch (MySqlException ex)
+        {
+
+            text += MySqlExceptionHandler(ex.Number);
+
+            text += " bad";
+
+        }//end catch
+        
+        errormsgDB.Text = text;
+        
+    }
+
+    #region Update Countries
+
+    private void UpdateCountries(MySqlConnection connection)
+    {
+
+        connection.Open();
+
+        BlanksOnDropList(dlCGcountry);
+
+        //display the countries
+        String sql = "SELECT * FROM countries";
+
+        MySqlCommand cmd = new MySqlCommand(sql, connection);
+        MySqlDataReader rdr = cmd.ExecuteReader();
+        while (rdr.Read())
+        {
+            //add to bulletlist display
+            stringhelper = (String)rdr[0];
+            listcountry.Add(stringhelper);
+
+            //add to Country_Grade country droplist
+            dlCGcountry.Items.Add(new ListItem((String)rdr[0], (String)rdr[0]));
+
+        }//end while
+        rdr.Close();
+        connection.Close();
+
+        blcountry.DataSource = listcountry;
+        blcountry.DataBind();
+    }
+
+    #endregion Update Countries
+
+    #region Update Grades
+
+    private void UpdateGrades(MySqlConnection connection)
+    {
+        connection.Open();
+        //TODO
+        //BlanksOnDropList(dlCGcountry);
+
+        String sql = "SELECT * FROM grades";
+
+        MySqlCommand cmd = new MySqlCommand(sql, connection);
+        MySqlDataReader rdr = cmd.ExecuteReader();
+        while (rdr.Read())
+        {
+            stringhelper = rdr[0].ToString();
+            listgrade.Add(stringhelper);
+        }//end while
+        rdr.Close();
+        connection.Close();
+
+        blgrades.DataSource = listgrade;
+        blgrades.DataBind();
+    }
+
+    #endregion Update Grades
+
+    #region Update Topics
+
+    private void UpdateTopics(MySqlConnection connection)
+    {
+        connection.Open();
+        //TODO
+        //BlanksOnDropList(dlCGcountry);
+
+        String sql = "SELECT * FROM topics";
+
+        MySqlCommand cmd = new MySqlCommand(sql, connection);
+        MySqlDataReader rdr = cmd.ExecuteReader();
+        while (rdr.Read())
+        {
+            stringhelper = (String)rdr[0];
+            listtopic.Add(stringhelper);
+        }//end while
+        rdr.Close();
+        connection.Close();
+
+        bltopics.DataSource = listtopic;
+        bltopics.DataBind();
+    }
+
+    #endregion Update Topics
+
+    #region Update Lessons
+
+    private void UpdateLessons(MySqlConnection connection)
+    {
+        connection.Open();
+
+        String sql = "SELECT * FROM lessons";
+
+        MySqlCommand cmd = new MySqlCommand(sql, connection);
+        MySqlDataReader rdr = cmd.ExecuteReader();
+        while (rdr.Read())
+        {
+            stringhelper = rdr[0] + " | " +
+                            rdr[1].ToString() + " | " +
+                            rdr[2] + " | " +
+                            rdr[3] + " | " +
+                            rdr[4] + " | " +
+                            rdr[5] + " | " +
+                            rdr[6];
+            listlesson.Add(stringhelper);
+        }//end while
+        rdr.Close();
+        connection.Close();
+
+        bllessons.DataSource = listlesson;
+        bllessons.DataBind();
+    }
+
+    #endregion Update Lessons
+
+#endregion UpdateData
+
+    #region Disable Boxes
+
+    private void DisableBoxes()
+    {
+        
+        dlCGgrade.Enabled = false;
+
+    }
+
+    #endregion Disable Boxes
+
+    #region BlanksOnDropLists Methods
+
+    private void BlanksOnDropList(DropDownList ddl)
+    {
+        ddl.Items.Clear();
+        ddl.Items.Add(new ListItem(String.Empty, String.Empty));
+        ddl.SelectedIndex = 0;
+    }
+
+    private void BlanksOnAllDropLists()
+    {
+        //initiate dropdownlists to have a blank
+        dlCGcountry.Items.Clear();
+        dlCGcountry.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlCGcountry.SelectedIndex = 0;
+
+        dlCGgrade.Items.Clear();
+        dlCGgrade.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlCGgrade.SelectedIndex = 0;
+    }
+
+    private void BlanksOnAllDropLists_exceptCountries()
+    {
+        dlCGgrade.Items.Clear();
+        dlCGgrade.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlCGgrade.SelectedIndex = 0;
+    }
+
+    #endregion BlanksOnDropLists Methods
+
     #region AddCountry_Click
 
     protected void AddCountry_Click(object sender, EventArgs e)
     {
-        
+
+        if (txtcountryAdd.Text.Length == 0)
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country: field not filled');", true);
+            return;
+        }
+
+        string country = txtcountryAdd.Text;
+
         string text = "Good";
         
         string connectionString = GetConnectionString();
@@ -175,7 +321,7 @@ public partial class Manage : System.Web.UI.Page
             
             MySqlCommand cmd = new MySqlCommand(sql, connection);
 
-            cmd.Parameters.AddWithValue("@cid", txtcountryAdd.Text);
+            cmd.Parameters.AddWithValue("@cid", country);
 
             cmd.ExecuteNonQuery();
 
@@ -193,6 +339,10 @@ public partial class Manage : System.Web.UI.Page
 
         errormsgDB.Text = text;
 
+        txtcountryAdd.Text = "";
+
+        UpdateCountries(GetSqlConnection());
+        
     }//end method
 
     #endregion AddCountry_Click
@@ -201,7 +351,15 @@ public partial class Manage : System.Web.UI.Page
 
     protected void AddTopic_Click(object sender, EventArgs e)
     {
-        
+
+        if (txttopicAdd.Text.Length == 0)
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Topic: field not filled');", true);
+            return;
+        }
+
+        string topic = txttopicAdd.Text;
+
         string text = "Good";
 
         string connectionString = GetConnectionString();
@@ -216,7 +374,7 @@ public partial class Manage : System.Web.UI.Page
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
 
-            cmd.Parameters.AddWithValue("@tid", txttopicAdd.Text);
+            cmd.Parameters.AddWithValue("@tid", topic);
 
             cmd.ExecuteNonQuery();
 
@@ -234,13 +392,148 @@ public partial class Manage : System.Web.UI.Page
 
         errormsgDB.Text = text;
 
+        txttopicAdd.Text = "";
+
+        UpdateTopics(GetSqlConnection());
+
     }//end method
 
     #endregion AddTopic_Click
 
+    #region Add to CountryGrade
+
     #region AddCountryGrade_Click
 
+    protected void AddCountryGrade_Click(object sender, EventArgs e)
+    {
+        if(dlCGcountry.Text.Length == 0 || dlCGgrade.Text.Length == 0)
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: not all fields filled');", true);
+            return;
+        }
+
+        String country = dlCGcountry.Text;
+        String grade = dlCGgrade.Text;
+
+        string text = "Good";
+
+        string connectionString = GetConnectionString();
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        try
+        {
+            connection.Open();
+
+            String sql = "INSERT INTO country_grade_relationship (cid,gid) VALUES (@cid,@gid)";
+
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@cid", country);
+            cmd.Parameters.AddWithValue("@gid", grade);
+
+            cmd.ExecuteNonQuery();
+
+        }//end try
+        catch (MySqlException ex)
+        {
+
+            text += MySqlExceptionHandler(ex.Number);
+
+            text += " bad";
+
+        }//end catch
+
+        connection.Close();
+
+        errormsgDB.Text = text;
+
+        UpdateAllData();
+
+    }
+
     #endregion AddCountryGrade_Click
+
+    #region CountryGrade_country_TextChange
+
+    protected void CountryGrade_country_IndexChange(object sender, EventArgs e)
+    {
+
+        BlanksOnAllDropLists_exceptCountries();
+        DisableBoxes();
+
+        if (dlCGcountry.Text.Length == 0)
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: country field not filled');", true);
+            return;
+        }
+        
+        bool canContinue = true;
+
+        string text = "Good";
+
+        string connectionString = GetConnectionString();
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        try
+        {
+            connection.Open();
+            
+            //this selects all the gid from the 'grades' tables that does not yet
+            //have an association with the given country
+            String sql = "SELECT gid " +
+                         "FROM grades " +
+                         "WHERE gid NOT IN " +
+                            "(SELECT gid FROM country_grade_relationship WHERE cid = (@cid));";
+
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@cid", dlCGcountry.Text);
+
+            MySqlDataReader rdr = cmd.ExecuteReader();
+
+            if(!rdr.HasRows)
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: no content to add');", true);
+                canContinue = false;
+            }
+
+            while (rdr.Read())
+            {
+
+                //add to dlCGgrade
+                dlCGgrade.Items.Add(new ListItem(rdr[0].ToString()));
+
+            }//end while
+            rdr.Close();
+
+        }//end try
+        catch (MySqlException ex)
+        {
+
+            text += MySqlExceptionHandler(ex.Number);
+
+            text += " bad";
+
+        }//end catch
+
+        connection.Close();
+
+        errormsgDB.Text = text;
+
+        if(!canContinue)
+        {
+            UpdateAllData();
+        }
+
+        dlCGgrade.Enabled = canContinue;
+
+    }
+
+    #endregion CountryGrade_country_TextChange
+
+    #endregion Add to CountryGrade
 
     #region AddCountryGradeTopic_Click
 
@@ -249,6 +542,15 @@ public partial class Manage : System.Web.UI.Page
     #region AddLesson_Click
 
     #endregion AddLesson_Click
+
+    #region Successful Add
+
+    private void SuccessfulAdd()
+    {
+        UpdateAllData();
+    }
+
+    #endregion Successful Add
 
     #region GetSession
 
@@ -263,7 +565,7 @@ public partial class Manage : System.Web.UI.Page
             if (matching)
                 return true;
         }//end else*/
-        return true;
+            return true;
     }//end method
 
     #endregion GetSession
