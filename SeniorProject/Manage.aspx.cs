@@ -100,6 +100,8 @@ public partial class Manage : System.Web.UI.Page
 
     #region UpdateData
 
+    #region Update All Data
+
     private void UpdateAllData()
     {
 
@@ -119,6 +121,8 @@ public partial class Manage : System.Web.UI.Page
             UpdateGrades(connection);
             
             UpdateTopics(connection);
+
+            UpdateCountryGrade(connection);
             
             UpdateLessons(connection);
             
@@ -135,6 +139,8 @@ public partial class Manage : System.Web.UI.Page
         errormsgDB.Text = text;
         
     }
+
+    #endregion Update All Data
 
     #region Update Countries
 
@@ -156,7 +162,7 @@ public partial class Manage : System.Web.UI.Page
             stringhelper = (String)rdr[0];
             listcountry.Add(stringhelper);
 
-            //add to Country_Grade country droplist
+            //add to country droplists
             dlCGcountry.Items.Add(new ListItem((String)rdr[0], (String)rdr[0]));
 
         }//end while
@@ -221,6 +227,34 @@ public partial class Manage : System.Web.UI.Page
 
     #endregion Update Topics
 
+    #region Update Country_Grade
+
+    private void UpdateCountryGrade(MySqlConnection connection)
+    {
+
+        connection.Open();
+
+        BlanksOnDropList(dlCGTcountrygrade);
+
+        //display the countries
+        String sql = "SELECT * FROM country_grade_relationship";
+
+        MySqlCommand cmd = new MySqlCommand(sql, connection);
+        MySqlDataReader rdr = cmd.ExecuteReader();
+        while (rdr.Read())
+        {
+
+            //add to countrygrade droplist
+            dlCGTcountrygrade.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString(), (String)rdr[0] + " " + rdr[1].ToString()));
+
+        }//end while
+        rdr.Close();
+        connection.Close();
+        
+    }
+
+    #endregion Update Country_Grade
+
     #region Update Lessons
 
     private void UpdateLessons(MySqlConnection connection)
@@ -251,15 +285,24 @@ public partial class Manage : System.Web.UI.Page
 
     #endregion Update Lessons
 
-#endregion UpdateData
+    #endregion UpdateData
 
     #region Disable Boxes
 
     private void DisableBoxes()
     {
         
+        //for country_grade add
         dlCGgrade.Enabled = false;
 
+        //for country_grade_topic add
+        dlCGTtopic.Enabled = false;
+
+    }
+
+    private void DisableBox(DropDownList ddl)
+    {
+        ddl.Enabled = false;
     }
 
     #endregion Disable Boxes
@@ -276,6 +319,8 @@ public partial class Manage : System.Web.UI.Page
     private void BlanksOnAllDropLists()
     {
         //initiate dropdownlists to have a blank
+
+        //for country_grade
         dlCGcountry.Items.Clear();
         dlCGcountry.Items.Add(new ListItem(String.Empty, String.Empty));
         dlCGcountry.SelectedIndex = 0;
@@ -283,13 +328,26 @@ public partial class Manage : System.Web.UI.Page
         dlCGgrade.Items.Clear();
         dlCGgrade.Items.Add(new ListItem(String.Empty, String.Empty));
         dlCGgrade.SelectedIndex = 0;
+
+        //for country_grade_topic
+        dlCGTcountrygrade.Items.Clear();
+        dlCGTcountrygrade.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlCGTcountrygrade.SelectedIndex = 0;
+
+        dlCGTtopic.Items.Clear();
+        dlCGTtopic.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlCGTtopic.SelectedIndex = 0;
+
+
     }
 
     private void BlanksOnAllDropLists_exceptCountries()
     {
+        /*
         dlCGgrade.Items.Clear();
         dlCGgrade.Items.Add(new ListItem(String.Empty, String.Empty));
         dlCGgrade.SelectedIndex = 0;
+        */
     }
 
     #endregion BlanksOnDropLists Methods
@@ -402,11 +460,92 @@ public partial class Manage : System.Web.UI.Page
 
     #region Add to CountryGrade
 
+    #region CountryGrade_country_TextChange
+
+    protected void CountryGrade_country_IndexChange(object sender, EventArgs e)
+    {
+        
+        BlanksOnDropList(dlCGgrade);
+        DisableBox(dlCGgrade);
+
+        if (dlCGcountry.Text.Length == 0)
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: country field not filled');", true);
+            return;
+        }
+        
+        bool canContinue = true;
+
+        string country = dlCGcountry.Text;
+
+        string text = "Good";
+
+        string connectionString = GetConnectionString();
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        try
+        {
+            connection.Open();
+            
+            //this selects all the gid from the 'grades' tables that does not yet
+            //have an association with the given country
+            String sql = "SELECT gid " +
+                         "FROM grades " +
+                         "WHERE gid NOT IN " +
+                            "(SELECT gid FROM country_grade_relationship WHERE cid = (@cid));";
+
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@cid", country);
+
+            MySqlDataReader rdr = cmd.ExecuteReader();
+
+            if(!rdr.HasRows)
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: no content to add');", true);
+                canContinue = false;
+            }
+
+            while (rdr.Read())
+            {
+
+                //add to dlCGgrade
+                dlCGgrade.Items.Add(new ListItem(rdr[0].ToString()));
+
+            }//end while
+            rdr.Close();
+
+        }//end try
+        catch (MySqlException ex)
+        {
+
+            text += MySqlExceptionHandler(ex.Number);
+
+            text += " bad";
+
+        }//end catch
+
+        connection.Close();
+
+        errormsgDB.Text = text;
+
+        if(!canContinue)
+        {
+            UpdateAllData();
+        }
+
+        dlCGgrade.Enabled = canContinue;
+
+    }
+
+    #endregion CountryGrade_country_TextChange
+
     #region AddCountryGrade_Click
 
     protected void AddCountryGrade_Click(object sender, EventArgs e)
     {
-        if(dlCGcountry.Text.Length == 0 || dlCGgrade.Text.Length == 0)
+        if (dlCGcountry.Text.Length == 0 || dlCGgrade.Text.Length == 0)
         {
             ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: not all fields filled');", true);
             return;
@@ -454,22 +593,31 @@ public partial class Manage : System.Web.UI.Page
 
     #endregion AddCountryGrade_Click
 
-    #region CountryGrade_country_TextChange
+    #endregion Add to CountryGrade
 
-    protected void CountryGrade_country_IndexChange(object sender, EventArgs e)
+    #region Add to CountryGradeTopic
+
+    #region CountryGradeTopic_countrygrade_TextChange
+
+    protected void CountryGradeTopic_countrygrade_IndexChange(object sender, EventArgs e)
     {
 
-        BlanksOnAllDropLists_exceptCountries();
-        DisableBoxes();
+        BlanksOnDropList(dlCGTtopic);
+        DisableBox(dlCGTtopic);
 
-        if (dlCGcountry.Text.Length == 0)
+        if (dlCGTcountrygrade.Text.Length == 0)
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: country field not filled');", true);
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade Topic: country_grade field not filled');", true);
             return;
         }
-        
-        bool canContinue = true;
 
+        bool canContinue = true;
+        
+        string tempCountryGrade = dlCGTcountrygrade.Text;
+        string[] countrygradeSplit = tempCountryGrade.Split(' ');
+        string country = countrygradeSplit[0];
+        string grade = countrygradeSplit[1];
+        
         string text = "Good";
 
         string connectionString = GetConnectionString();
@@ -479,23 +627,24 @@ public partial class Manage : System.Web.UI.Page
         try
         {
             connection.Open();
-            
-            //this selects all the gid from the 'grades' tables that does not yet
-            //have an association with the given country
-            String sql = "SELECT gid " +
-                         "FROM grades " +
-                         "WHERE gid NOT IN " +
-                            "(SELECT gid FROM country_grade_relationship WHERE cid = (@cid));";
+
+            //this selects all the tid from the 'topics' table that does not yet
+            //have an association with the given country_grade
+            String sql = "SELECT tid " +
+                         "FROM topics " +
+                         "WHERE tid NOT IN " +
+                            "(SELECT tid FROM country_grade_topic_relation WHERE cid = (@cid) AND gid = (@gid));";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
 
-            cmd.Parameters.AddWithValue("@cid", dlCGcountry.Text);
+            cmd.Parameters.AddWithValue("@cid", country);
+            cmd.Parameters.AddWithValue("@gid", grade);
 
             MySqlDataReader rdr = cmd.ExecuteReader();
 
-            if(!rdr.HasRows)
+            if (!rdr.HasRows)
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: no content to add');", true);
+                ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade Topic: no content to add');", true);
                 canContinue = false;
             }
 
@@ -503,7 +652,7 @@ public partial class Manage : System.Web.UI.Page
             {
 
                 //add to dlCGgrade
-                dlCGgrade.Items.Add(new ListItem(rdr[0].ToString()));
+                dlCGTtopic.Items.Add(new ListItem(rdr[0].ToString()));
 
             }//end while
             rdr.Close();
@@ -522,35 +671,78 @@ public partial class Manage : System.Web.UI.Page
 
         errormsgDB.Text = text;
 
-        if(!canContinue)
+        if (!canContinue)
         {
             UpdateAllData();
         }
-
-        dlCGgrade.Enabled = canContinue;
+        
+        dlCGTtopic.Enabled = canContinue;
 
     }
 
-    #endregion CountryGrade_country_TextChange
-
-    #endregion Add to CountryGrade
+    #endregion CountryGradeTopic_countrygrade_TextChange
 
     #region AddCountryGradeTopic_Click
 
+    protected void AddCountryGradeTopic_Click(object sender, EventArgs e)
+    {
+        if (dlCGTcountrygrade.Text.Length == 0 || dlCGTtopic.Text.Length == 0)
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade Topic: not all fields filled');", true);
+            return;
+        }
+
+        string tempCountryGrade = dlCGTcountrygrade.Text;
+        string[] countrygradeSplit = tempCountryGrade.Split(' ');
+        string country = countrygradeSplit[0];
+        string grade = countrygradeSplit[1];
+        string topic = dlCGTtopic.Text;
+
+        string text = "Good";
+
+        string connectionString = GetConnectionString();
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        try
+        {
+            connection.Open();
+
+            String sql = "INSERT INTO country_grade_topic_relation (cid,gid,tid) VALUES (@cid,@gid,@tid)";
+
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@cid", country);
+            cmd.Parameters.AddWithValue("@gid", grade);
+            cmd.Parameters.AddWithValue("@tid", topic);
+
+            cmd.ExecuteNonQuery();
+
+        }//end try
+        catch (MySqlException ex)
+        {
+
+            text += MySqlExceptionHandler(ex.Number);
+
+            text += " bad";
+
+        }//end catch
+
+        connection.Close();
+
+        errormsgDB.Text = text;
+
+        UpdateAllData();
+
+    }
+
     #endregion AddCountryGradeTopic_Click
+
+    #endregion Add to CountryGradeTopic
 
     #region AddLesson_Click
 
     #endregion AddLesson_Click
-
-    #region Successful Add
-
-    private void SuccessfulAdd()
-    {
-        UpdateAllData();
-    }
-
-    #endregion Successful Add
 
     #region GetSession
 
