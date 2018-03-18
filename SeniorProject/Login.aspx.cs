@@ -112,7 +112,7 @@ public partial class _Default : System.Web.UI.Page
             if(matchingpass && dbUsername == user.Text)
             {
                 Session["confirm"] = matchingpass;
-                Response.Redirect("Manage.aspx");
+                Response.Redirect("ManageAdd.aspx");
             }//end if
 
             else
