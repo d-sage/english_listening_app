@@ -53,17 +53,19 @@
         <asp:Label ID="lblCountryGradeTopicAdd" runat="server" Text="Country Grade Topic:" style="z-index: 1; left: 26px; top: 301px; position: absolute"></asp:Label>
         <asp:DropDownList ID="dlCGTcountrygrade" runat="server" style="z-index: 1; left: 217px; top: 302px; position: absolute; width: 210px;" AutoPostBack="True" OnSelectedIndexChanged="CountryGradeTopic_countrygrade_IndexChange"></asp:DropDownList>
         <asp:DropDownList ID="dlCGTtopic" runat="server" style="z-index: 1; left: 475px; top: 303px; position: absolute; width: 170px;"></asp:DropDownList>
-
+        
         <!-- Boxes and Labels for lessons add -->
-        <asp:Label ID="lbllessonAdd" runat="server" Text="Lesson:" style="z-index: 1; left: 85px; top: 388px; position: absolute"></asp:Label>
-        <asp:TextBox ID="txtlessonAdd" runat="server" style="z-index: 1; left: 175px; top: 385px; position: absolute" ></asp:TextBox>
-
+        <asp:Label ID="lbllessonAdd" runat="server" Text="Lesson:" style="z-index: 1; left: 58px; top: 354px; position: absolute"></asp:Label>
+        <asp:DropDownList ID="dlLesson" runat="server" style="z-index: 1; left: 149px; top: 354px; position: absolute; width: 250px;"></asp:DropDownList>
+        <asp:TextBox ID="txtLessonName" runat="server" style="z-index: 1; left: 152px; top: 390px; position: absolute; width: 617px;" ></asp:TextBox>
+        <asp:FileUpload ID="fileMP3" runat="server" accept="audio/mpeg" ErrorMessage="Only mp3 files is allowed!" ValidationExpression ="^(.+(\.mp3|\.MP3))$" style="z-index: 1; left: 462px; top: 354px; position: absolute; right: 687px;"/>
 
         <!-- Submit buttons -->
         <asp:Button ID="addCountry" runat="server" Text="Add Country" style="z-index: 1; left: 385px; top: 130px; position: absolute" OnClick="AddCountry_Click" />
         <asp:Button ID="addTopic" runat="server" Text="Add Topic" style="z-index: 1; left: 385px; top: 180px; position: absolute" OnClick="AddTopic_Click" />
         <asp:Button ID="addCountryGrade" runat="server" Text="Add Country Grade" style="z-index: 1; left: 584px; top: 232px; position: absolute" OnClick="AddCountryGrade_Click" />
         <asp:Button ID="addCountryGradeTopic" runat="server" Text="Add Country Grade Topic" style="z-index: 1; left: 684px; top: 301px; position: absolute;" OnClick="AddCountryGradeTopic_Click" />
+        <asp:Button ID="addLesson" runat="server" Text="Add Lesson" style="z-index: 1; left: 825px; top: 371px; position: absolute;" OnClick="AddLesson_Click" />
         
 
         <!--Hidden field for number-->

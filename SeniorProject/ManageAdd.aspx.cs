@@ -1,13 +1,9 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Services;
-using System.Runtime.Serialization.Json;
 
 public partial class Manage : System.Web.UI.Page
 {
@@ -26,17 +22,17 @@ public partial class Manage : System.Web.UI.Page
     {
         bool run = GetSession();
         //makes sure they aren't going around the login
-        if(run)
+        if (run)
         {
 
             ValueHiddenField.Value = num.ToString();
-            
+
             if (!Page.IsPostBack)
             {
                 UpdateAllData();
             }
-            
-            
+
+
 
             //*all code goes in here*
 
@@ -63,7 +59,7 @@ public partial class Manage : System.Web.UI.Page
             string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
         */
-        
+
         string server = "localhost";
         string database = "daricsag_ela";
         string uid = "daricsag_ela";
@@ -81,7 +77,7 @@ public partial class Manage : System.Web.UI.Page
     private MySqlConnection GetSqlConnection()
     {
 
-        //string text = "";
+        string text = "";
         string server = "162.241.244.134";
         string database = "jordape8_EnglishApp";
         string uid = "jordape8_Default";
@@ -90,7 +86,7 @@ public partial class Manage : System.Web.UI.Page
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
 
         //local testing >>>
-        //connectionString = GetConnectionString();
+        connectionString = GetConnectionString();
         //local testing <<<
 
         return new MySqlConnection(connectionString);
@@ -117,15 +113,17 @@ public partial class Manage : System.Web.UI.Page
         {
 
             UpdateCountries(connection);
-            
+
             UpdateGrades(connection);
-            
+
             UpdateTopics(connection);
 
             UpdateCountryGrade(connection);
-            
+
+            UpdateCountryGradeTopic(connection);
+
             UpdateLessons(connection);
-            
+
         }//end try
         catch (MySqlException ex)
         {
@@ -135,10 +133,10 @@ public partial class Manage : System.Web.UI.Page
             text += " bad";
 
         }//end catch
-        
+
         errormsgDB.Text = text;
-        
-    }//end method
+
+    }
 
     #endregion Update All Data
 
@@ -250,10 +248,38 @@ public partial class Manage : System.Web.UI.Page
         }//end while
         rdr.Close();
         connection.Close();
-        
+
     }
 
     #endregion Update Country_Grade
+
+    #region Update Country_Grade_Topic
+
+    private void UpdateCountryGradeTopic(MySqlConnection connection)
+    {
+
+        connection.Open();
+
+        BlanksOnDropList(dlLesson);
+
+        //display the countries
+        String sql = "SELECT * FROM country_grade_topic_relation";
+
+        MySqlCommand cmd = new MySqlCommand(sql, connection);
+        MySqlDataReader rdr = cmd.ExecuteReader();
+        while (rdr.Read())
+        {
+
+            //add to countrygrade droplist
+            dlLesson.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2], (String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2]));
+
+        }//end while
+        rdr.Close();
+        connection.Close();
+
+    }
+
+    #endregion Update Country_Grade_Topic
 
     #region Update Lessons
 
@@ -291,7 +317,7 @@ public partial class Manage : System.Web.UI.Page
 
     private void DisableBoxes()
     {
-        
+
         //for country_grade add
         dlCGgrade.Enabled = false;
 
@@ -338,6 +364,12 @@ public partial class Manage : System.Web.UI.Page
         dlCGTtopic.Items.Add(new ListItem(String.Empty, String.Empty));
         dlCGTtopic.SelectedIndex = 0;
 
+        //for lesson
+        dlLesson.Items.Clear();
+        dlLesson.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlLesson.SelectedIndex = 0;
+
+
 
     }
 
@@ -366,9 +398,9 @@ public partial class Manage : System.Web.UI.Page
         string country = txtcountryAdd.Text;
 
         string text = "Good";
-        
+
         string connectionString = GetConnectionString();
-        
+
         MySqlConnection connection = new MySqlConnection(connectionString);
 
         try
@@ -376,7 +408,7 @@ public partial class Manage : System.Web.UI.Page
             connection.Open();
 
             String sql = "INSERT INTO countries (cid) VALUES (@cid)";
-            
+
             MySqlCommand cmd = new MySqlCommand(sql, connection);
 
             cmd.Parameters.AddWithValue("@cid", country);
@@ -400,7 +432,7 @@ public partial class Manage : System.Web.UI.Page
         txtcountryAdd.Text = "";
 
         UpdateCountries(GetSqlConnection());
-        
+
     }//end method
 
     #endregion AddCountry_Click
@@ -464,7 +496,7 @@ public partial class Manage : System.Web.UI.Page
 
     protected void CountryGrade_country_IndexChange(object sender, EventArgs e)
     {
-        
+
         BlanksOnDropList(dlCGgrade);
         DisableBox(dlCGgrade);
 
@@ -473,7 +505,7 @@ public partial class Manage : System.Web.UI.Page
             ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: country field not filled');", true);
             return;
         }
-        
+
         bool canContinue = true;
 
         string country = dlCGcountry.Text;
@@ -487,7 +519,7 @@ public partial class Manage : System.Web.UI.Page
         try
         {
             connection.Open();
-            
+
             //this selects all the gid from the 'grades' tables that does not yet
             //have an association with the given country
             String sql = "SELECT gid " +
@@ -501,7 +533,7 @@ public partial class Manage : System.Web.UI.Page
 
             MySqlDataReader rdr = cmd.ExecuteReader();
 
-            if(!rdr.HasRows)
+            if (!rdr.HasRows)
             {
                 ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: no content to add');", true);
                 canContinue = false;
@@ -530,7 +562,7 @@ public partial class Manage : System.Web.UI.Page
 
         errormsgDB.Text = text;
 
-        if(!canContinue)
+        if (!canContinue)
         {
             UpdateAllData();
         }
@@ -612,12 +644,12 @@ public partial class Manage : System.Web.UI.Page
         }
 
         bool canContinue = true;
-        
+
         string tempCountryGrade = dlCGTcountrygrade.Text;
         string[] countrygradeSplit = tempCountryGrade.Split(' ');
         string country = countrygradeSplit[0];
         string grade = countrygradeSplit[1];
-        
+
         string text = "Good";
 
         string connectionString = GetConnectionString();
@@ -675,7 +707,7 @@ public partial class Manage : System.Web.UI.Page
         {
             UpdateAllData();
         }
-        
+
         dlCGTtopic.Enabled = canContinue;
 
     }
@@ -742,6 +774,135 @@ public partial class Manage : System.Web.UI.Page
 
     #region AddLesson_Click
 
+    /*
+     * credit: http://asp.net-tutorials.com/controls/file-upload-control/
+     * credit: https://stackoverflow.com/questions/1762157/how-to-delete-a-file-using-asp-net
+     */
+    protected void AddLesson_Click(object sender, EventArgs e)
+    {
+        if (dlLesson.Text.Length == 0 || txtLessonName.Text.Length == 0)
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Lesson: not all fields filled');", true);
+            return;
+        }
+
+        if (!fileMP3.HasFile)
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Lesson: no file uploaded');", true);
+            return;
+        }
+
+        if (fileMP3.PostedFile.ContentLength > 512000)     //500KB = 500 * 1024
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Lesson: file too large (>500KB)');", true);
+            return;
+        }
+
+
+
+        //TODO: restricct all additions to size of database columns
+
+
+
+        //TODO: change path to be in to Audio folder
+
+        string tempCountryGradeTopic = dlLesson.Text;
+        string[] countrygradetopicSplit = tempCountryGradeTopic.Split(' ');
+        string country = countrygradetopicSplit[0];
+        string grade = countrygradetopicSplit[1];
+        string topic = countrygradetopicSplit[2];
+        string name = txtLessonName.Text;
+        string lessonText = "N/A";
+        string filename = fileMP3.FileName;
+        string path = "./" + filename;
+
+        string text = "Good";
+        bool canAddToDB = false;
+
+        string physicalPath = Server.MapPath("./");
+        string fullPath = physicalPath + filename;
+
+        if (!System.IO.File.Exists(fullPath))
+        {
+            try
+            {
+                fileMP3.SaveAs(fullPath);
+                canAddToDB = true;
+            }
+            catch (Exception ex)
+            {
+                canAddToDB = false;
+            }
+        }
+        else
+        {
+            //TODO: inform that it already existed?
+            canAddToDB = true;
+        }
+
+        bool successfulInsert = true;
+
+        if (canAddToDB)
+        {
+
+            string connectionString = GetConnectionString();
+
+            MySqlConnection connection = new MySqlConnection(connectionString);
+
+            try
+            {
+                connection.Open();
+
+                String sql = "INSERT INTO lessons(cid, gid, tid, lid, text, path, filename) VALUES(@cid,@gid,@tid,@lid,@text,@path,@fn)";
+
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
+
+                cmd.Parameters.AddWithValue("@cid", country);
+                cmd.Parameters.AddWithValue("@gid", grade);
+                cmd.Parameters.AddWithValue("@tid", topic);
+                cmd.Parameters.AddWithValue("@lid", name);
+                cmd.Parameters.AddWithValue("@text", lessonText);
+                cmd.Parameters.AddWithValue("@path", path);
+                cmd.Parameters.AddWithValue("@fn", filename);
+
+                cmd.ExecuteNonQuery();
+
+            }//end try
+            catch (MySqlException ex)
+            {
+
+                text += MySqlExceptionHandler(ex.Number);
+
+                text += " bad";
+
+                successfulInsert = false;
+
+            }//end catch
+
+            connection.Close();
+
+            errormsgDB.Text = text;
+
+        }
+        else
+        {
+            //TODO: could not upload file
+        }
+
+        //TODO: try-cacth
+        if (!successfulInsert)
+        {
+            System.IO.File.Delete(fullPath);
+            ClientScript.RegisterStartupScript(this.GetType(), "Failure", "alert('Lesson: Failed insert');", true);
+            return;
+        }
+
+
+        ClientScript.RegisterStartupScript(this.GetType(), "Success", "alert('Lesson: Successfully Added');", true);
+        UpdateLessons(GetSqlConnection());
+
+    }
+
     #endregion AddLesson_Click
 
     #region GetSession
@@ -757,7 +918,7 @@ public partial class Manage : System.Web.UI.Page
             if (matching)
                 return true;
         }//end else*/
-            return true;
+        return true;
     }//end method
 
     #endregion GetSession
@@ -780,7 +941,7 @@ public partial class Manage : System.Web.UI.Page
             default:
                 return "number: " + exceptionNum;
         }//end switch
-    }//end method
+    }
 
     #endregion MySqlExceptionHandler
 
@@ -823,7 +984,7 @@ public partial class Manage : System.Web.UI.Page
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
             cmd.ExecuteNonQuery();
-            
+
             cmd.CommandText = "INSERT INTO session (id,time) VALUES(@id, @time)";
             cmd.Parameters.AddWithValue("@id", num);
             cmd.Parameters.AddWithValue("@time", secondsSinceEpoch);
