@@ -50,22 +50,23 @@ public partial class Manage : System.Web.UI.Page
     private string GetConnectionString()
     {
 
-        /*
+        
          string text = "";
-            string server = "162.241.244.134";
+            string server = "localhost";  //162.241.244.134
             string database = "jordape8_EnglishApp";
-            string uid = "jordape8_Default";
-            string password = "Default1!";
+            string uid = "jordape8_admin";
+            string password = "Admin123";
             string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
+        
 
+        /*
         string server = "localhost";
         string database = "daricsag_ela";
         string uid = "daricsag_ela";
         string password = "english";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";*/
 
         return connectionString;
     }
@@ -76,17 +77,18 @@ public partial class Manage : System.Web.UI.Page
 
     private MySqlConnection GetSqlConnection()
     {
-
+        /*
         string text = "";
         string server = "162.241.244.134";
         string database = "jordape8_EnglishApp";
-        string uid = "jordape8_Default";
-        string password = "Default1!";
+        string uid = "jordape8_admin";
+        string password = "Admin123";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+        */
 
         //local testing >>>
-        connectionString = GetConnectionString();
+        string connectionString = GetConnectionString();
         //local testing <<<
 
         return new MySqlConnection(connectionString);
@@ -909,7 +911,7 @@ public partial class Manage : System.Web.UI.Page
 
     private bool GetSession()
     {
-        /*if((Session["confirm"]) == null)
+        if((Session["confirm"]) == null)
             return false;
         else
         {
@@ -917,7 +919,7 @@ public partial class Manage : System.Web.UI.Page
             num = (int)Session["number"];
             if (matching)
                 return true;
-        }//end else*/
+        }//end else
         return true;
     }//end method
 
