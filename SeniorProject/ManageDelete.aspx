@@ -23,8 +23,29 @@
         </div>
 
 
+        <!-- Table for Country Delete -->
+        <asp:GridView ID="gridCountry" runat="server" style="z-index: 1; left: 84px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Country_RowCommand">
+            <Columns>
+                <asp:BoundField HeaderText="Country" DataField="cid"/>
+		        <asp:TemplateField HeaderText="Delete">
+			        <ItemTemplate>
+				        <asp:Button ID="deleteCountry" runat="server" CommandName="delete country" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+			        </ItemTemplate>
+		        </asp:TemplateField>
+	        </Columns>
+        </asp:GridView>
 
-
+        <!-- Table for Topic Delete -->
+        <asp:GridView ID="gridTopic" runat="server" style="z-index: 1; left: 225px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Topic_RowCommand">
+            <Columns>
+                <asp:BoundField HeaderText="Topic" DataField="tid"/>
+		        <asp:TemplateField HeaderText="Delete">
+			        <ItemTemplate>
+				        <asp:Button ID="deleteTopic" runat="server" CommandName="delete topic" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+			        </ItemTemplate>
+		        </asp:TemplateField>
+	        </Columns>
+        </asp:GridView>
 
 
 
@@ -45,6 +66,8 @@
 
         <!-- Display Lessons -->
         <asp:BulletedList ID="bllessons" runat="server" style="z-index: 1; left: 522px; top: 483px; position: absolute" ></asp:BulletedList>
+
+        
 
     </form>
 </body>

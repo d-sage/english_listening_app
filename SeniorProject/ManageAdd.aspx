@@ -26,7 +26,7 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <asp:Label ID="Label1" runat="server" Text="English Listening APP" style="z-index: 1; left: 290px; top: 5px; position: absolute" Font-Bold="true" Font-Size="XX-Large" Font-Underline="true" ></asp:Label>
+            <asp:Label ID="Label1" runat="server" Text="English Listening APP" style="z-index: 1; left: 276px; top: 8px; position: absolute" Font-Bold="true" Font-Size="XX-Large" Font-Underline="true" ></asp:Label>
             <asp:Button ID="btndeletelink" runat="server" Text="Delete" style="z-index: 1; left: 600px; top: 50px; position: absolute" OnClick="Btndeletelink_Click" />
         </div>
 
@@ -57,15 +57,15 @@
         <!-- Boxes and Labels for lessons add -->
         <asp:Label ID="lbllessonAdd" runat="server" Text="Lesson:" style="z-index: 1; left: 58px; top: 354px; position: absolute"></asp:Label>
         <asp:DropDownList ID="dlLesson" runat="server" style="z-index: 1; left: 149px; top: 354px; position: absolute; width: 250px;"></asp:DropDownList>
-        <asp:TextBox ID="txtLessonName" runat="server" style="z-index: 1; left: 152px; top: 390px; position: absolute; width: 617px;" ></asp:TextBox>
-        <asp:FileUpload ID="fileMP3" runat="server" accept="audio/mpeg" ErrorMessage="Only mp3 files is allowed!" ValidationExpression ="^(.+(\.mp3|\.MP3))$" style="z-index: 1; left: 462px; top: 354px; position: absolute; right: 687px;"/>
+        <asp:TextBox ID="txtLessonName" runat="server" style="z-index: 1; left: 442px; top: 357px; position: absolute; width: 190px;" ></asp:TextBox>
+        <asp:FileUpload ID="fileMP3" runat="server" accept="audio/mpeg" ErrorMessage="Only mp3 files is allowed!" ValidationExpression ="^(.+(\.mp3|\.MP3))$" style="z-index: 1; left: 254px; top: 396px; position: absolute; right: 895px;"/>
         
         <!-- Submit buttons -->
         <asp:Button ID="addCountry" runat="server" Text="Add Country" style="z-index: 1; left: 385px; top: 130px; position: absolute" OnClick="AddCountry_Click" />
         <asp:Button ID="addTopic" runat="server" Text="Add Topic" style="z-index: 1; left: 385px; top: 180px; position: absolute" OnClick="AddTopic_Click" />
         <asp:Button ID="addCountryGrade" runat="server" Text="Add Country Grade" style="z-index: 1; left: 584px; top: 232px; position: absolute" OnClick="AddCountryGrade_Click" />
         <asp:Button ID="addCountryGradeTopic" runat="server" Text="Add Country Grade Topic" style="z-index: 1; left: 684px; top: 301px; position: absolute;" OnClick="AddCountryGradeTopic_Click" />
-        <asp:Button ID="addLesson" runat="server" Text="Add Lesson" style="z-index: 1; left: 825px; top: 371px; position: absolute;" OnClick="AddLesson_Click" />
+        <asp:Button ID="addLesson" runat="server" Text="Add Lesson" style="z-index: 1; left: 704px; top: 354px; position: absolute;" OnClick="AddLesson_Click" />
         
 
         <!--Hidden field for number-->

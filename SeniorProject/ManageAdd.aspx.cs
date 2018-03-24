@@ -50,7 +50,7 @@ public partial class Manage : System.Web.UI.Page
     private string GetConnectionString()
     {
 
-        
+        /*
          string text = "";
             string server = "localhost";  //162.241.244.134
             string database = "jordape8_EnglishApp";
@@ -58,15 +58,16 @@ public partial class Manage : System.Web.UI.Page
             string password = "Admin123";
             string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        
+        */
 
-        /*
+        
         string server = "localhost";
         string database = "daricsag_ela";
         string uid = "daricsag_ela";
         string password = "english";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";*/
+        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+
 
         return connectionString;
     }
@@ -794,6 +795,12 @@ public partial class Manage : System.Web.UI.Page
             return;
         }
 
+        if(fileMP3.PostedFile.ContentType != "audio/mp3")
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Lesson: file was not an mp3');", true);
+            return;
+        }
+
         if (fileMP3.PostedFile.ContentLength > 512000)     //500KB = 500 * 1024
         {
             ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Lesson: file too large (>500KB)');", true);
@@ -910,7 +917,7 @@ public partial class Manage : System.Web.UI.Page
     #region GetSession
 
     private bool GetSession()
-    {
+    {/*
         if((Session["confirm"]) == null)
             return false;
         else
@@ -919,7 +926,7 @@ public partial class Manage : System.Web.UI.Page
             num = (int)Session["number"];
             if (matching)
                 return true;
-        }//end else
+        }//end else*/
         return true;
     }//end method
 
