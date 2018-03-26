@@ -24,7 +24,7 @@
 
 
         <!-- Table for Country Delete -->
-        <asp:GridView ID="gridCountry" runat="server" style="z-index: 1; left: 84px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Country_RowCommand">
+        <asp:GridView ID="gridCountry" runat="server" style="z-index: 1; left: 75px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Country_RowCommand">
             <Columns>
                 <asp:BoundField HeaderText="Country" DataField="cid"/>
 		        <asp:TemplateField HeaderText="Delete">
@@ -47,7 +47,18 @@
 	        </Columns>
         </asp:GridView>
 
-
+        <!-- Table for Country_Grade Delete -->
+        <asp:GridView ID="gridCountryGrade" runat="server" style="z-index: 1; left: 375px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGrade_RowCommand">
+            <Columns>
+                <asp:BoundField HeaderText="Country" DataField="cid"/>
+                <asp:BoundField HeaderText="Grade" DataField="gid"/>
+		        <asp:TemplateField HeaderText="Delete">
+			        <ItemTemplate>
+				        <asp:Button ID="deleteCountryGrade" runat="server" CommandName="delete country_grade" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+			        </ItemTemplate>
+		        </asp:TemplateField>
+	        </Columns>
+        </asp:GridView>
 
 
 

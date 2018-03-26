@@ -262,7 +262,7 @@ public partial class ManageDelete : System.Web.UI.Page
         String sql = "SELECT * FROM country_grade_relationship";
 
         MySqlCommand cmd = new MySqlCommand(sql, connection);
-        MySqlDataReader rdr = cmd.ExecuteReader();
+        /*MySqlDataReader rdr = cmd.ExecuteReader();
         while (rdr.Read())
         {
 
@@ -270,7 +270,16 @@ public partial class ManageDelete : System.Web.UI.Page
             //dlCGTcountrygrade.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString(), (String)rdr[0] + " " + rdr[1].ToString()));
 
         }//end while
-        rdr.Close();
+        rdr.Close();*/
+
+        //test
+        DataTable dt = new DataTable();
+        MySqlDataAdapter src = new MySqlDataAdapter(cmd);
+        src.Fill(dt);
+        gridCountryGrade.DataSource = dt;
+        gridCountryGrade.DataBind();
+        //test
+
         connection.Close();
 
     }
@@ -359,32 +368,36 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             connection.Open();
 
-            String sql = "SELECT * FROM country_grade_relationship WHERE cid = (@cid)";
+            String sql = "SELECT COUNT(cid) as count FROM country_grade_relationship WHERE cid = (@cid)";
 
-            MySqlCommand cmd = new MySqlCommand(sql, connection);
-
-            cmd.Parameters.AddWithValue("@cid", countryToDelete);
-
-            MySqlDataReader rdr = cmd.ExecuteReader();
-
-            //if there are rows present, then cannot remove
-            canRemove = !rdr.HasRows;
-            
-            rdr.Close();
-
-            if(canRemove)
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
             {
-                sql = "DELETE FROM countries WHERE cid = (@cid)";
 
-                cmd.CommandText = sql;
-                
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.AddWithValue("@cid", countryToDelete);
 
-            }
-            else
-            {
-                ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country: content associateed with Country, cannot remove');", true);
-            }
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+
+                    //if count is zero (0) then can remove
+                    if (rdr.Read())
+                        canRemove = Convert.ToInt32(rdr[0]) == 0 ? true : false;
+
+                }//end rdr
+
+                if (canRemove)
+                {
+                    sql = "DELETE FROM countries WHERE cid = (@cid)";
+
+                    cmd.CommandText = sql;
+
+                    cmd.ExecuteNonQuery();
+
+                }
+                else
+                {
+                    ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country: content associateed with Country, cannot remove');", true);
+                }
+            }//end cmd
 
         }//end try
         catch (MySqlException ex)
@@ -432,32 +445,36 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             connection.Open();
 
-            String sql = "SELECT * FROM country_grade_topic_relation WHERE tid = (@tid)";
+            String sql = "SELECT COUNT(tid) as count FROM country_grade_topic_relation WHERE tid = (@tid)";
 
-            MySqlCommand cmd = new MySqlCommand(sql, connection);
-
-            cmd.Parameters.AddWithValue("@tid", topicToDelete);
-
-            MySqlDataReader rdr = cmd.ExecuteReader();
-
-            //if there are rows present, then cannot remove
-            canRemove = !rdr.HasRows;
-
-            rdr.Close();
-
-            if (canRemove)
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
             {
-                sql = "DELETE FROM topics WHERE tid = (@tid)";
 
-                cmd.CommandText = sql;
-                
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.AddWithValue("@tid", topicToDelete);
 
-            }
-            else
-            {
-                ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Topic: content associateed with Topic, cannot remove');", true);
-            }
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+
+                    //if count is zero (0) then can remove
+                    if (rdr.Read())
+                        canRemove = Convert.ToInt32(rdr[0]) == 0 ? true : false;
+
+                }//end rdr
+
+                if (canRemove)
+                {
+                    sql = "DELETE FROM topics WHERE tid = (@tid)";
+
+                    cmd.CommandText = sql;
+
+                    cmd.ExecuteNonQuery();
+
+                }
+                else
+                {
+                    ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Topic: content associateed with Topic, cannot remove');", true);
+                }
+            }//end cmd
 
         }//end try
         catch (MySqlException ex)
@@ -482,6 +499,85 @@ public partial class ManageDelete : System.Web.UI.Page
     }
 
     #endregion Delete Topic
+
+    #region Delete Country_Grade
+
+    /*
+     *  Cannot delete a country_grade if there is any data that is associated with this given country_grade
+     *  Then will update country_grade data
+     */
+    protected void CountryGrade_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+
+        GridViewRow row = gridCountryGrade.Rows[int.Parse(e.CommandArgument.ToString())];
+        string countryToDelete = row.Cells[0].Text;
+        string gradeToDelete = row.Cells[1].Text;
+
+        string text = "Good";
+        bool canRemove = false;
+        string connectionString = GetConnectionString();
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        try
+        {
+            connection.Open();
+
+            String sql = "SELECT COUNT(cid) as count FROM country_grade_topic_relation WHERE cid = (@cid) AND gid = (@gid)";
+
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+            {
+
+                cmd.Parameters.AddWithValue("@cid", countryToDelete);
+                cmd.Parameters.AddWithValue("@gid", gradeToDelete);
+
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+
+                    //if count is zero (0) then can remove
+                    if (rdr.Read())
+                        canRemove = Convert.ToInt32(rdr[0]) == 0 ? true : false;
+
+                }//end rdr
+
+                if (canRemove)
+                {
+                    sql = "DELETE FROM country_grade_relationship WHERE cid = (@cid) AND gid = (@gid)";
+
+                    cmd.CommandText = sql;
+
+                    cmd.ExecuteNonQuery();
+
+                }
+                else
+                {
+                    ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_grade: content associateed with Country_Grade, cannot remove');", true);
+                }
+            }//end cmd
+
+        }//end try
+        catch (MySqlException ex)
+        {
+
+            text += MySqlExceptionHandler(ex.Number);
+
+            text += " bad";
+
+        }//end catch
+
+        connection.Close();
+
+        errormsgDB.Text = text;
+
+
+        if (canRemove)
+        {
+            UpdateCountryGrade(GetSqlConnection());
+        }
+
+    }
+
+    #endregion Delete Country_Grade
 
     #endregion Table Delete Events
 
