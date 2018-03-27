@@ -318,10 +318,10 @@ public partial class ManageDelete : System.Web.UI.Page
     {
         connection.Open();
 
-        String sql = "SELECT * FROM lessons";
+        String sql = "SELECT cid,gid,tid,lid,filename FROM lessons";
 
         MySqlCommand cmd = new MySqlCommand(sql, connection);
-        MySqlDataReader rdr = cmd.ExecuteReader();
+        /*MySqlDataReader rdr = cmd.ExecuteReader();
         while (rdr.Read())
         {
             stringhelper = rdr[0] + " | " +
@@ -333,7 +333,18 @@ public partial class ManageDelete : System.Web.UI.Page
                             rdr[6];
             listlesson.Add(stringhelper);
         }//end while
-        rdr.Close();
+        rdr.Close();*/
+
+
+        //test
+        DataTable dt = new DataTable();
+        MySqlDataAdapter src = new MySqlDataAdapter(cmd);
+        src.Fill(dt);
+        gridLesson.DataSource = dt;
+        gridLesson.DataBind();
+        //test
+
+
         connection.Close();
 
         bllessons.DataSource = listlesson;
@@ -344,9 +355,11 @@ public partial class ManageDelete : System.Web.UI.Page
 
     #endregion UpdateData
 
-    #region Table Delete Events
+    #region Table Events
 
-    #region Delete Country
+    #region Country
+
+    #region Country Command
 
     /*
      *  Cannot delete a country if there is any data that is associated with this given country
@@ -355,7 +368,40 @@ public partial class ManageDelete : System.Web.UI.Page
     protected void Country_RowCommand(object sender, GridViewCommandEventArgs e)
     {
 
-        GridViewRow row = gridCountry.Rows[int.Parse(e.CommandArgument.ToString())];
+        int rowIndex = int.Parse(e.CommandArgument.ToString());
+
+        bool canChange = false;
+
+        if(e.CommandName.Equals("e"))
+        {
+            canChange = CountryEdit(rowIndex);
+        }
+        else if(e.CommandName.Equals("d"))
+        {
+            canChange = CountryDelete(rowIndex);
+        }
+        else
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country: unrecognized command, contact admin');", true);
+            return;
+        }
+
+        
+        if (canChange)
+        {
+            UpdateCountries(GetSqlConnection());
+        }
+
+    }
+
+    #endregion Country Command
+
+    #region Country Delete
+
+    private bool CountryDelete(int rowIndex)
+    {
+
+        GridViewRow row = gridCountry.Rows[rowIndex];
         string countryToDelete = row.Cells[0].Text;
 
         string text = "Good";
@@ -403,6 +449,8 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (MySqlException ex)
         {
 
+            canRemove = false;
+
             text += MySqlExceptionHandler(ex.Number);
 
             text += " bad";
@@ -412,18 +460,31 @@ public partial class ManageDelete : System.Web.UI.Page
         connection.Close();
 
         errormsgDB.Text = text;
-        
 
-        if (canRemove)
-        {
-            UpdateCountries(GetSqlConnection());
-        }
+        return canRemove;
 
     }
 
-    #endregion Delete Country
+    #endregion Country Delete
 
-    #region Delete Topic
+    #region Country Edit
+
+    private bool CountryEdit(int rowIndex)
+    {
+        //TODO
+
+        ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('NOT IMPLEMENTED');", true);
+
+        return false;
+    }
+
+    #endregion Country Edit
+
+    #endregion Country
+
+    #region Topic
+
+    #region Topic Command
 
     /*
      *  Cannot delete a topic if there is any data that is associated with this given topic
@@ -432,7 +493,40 @@ public partial class ManageDelete : System.Web.UI.Page
     protected void Topic_RowCommand(object sender, GridViewCommandEventArgs e)
     {
 
-        GridViewRow row = gridTopic.Rows[int.Parse(e.CommandArgument.ToString())];
+        int rowIndex = int.Parse(e.CommandArgument.ToString());
+
+        bool canChange = false;
+
+        if (e.CommandName.Equals("e"))
+        {
+            canChange = TopicEdit(rowIndex);
+        }
+        else if (e.CommandName.Equals("d"))
+        {
+            canChange = TopicDelete(rowIndex);
+        }
+        else
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Topic: unrecognized command, contact admin');", true);
+            return;
+        }
+
+
+        if (canChange)
+        {
+            UpdateTopics(GetSqlConnection());
+        }
+
+    }
+
+    #endregion Topic Command
+
+    #region Topic Delete
+
+    private bool TopicDelete(int rowIndex)
+    {
+
+        GridViewRow row = gridTopic.Rows[rowIndex];
         string topicToDelete = row.Cells[0].Text;
 
         string text = "Good";
@@ -479,6 +573,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }//end try
         catch (MySqlException ex)
         {
+            canRemove = false;
 
             text += MySqlExceptionHandler(ex.Number);
 
@@ -490,17 +585,31 @@ public partial class ManageDelete : System.Web.UI.Page
 
         errormsgDB.Text = text;
 
-
-        if (canRemove)
-        {
-            UpdateTopics(GetSqlConnection());
-        }
+        return canRemove;
 
     }
 
-    #endregion Delete Topic
+    #endregion Topic Delete
 
-    #region Delete Country_Grade
+    #region Topic Edit
+
+    private bool TopicEdit(int rowIndex)
+    {
+        //TODO
+
+        ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('NOT IMPLEMENTED');", true);
+
+        return false;
+
+    }
+
+    #endregion Topic Edit
+
+    #endregion Topic
+
+    #region Country_Grade
+
+    #region Country_Grade Command
 
     /*
      *  Cannot delete a country_grade if there is any data that is associated with this given country_grade
@@ -509,7 +618,36 @@ public partial class ManageDelete : System.Web.UI.Page
     protected void CountryGrade_RowCommand(object sender, GridViewCommandEventArgs e)
     {
 
-        GridViewRow row = gridCountryGrade.Rows[int.Parse(e.CommandArgument.ToString())];
+        int rowIndex = int.Parse(e.CommandArgument.ToString());
+
+        bool canChange = false;
+
+        if (e.CommandName.Equals("d"))
+        {
+            canChange = Country_GradeDelete(rowIndex);
+        }
+        else
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade: unrecognized command, contact admin');", true);
+            return;
+        }
+
+
+        if (canChange)
+        {
+            UpdateCountryGrade(GetSqlConnection());
+        }
+
+    }
+
+    #endregion Country_Grade Command
+
+    #region Country_Grade Delete
+
+    private bool Country_GradeDelete(int rowIndex)
+    {
+
+        GridViewRow row = gridCountryGrade.Rows[rowIndex];
         string countryToDelete = row.Cells[0].Text;
         string gradeToDelete = row.Cells[1].Text;
 
@@ -558,6 +696,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }//end try
         catch (MySqlException ex)
         {
+            canRemove = false;
 
             text += MySqlExceptionHandler(ex.Number);
 
@@ -569,21 +708,231 @@ public partial class ManageDelete : System.Web.UI.Page
 
         errormsgDB.Text = text;
 
+        return canRemove;
 
-        if (canRemove)
+    }
+
+    #endregion Country_Grade Delete
+
+    #endregion Country_Grade
+
+    #region Lesson
+
+    #region Lesson Command
+
+    /*
+     *  Cannot delete a lesson
+     */
+    protected void Lesson_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+
+        int rowIndex = int.Parse(e.CommandArgument.ToString());
+
+        bool canChange = false;
+
+        if (e.CommandName.Equals("e"))
         {
-            UpdateCountryGrade(GetSqlConnection());
+            canChange = LessonEdit(rowIndex);
+        }
+        else if (e.CommandName.Equals("d"))
+        {
+            canChange = LessonDelete(rowIndex);
+        }
+        else
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Lesson: unrecognized command, contact admin');", true);
+            return;
+        }
+
+
+        if (canChange)
+        {
+            UpdateLessons(GetSqlConnection());
         }
 
     }
 
-    #endregion Delete Country_Grade
+    #endregion Lesson Command
 
-    #endregion Table Delete Events
+    #region Lesson Delete
 
-    #region Table Edit Events
+    private bool LessonDelete(int rowIndex)
+    {
 
-    #endregion Table Edit Events
+        bool good = true;
+        string text = "Good";
+        string connectionString = GetConnectionString();
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        GridViewRow row = gridLesson.Rows[rowIndex];
+        string country = row.Cells[0].Text;
+        string grade = row.Cells[1].Text;
+        string topic = row.Cells[2].Text;
+        string lid = row.Cells[3].Text;
+        string filename = row.Cells[4].Text;
+
+        if (RemoveFile(country, grade, topic, lid, filename))
+        {
+
+            try
+            {
+                connection.Open();
+
+                String sql = "DELETE FROM lessons WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid) AND lid = (@lid)";
+
+                using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+                {
+
+                    cmd.Parameters.AddWithValue("@cid", country);
+                    cmd.Parameters.AddWithValue("@gid", grade);
+                    cmd.Parameters.AddWithValue("@tid", topic);
+                    cmd.Parameters.AddWithValue("@lid", lid);
+
+                    cmd.ExecuteNonQuery();
+                    
+                }//end cmd
+
+            }//end try
+            catch (MySqlException ex)
+            {
+
+                good = false;
+
+                text += MySqlExceptionHandler(ex.Number);
+
+                text += " bad";
+
+            }//end catch
+
+            connection.Close();
+
+            errormsgDB.Text = text;
+            
+        }
+        else
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Lesson: file removal failed, contact admin');", true);
+            good = false;
+        }
+
+        return good;
+        
+    }
+
+    private bool RemoveFile(string country, string grade, string topic, string lid, string filename)
+    {
+
+        string path = "";
+        int pathCount = 1;
+
+        bool good = true;
+        string text = "Good";
+        string connectionString = GetConnectionString();
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        try
+        {
+            connection.Open();
+
+            String sql = "SELECT COUNT(cid) as count, path FROM lessons WHERE path = (" +
+                                    "SELECT path FROM lessons WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid) AND lid = (@lid));";
+
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@cid", country);
+            cmd.Parameters.AddWithValue("@gid", grade);
+            cmd.Parameters.AddWithValue("@tid", topic);
+            cmd.Parameters.AddWithValue("@lid", lid);
+
+            using (MySqlDataReader rdr = cmd.ExecuteReader())
+            {
+
+                //if count is zero (0) then can remove file
+                if (rdr.Read())
+
+                    pathCount = Convert.ToInt32(rdr[0]);
+
+                    path = (string)rdr[1];
+                
+            }//end rdr
+                
+
+        }//end try
+        catch (MySqlException ex)
+        {
+
+            good = false;
+
+            text += MySqlExceptionHandler(ex.Number);
+
+            text += " bad";
+
+        }//end catch
+
+        connection.Close();
+
+        errormsgDB.Text = text;
+
+        if(!good)
+        {
+            return false;
+        }
+
+
+        if(pathCount == 1)
+        {
+            try
+            {
+                string physicalPath = Server.MapPath("./");
+                string fullPath = physicalPath + filename;
+
+                if (System.IO.File.Exists(fullPath))
+                {
+                    try
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        good = false;
+                    }
+                }
+                else
+                {
+                    //TODO: file did not exist
+                    ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Lesson: file did not exist, contact admin');", true);
+                }
+            }
+            catch(Exception e)
+            {
+                good = false;
+            }
+        }
+
+        return good;
+    }
+
+    #endregion Lesson Delete
+
+    #region Lesson Edit
+
+    private bool LessonEdit(int rowIndex)
+    {
+        //TODO
+
+        ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('NOT IMPLEMENTED');", true);
+
+        return false;
+
+    }
+
+    #endregion Lesson Edit
+
+    #endregion Lesson
+
+    #endregion Table Events
 
     #region MySqlExceptionHandler
 

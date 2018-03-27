@@ -29,37 +29,67 @@
                 <asp:BoundField HeaderText="Country" DataField="cid"/>
 		        <asp:TemplateField HeaderText="Delete">
 			        <ItemTemplate>
-				        <asp:Button ID="deleteCountry" runat="server" CommandName="delete country" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+				        <asp:Button ID="deleteCountry" runat="server" CommandName="d" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+			        </ItemTemplate>
+		        </asp:TemplateField>
+                <asp:TemplateField HeaderText="Edit">
+			        <ItemTemplate>
+				        <asp:Button ID="editCountry" runat="server" CommandName="e" Text="Edit" CommandArgument='<%# Container.DataItemIndex %>'/>
 			        </ItemTemplate>
 		        </asp:TemplateField>
 	        </Columns>
         </asp:GridView>
 
         <!-- Table for Topic Delete -->
-        <asp:GridView ID="gridTopic" runat="server" style="z-index: 1; left: 225px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Topic_RowCommand">
+        <asp:GridView ID="gridTopic" runat="server" style="z-index: 1; left: 275px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Topic_RowCommand">
             <Columns>
                 <asp:BoundField HeaderText="Topic" DataField="tid"/>
 		        <asp:TemplateField HeaderText="Delete">
 			        <ItemTemplate>
-				        <asp:Button ID="deleteTopic" runat="server" CommandName="delete topic" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+				        <asp:Button ID="deleteTopic" runat="server" CommandName="d" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+			        </ItemTemplate>
+		        </asp:TemplateField>
+                <asp:TemplateField HeaderText="Edit">
+			        <ItemTemplate>
+				        <asp:Button ID="editTopic" runat="server" CommandName="e" Text="Edit" CommandArgument='<%# Container.DataItemIndex %>'/>
 			        </ItemTemplate>
 		        </asp:TemplateField>
 	        </Columns>
         </asp:GridView>
 
         <!-- Table for Country_Grade Delete -->
-        <asp:GridView ID="gridCountryGrade" runat="server" style="z-index: 1; left: 375px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGrade_RowCommand">
+        <asp:GridView ID="gridCountryGrade" runat="server" style="z-index: 1; left: 425px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGrade_RowCommand">
             <Columns>
                 <asp:BoundField HeaderText="Country" DataField="cid"/>
                 <asp:BoundField HeaderText="Grade" DataField="gid"/>
 		        <asp:TemplateField HeaderText="Delete">
 			        <ItemTemplate>
-				        <asp:Button ID="deleteCountryGrade" runat="server" CommandName="delete country_grade" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+				        <asp:Button ID="deleteCountryGrade" runat="server" CommandName="d" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
 			        </ItemTemplate>
 		        </asp:TemplateField>
 	        </Columns>
         </asp:GridView>
 
+        <!-- Table for Country_Grade Delete -->
+        <asp:GridView ID="gridLesson" runat="server" style="z-index: 1; left: 625px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Lesson_RowCommand">
+            <Columns>
+                <asp:BoundField HeaderText="Country" DataField="cid"/>
+                <asp:BoundField HeaderText="Grade" DataField="gid"/>
+                <asp:BoundField HeaderText="Topic" DataField="tid"/>
+                <asp:BoundField HeaderText="Title" DataField="lid"/>
+                <asp:BoundField HeaderText="Filename" DataField="filename"/>
+		        <asp:TemplateField HeaderText="Delete">
+			        <ItemTemplate>
+				        <asp:Button ID="deleteLesson" runat="server" CommandName="d" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+			        </ItemTemplate>
+		        </asp:TemplateField>
+                <asp:TemplateField HeaderText="Edit">
+			        <ItemTemplate>
+				        <asp:Button ID="editLesson" runat="server" CommandName="e" Text="Edit" CommandArgument='<%# Container.DataItemIndex %>'/>
+			        </ItemTemplate>
+		        </asp:TemplateField>
+	        </Columns>
+        </asp:GridView>
 
 
         <!-- Error Labels -->
