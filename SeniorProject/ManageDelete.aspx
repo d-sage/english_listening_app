@@ -70,6 +70,20 @@
 	        </Columns>
         </asp:GridView>
 
+        <!-- Table for Country_Grade_Topic Delete -->
+        <asp:GridView ID="gridCountryGradeTopic" runat="server" style="z-index: 1; left: 75px; top: 275px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGradeTopic_RowCommand">
+            <Columns>
+                <asp:BoundField HeaderText="Country" DataField="cid"/>
+                <asp:BoundField HeaderText="Grade" DataField="gid"/>
+                <asp:BoundField HeaderText="Topic" DataField="tid"/>
+		        <asp:TemplateField HeaderText="Delete">
+			        <ItemTemplate>
+				        <asp:Button ID="deleteCountryGradeTopic" runat="server" CommandName="d" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+			        </ItemTemplate>
+		        </asp:TemplateField>
+	        </Columns>
+        </asp:GridView>
+
         <!-- Table for Country_Grade Delete -->
         <asp:GridView ID="gridLesson" runat="server" style="z-index: 1; left: 625px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Lesson_RowCommand">
             <Columns>

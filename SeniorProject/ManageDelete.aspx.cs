@@ -297,7 +297,7 @@ public partial class ManageDelete : System.Web.UI.Page
         String sql = "SELECT * FROM country_grade_topic_relation";
 
         MySqlCommand cmd = new MySqlCommand(sql, connection);
-        MySqlDataReader rdr = cmd.ExecuteReader();
+        /*MySqlDataReader rdr = cmd.ExecuteReader();
         while (rdr.Read())
         {
 
@@ -305,7 +305,18 @@ public partial class ManageDelete : System.Web.UI.Page
             //dlLesson.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2], (String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2]));
 
         }//end while
-        rdr.Close();
+        rdr.Close();*/
+
+
+        //test
+        DataTable dt = new DataTable();
+        MySqlDataAdapter src = new MySqlDataAdapter(cmd);
+        src.Fill(dt);
+        gridCountryGradeTopic.DataSource = dt;
+        gridCountryGradeTopic.DataBind();
+        //test
+
+
         connection.Close();
 
     }
@@ -716,6 +727,165 @@ public partial class ManageDelete : System.Web.UI.Page
 
     #endregion Country_Grade
 
+    #region Country_Grade_Topic
+
+    #region Country_Grade_Topic Command
+    
+    protected void CountryGradeTopic_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+
+        int rowIndex = int.Parse(e.CommandArgument.ToString());
+
+        bool canChange = false;
+
+        if (e.CommandName.Equals("d"))
+        {
+            canChange = Country_Grade_TopicDelete(rowIndex);
+        }
+        else
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade_Topic: unrecognized command, contact admin');", true);
+            return;
+        }
+
+
+        if (canChange)
+        {
+            UpdateCountryGradeTopic(GetSqlConnection());
+            UpdateLessons(GetSqlConnection());
+        }
+
+    }
+
+    #endregion Country_Grade_Topic Command
+
+    #region Country_Grade_Topic Delete
+
+    private bool Country_Grade_TopicDelete(int rowIndex)
+    {
+        
+        string text = "Good";
+        bool good = true;
+        string connectionString = GetConnectionString();
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        GridViewRow row = gridCountryGradeTopic.Rows[rowIndex];
+        string country = row.Cells[0].Text;
+        string grade = row.Cells[1].Text;
+        string topic = row.Cells[2].Text;
+
+        if(RemoveTopic(country, grade, topic))
+        {
+            try
+            {
+                connection.Open();
+
+                String sql = "DELETE FROM country_grade_topic_relation WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid)";
+
+                using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+                {
+
+                    cmd.Parameters.AddWithValue("@cid", country);
+                    cmd.Parameters.AddWithValue("@gid", grade);
+                    cmd.Parameters.AddWithValue("@tid", topic);
+                    
+                    cmd.ExecuteNonQuery();
+
+                }//end cmd
+
+            }//end try
+            catch (MySqlException ex)
+            {
+                good = false;
+
+                text += MySqlExceptionHandler(ex.Number);
+
+                text += " bad";
+
+            }//end catch
+
+            connection.Close();
+
+            errormsgDB.Text = text;
+            
+        }
+        else
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade_Topic: topic removal failed, contact admin');", true);
+            good = false;
+        }
+
+        return good;
+        
+    }
+
+    private bool RemoveTopic(string country, string grade, string topic)
+    {
+
+        List<String> lids = new List<string>();
+
+        bool good = true;
+        string text = "Good";
+        string connectionString = GetConnectionString();
+
+        MySqlConnection connection = new MySqlConnection(connectionString);
+
+        try
+        {
+            connection.Open();
+
+            String sql = "SELECT lid FROM lessons WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid);";
+
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@cid", country);
+            cmd.Parameters.AddWithValue("@gid", grade);
+            cmd.Parameters.AddWithValue("@tid", topic);
+
+            using (MySqlDataReader rdr = cmd.ExecuteReader())
+            {
+                while(rdr.Read())
+                {
+                    lids.Add((string)rdr[0]);
+                }
+            }//end rdr
+            
+        }//end try
+        catch (MySqlException ex)
+        {
+
+            good = false;
+
+            text += MySqlExceptionHandler(ex.Number);
+
+            text += " bad";
+
+        }//end catch
+
+        connection.Close();
+
+        errormsgDB.Text = text;
+
+        foreach (string lid in lids)
+        {
+            /*if (!RemoveFile(country, grade, topic, lid))
+            {
+                return false;
+            }*/
+            if(!LessonDelete(country, grade, topic, lid))
+            {
+                return false;
+            }
+        }
+
+        return good;
+    }
+
+    #endregion Country_Grade_Topic Delete
+
+    #endregion Country_Grade_Topic
+
     #region Lesson
 
     #region Lesson Command
@@ -759,20 +929,25 @@ public partial class ManageDelete : System.Web.UI.Page
     private bool LessonDelete(int rowIndex)
     {
 
+        GridViewRow row = gridLesson.Rows[rowIndex];
+        string country = row.Cells[0].Text;
+        string grade = row.Cells[1].Text;
+        string topic = row.Cells[2].Text;
+        string lid = row.Cells[3].Text;
+
+        return LessonDelete(country, grade, topic, lid);
+        
+    }
+
+    private bool LessonDelete(string country, string grade, string topic, string lid)
+    {
         bool good = true;
         string text = "Good";
         string connectionString = GetConnectionString();
 
         MySqlConnection connection = new MySqlConnection(connectionString);
 
-        GridViewRow row = gridLesson.Rows[rowIndex];
-        string country = row.Cells[0].Text;
-        string grade = row.Cells[1].Text;
-        string topic = row.Cells[2].Text;
-        string lid = row.Cells[3].Text;
-        string filename = row.Cells[4].Text;
-
-        if (RemoveFile(country, grade, topic, lid, filename))
+        if (RemoveFile(country, grade, topic, lid))
         {
 
             try
@@ -790,7 +965,7 @@ public partial class ManageDelete : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@lid", lid);
 
                     cmd.ExecuteNonQuery();
-                    
+
                 }//end cmd
 
             }//end try
@@ -808,7 +983,7 @@ public partial class ManageDelete : System.Web.UI.Page
             connection.Close();
 
             errormsgDB.Text = text;
-            
+
         }
         else
         {
@@ -817,10 +992,9 @@ public partial class ManageDelete : System.Web.UI.Page
         }
 
         return good;
-        
     }
 
-    private bool RemoveFile(string country, string grade, string topic, string lid, string filename)
+    private bool RemoveFile(string country, string grade, string topic, string lid)
     {
 
         string path = "";
@@ -851,10 +1025,11 @@ public partial class ManageDelete : System.Web.UI.Page
 
                 //if count is zero (0) then can remove file
                 if (rdr.Read())
-
+                {
                     pathCount = Convert.ToInt32(rdr[0]);
 
                     path = (string)rdr[1];
+                }
                 
             }//end rdr
                 
@@ -885,14 +1060,13 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             try
             {
-                string physicalPath = Server.MapPath("./");
-                string fullPath = physicalPath + filename;
+                path = Server.MapPath(path);
 
-                if (System.IO.File.Exists(fullPath))
+                if (System.IO.File.Exists(path))
                 {
                     try
                     {
-                        System.IO.File.Delete(fullPath);
+                        System.IO.File.Delete(path);
                     }
                     catch (Exception ex)
                     {
