@@ -76,7 +76,7 @@ public partial class ManageDelete : System.Web.UI.Page
 
     private MySqlConnection GetSqlConnection()
     {
-        /*
+        
         string text = "";
         string server = "162.241.244.134";
         string database = "jordape8_EnglishApp";
@@ -84,10 +84,10 @@ public partial class ManageDelete : System.Web.UI.Page
         string password = "Admin123";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
+        
 
         //local testing >>>
-        string connectionString = GetConnectionString();
+        //string connectionString = GetConnectionString();
         //local testing <<<
 
         return new MySqlConnection(connectionString);
@@ -111,7 +111,7 @@ public partial class ManageDelete : System.Web.UI.Page
 
             UpdateCountries(connection);
 
-            UpdateGrades(connection);
+            //UpdateGrades(connection);
 
             UpdateTopics(connection);
 
@@ -190,7 +190,7 @@ public partial class ManageDelete : System.Web.UI.Page
 
     #region Update Grades
 
-    private void UpdateGrades(MySqlConnection connection)
+    /*private void UpdateGrades(MySqlConnection connection)
     {
         connection.Open();
         //TODO
@@ -210,7 +210,7 @@ public partial class ManageDelete : System.Web.UI.Page
 
         blgrades.DataSource = listgrade;
         blgrades.DataBind();
-    }
+    }*/
 
     #endregion Update Grades
 

@@ -104,10 +104,9 @@ public partial class _Default : System.Web.UI.Page
             String fin = "";
             foreach (byte i in encryptedpasswordAdmin)
                 fin += i;
-            //Label2.Text = fin;
             String cred = String.Concat(fin,dbSalt);
 
-            bool matchingpass = ComparePasswords(cred, dbPass);//encryptedpasswordAdmin, encryptedpasswordAdmin);
+            bool matchingpass = ComparePasswords(cred, dbPass);
 
             if(matchingpass && dbUsername == user.Text)
             {
@@ -137,37 +136,13 @@ public partial class _Default : System.Web.UI.Page
 
         HashAlgorithm algorithm = new SHA512Managed();
 
-        /*byte[] passwordWithSaltBytes = new byte[passwordbytes.Length + salt.Length];
-
-        for (int i = 0; i < passwordbytes.Length; i++)
-        {
-            passwordWithSaltBytes[i] = passwordbytes[i];
-        }//end for
-        for (int i = 0; i < salt.Length; i++)
-        {
-            passwordWithSaltBytes[passwordbytes.Length + i] = (byte)salt[i];
-        }//end for*/
-
         return algorithm.ComputeHash(passwordbytes);
     }//end method
 
     public static bool ComparePasswords(String str, String str2)//byte[] array1, byte[] array2)
     {
-        /*if (array1.Length != array2.Length)
-        {
-            return false;
-        }//end if
-
-        for (int i = 0; i < array1.Length; i++)
-        {
-            if(array1[i] != array2[i])
-            {
-                return false;
-            }//end if
-        }//end for*/
         if (!str.Equals(str2))
             return false;
-
         return true;
     }//end method  
  
@@ -187,5 +162,6 @@ public partial class _Default : System.Web.UI.Page
         // Add min to the scaled difference between max and min.
         return (int)(min + (max - min) * (scale / (double)uint.MaxValue));
     }//end method
+
 
 }//end class

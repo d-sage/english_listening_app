@@ -6,10 +6,20 @@
 <head runat="server">
     <title></title>
     <style type="text/css">
-        #form1 {
-            height: 617px;
-            background-color: aqua;
-            width: 1305px;
+        html 
+        {
+           margin: 0px;
+           height: 100%;
+           width: 100%;
+           background-color: aqua;
+        }
+
+        body 
+        {
+           margin: 0px;
+           min-height: 100%;
+           width: 100%;
+           background-color: aqua;
         }
     </style>
 </head>
@@ -29,7 +39,7 @@
                 <asp:BoundField HeaderText="Country" DataField="cid"/>
 		        <asp:TemplateField HeaderText="Delete">
 			        <ItemTemplate>
-				        <asp:Button ID="deleteCountry" runat="server" CommandName="d" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+				        <asp:Button ID="deleteCountry" runat="server" CommandName="d" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return confirm('Are you sure?')"/>
 			        </ItemTemplate>
 		        </asp:TemplateField>
                 <asp:TemplateField HeaderText="Edit">
