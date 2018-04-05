@@ -61,7 +61,7 @@ class CountryScreen extends React.Component {
 	}
 
 	fetchOnlineData(){
-		return fetch('http://jordanlambertonline.com/EnglishApp/Countries/countryQuery.php')
+		return fetch('http://lambejor-001-site1.htempurl.com/Countries/countryQuery.php')
 		.then((response) => response.json())
 		.then((responseJson) => {
 			if(responseJson){

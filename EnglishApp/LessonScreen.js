@@ -54,7 +54,7 @@ class LessonScreen extends React.Component {
 	}
 
 	fetchOnlineData(){
-		return fetch('http://jordanlambertonline.com/EnglishApp/Lessons/lessonQuery.php?cid=' + this.props.navigation.state.params.country + ' &gid=' + this.props.navigation.state.params.grade + ' &tid=' + this.props.navigation.state.params.topic)
+		return fetch('http://lambejor-001-site1.htempurl.com/Lessons/lessonQuery.php?cid=' + this.props.navigation.state.params.country + ' &gid=' + this.props.navigation.state.params.grade + ' &tid=' + this.props.navigation.state.params.topic)
 		.then((response) => response.json())
 		.then((responseJson) => {
 			if(responseJson){

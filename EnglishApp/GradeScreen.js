@@ -49,7 +49,7 @@ class GradeScreen extends React.Component {
 	}
 
 	fetchOnlineData(){
-		return fetch('http://jordanlambertonline.com/EnglishApp/Grades/gradeQuery.php?cid=' + this.props.navigation.state.params.country)
+		return fetch('http://lambejor-001-site1.htempurl.com/Grades/gradeQuery.php?cid=' + this.props.navigation.state.params.country)
 		.then((response) => response.json())
 		.then((responseJson) => {
 			if(responseJson){
@@ -59,7 +59,7 @@ class GradeScreen extends React.Component {
 			}
 		}).done();
 	}
-	
+
 	fetchOfflineData(){
 		db.transaction(tx => {
 			tx.executeSql('SELECT DISTINCT cid, gid FROM lessons WHERE cid = ?;', [this.props.navigation.state.params.country], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
