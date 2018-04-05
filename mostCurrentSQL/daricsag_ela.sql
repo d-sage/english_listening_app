@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 03, 2018 at 10:58 PM
+-- Generation Time: Apr 05, 2018 at 04:45 AM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -67,13 +67,6 @@ CREATE TABLE `credentials` (
   `hash` varchar(241) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `credentials`
---
-
-INSERT INTO `credentials` (`username`, `salt`, `hash`) VALUES
-('AdminELA', '81126147209236142226824328583818221323126120108971201223861621451535121312919915', '2442022411122349917696223246343111622219816422031511843150228361812417717097232104806116156106715981331392471161472361447076896854076189109105204170922261282018181126147209236142226824328583818221323126120108971201223861621451535121312919915');
-
 -- --------------------------------------------------------
 
 --
@@ -96,18 +89,8 @@ CREATE TABLE `lessons` (
   `tid` varchar(30) NOT NULL,
   `lid` varchar(30) NOT NULL,
   `text` varchar(500) NOT NULL,
-  `path` varchar(260) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `session`
---
-
-CREATE TABLE `session` (
-  `id` varchar(80) NOT NULL,
-  `time` int(11) NOT NULL
+  `path` varchar(260) NOT NULL,
+  `filename` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -135,7 +118,7 @@ ALTER TABLE `countries`
 --
 ALTER TABLE `country_grade_relationship`
   ADD PRIMARY KEY (`cid`,`gid`),
-  ADD KEY `gid` (`gid`);
+  ADD KEY `country_grade_relationship_ibfk_2` (`gid`);
 
 --
 -- Indexes for table `country_grade_topic_relation`
@@ -163,12 +146,6 @@ ALTER TABLE `lessons`
   ADD PRIMARY KEY (`cid`,`gid`,`tid`,`lid`);
 
 --
--- Indexes for table `session`
---
-ALTER TABLE `session`
-  ADD PRIMARY KEY (`id`,`time`);
-
---
 -- Indexes for table `topics`
 --
 ALTER TABLE `topics`
@@ -182,15 +159,15 @@ ALTER TABLE `topics`
 -- Constraints for table `country_grade_relationship`
 --
 ALTER TABLE `country_grade_relationship`
-  ADD CONSTRAINT `country_grade_relationship_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `countries` (`cid`),
-  ADD CONSTRAINT `country_grade_relationship_ibfk_2` FOREIGN KEY (`gid`) REFERENCES `grades` (`gid`);
+  ADD CONSTRAINT `country_grade_relationship_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `countries` (`cid`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `country_grade_relationship_ibfk_2` FOREIGN KEY (`gid`) REFERENCES `grades` (`gid`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `country_grade_topic_relation`
 --
 ALTER TABLE `country_grade_topic_relation`
-  ADD CONSTRAINT `country_grade_topic_relation_ibfk_1` FOREIGN KEY (`cid`,`gid`) REFERENCES `country_grade_relationship` (`cid`, `gid`),
-  ADD CONSTRAINT `country_grade_topic_relation_ibfk_2` FOREIGN KEY (`tid`) REFERENCES `topics` (`tid`);
+  ADD CONSTRAINT `country_grade_topic_relation_ibfk_1` FOREIGN KEY (`cid`,`gid`) REFERENCES `country_grade_relationship` (`cid`, `gid`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `country_grade_topic_relation_ibfk_2` FOREIGN KEY (`tid`) REFERENCES `topics` (`tid`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `lessons`
