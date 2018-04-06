@@ -28,8 +28,9 @@ public partial class _Default : System.Web.UI.Page
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
         int num = RandomInteger(0, 100000000);
         Session["number"] = num;
-        
+
         //This is for the credentials
+        /*
         string text = "";
         string server = "162.241.244.134";
         string database = "jordape8_EnglishApp";
@@ -37,7 +38,25 @@ public partial class _Default : System.Web.UI.Page
         string password = "Default1!";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        
+        */
+
+        /*
+        string server = "localhost";
+        string database = "daricsag_ela";
+        string uid = "daricsag_ela";
+        string password = "english";
+        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+        */
+
+        string text = "";
+        string server = "mysql5018.site4now.net";
+        string database = "db_a38d8d_lambe";
+        string uid = "a38d8d_lambe";
+        string password = "Lambejor000";
+        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+
         MySqlConnection connection = new MySqlConnection(connectionString);
 
         try
