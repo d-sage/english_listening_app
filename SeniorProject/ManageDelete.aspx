@@ -34,41 +34,37 @@
 
 
         <!-- Table for Country Delete -->
-        <asp:GridView ID="gridCountry" runat="server" style="z-index: 1; left: 75px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Country_RowCommand">
+        <asp:GridView ID="gridCountry" runat="server" style="z-index: 1; left: 15px; top: 150px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Country_RowCommand"
+            OnRowEditing="Country_OnRowEditing" OnRowCancelingEdit="Country_OnRowCancelingEdit" OnRowUpdating="Country_OnRowUpdating" OnRowDeleting="Country_OnRowDeleting">
             <Columns>
-                <asp:BoundField HeaderText="Country" DataField="cid"/>
-		        <asp:TemplateField HeaderText="Delete">
+                <asp:BoundField HeaderText="Country" DataField="cid" ReadOnly="false"/>
+                <asp:TemplateField>
 			        <ItemTemplate>
-				        <asp:Button ID="deleteCountry" runat="server" CommandName="d" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return confirm('Are you sure?')"/>
+				        <asp:Button ID="deleteCountry" runat="server" CommandName="Delete" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return confirm('Are you sure you want to delete this country?');"/>
 			        </ItemTemplate>
 		        </asp:TemplateField>
-                <asp:TemplateField HeaderText="Edit">
-			        <ItemTemplate>
-				        <asp:Button ID="editCountry" runat="server" CommandName="e" Text="Edit" CommandArgument='<%# Container.DataItemIndex %>'/>
-			        </ItemTemplate>
-		        </asp:TemplateField>
+                <asp:CommandField ShowEditButton="true" ButtonType="Button" EditText="Edit" UpdateText="Update" CancelText="Cancel" />
 	        </Columns>
         </asp:GridView>
 
         <!-- Table for Topic Delete -->
-        <asp:GridView ID="gridTopic" runat="server" style="z-index: 1; left: 275px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Topic_RowCommand">
+        <asp:GridView ID="gridTopic" runat="server" style="z-index: 1; left: 500px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Topic_RowCommand"
+            OnRowEditing="Topic_OnRowEditing" OnRowCancelingEdit="Topic_OnRowCancelingEdit" OnRowUpdating="Topic_OnRowUpdating" OnRowDeleting="Topic_OnRowDeleting">
             <Columns>
-                <asp:BoundField HeaderText="Topic" DataField="tid"/>
+                <asp:BoundField HeaderText="Topic" DataField="tid" ReadOnly="false"/>
 		        <asp:TemplateField HeaderText="Delete">
 			        <ItemTemplate>
-				        <asp:Button ID="deleteTopic" runat="server" CommandName="d" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>'/>
+				        <asp:Button ID="deleteTopic" runat="server" CommandName="Delete" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return confirm('Are you sure you want to delete this topic?');"/>
 			        </ItemTemplate>
 		        </asp:TemplateField>
-                <asp:TemplateField HeaderText="Edit">
-			        <ItemTemplate>
-				        <asp:Button ID="editTopic" runat="server" CommandName="e" Text="Edit" CommandArgument='<%# Container.DataItemIndex %>'/>
-			        </ItemTemplate>
-		        </asp:TemplateField>
+                <asp:CommandField ShowEditButton="true" ButtonType="Button" EditText="Edit" UpdateText="Update" CancelText="Cancel" />
 	        </Columns>
         </asp:GridView>
 
+
+
         <!-- Table for Country_Grade Delete -->
-        <asp:GridView ID="gridCountryGrade" runat="server" style="z-index: 1; left: 425px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGrade_RowCommand">
+        <asp:GridView ID="gridCountryGrade" runat="server" style="z-index: 1; left: 425px; top: 300px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGrade_RowCommand">
             <Columns>
                 <asp:BoundField HeaderText="Country" DataField="cid"/>
                 <asp:BoundField HeaderText="Grade" DataField="gid"/>
@@ -81,7 +77,7 @@
         </asp:GridView>
 
         <!-- Table for Country_Grade_Topic Delete -->
-        <asp:GridView ID="gridCountryGradeTopic" runat="server" style="z-index: 1; left: 75px; top: 275px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGradeTopic_RowCommand">
+        <asp:GridView ID="gridCountryGradeTopic" runat="server" style="z-index: 1; left: 75px; top: 475px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGradeTopic_RowCommand">
             <Columns>
                 <asp:BoundField HeaderText="Country" DataField="cid"/>
                 <asp:BoundField HeaderText="Grade" DataField="gid"/>
@@ -95,7 +91,7 @@
         </asp:GridView>
 
         <!-- Table for Country_Grade Delete -->
-        <asp:GridView ID="gridLesson" runat="server" style="z-index: 1; left: 625px; top: 134px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Lesson_RowCommand">
+        <asp:GridView ID="gridLesson" runat="server" style="z-index: 1; left: 625px; top: 675px; position: absolute" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Lesson_RowCommand">
             <Columns>
                 <asp:BoundField HeaderText="Country" DataField="cid"/>
                 <asp:BoundField HeaderText="Grade" DataField="gid"/>

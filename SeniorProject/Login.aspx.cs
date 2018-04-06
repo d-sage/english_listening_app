@@ -20,6 +20,11 @@ public partial class _Default : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
+        Session["oldCid"] = "";
+        Session["oldTid"] = "";
+        Session["oldLid"] = "";
+        Session["oldText"] = "";
+
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
         int num = RandomInteger(0, 100000000);
         Session["number"] = num;
