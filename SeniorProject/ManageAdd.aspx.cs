@@ -60,21 +60,23 @@ public partial class Manage : System.Web.UI.Page
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
         */
 
-        /*
+        
         string server = "localhost";
         string database = "daricsag_ela";
         string uid = "daricsag_ela";
         string password = "english";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
+        
 
+        /*
         string server = "mysql5018.site4now.net";
         string database = "db_a38d8d_lambe";
         string uid = "a38d8d_lambe";
         string password = "Lambejor000";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+        */
 
         return connectionString;
     }
@@ -818,19 +820,18 @@ public partial class Manage : System.Web.UI.Page
         string name = txtLessonName.Text;
         string lessonText = "N/A";
         string filename = fileMP3.FileName;
-        string path = "./" + filename;
 
         string text = "Good";
         bool canAddToDB = false;
 
-        string physicalPath = Server.MapPath("./");
-        string fullPath = physicalPath + filename;
-
-        if (!System.IO.File.Exists(fullPath))
+        string audioPath = Server.MapPath(".//Audio//");
+        string filePath = audioPath + filename;
+        
+        if (!System.IO.File.Exists(filePath))
         {
             try
             {
-                fileMP3.SaveAs(fullPath);
+                fileMP3.SaveAs(filePath);
                 canAddToDB = true;
             }
             catch (Exception ex)
@@ -844,7 +845,7 @@ public partial class Manage : System.Web.UI.Page
             canAddToDB = true;
         }
 
-        bool successfulInsert = true;
+        bool successfulInsert = false;
 
         if (canAddToDB)
         {
@@ -866,10 +867,12 @@ public partial class Manage : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@tid", topic);
                 cmd.Parameters.AddWithValue("@lid", name);
                 cmd.Parameters.AddWithValue("@text", lessonText);
-                cmd.Parameters.AddWithValue("@path", path);
+                cmd.Parameters.AddWithValue("@path", filePath);
                 cmd.Parameters.AddWithValue("@fn", filename);
 
                 cmd.ExecuteNonQuery();
+
+                successfulInsert = true;
 
             }//end try
             catch (MySqlException ex)
@@ -896,7 +899,7 @@ public partial class Manage : System.Web.UI.Page
         //TODO: try-cacth
         if (!successfulInsert)
         {
-            System.IO.File.Delete(fullPath);
+            System.IO.File.Delete(filePath);
             ClientScript.RegisterStartupScript(this.GetType(), "Failure", "alert('Lesson: Failed insert');", true);
             return;
         }
