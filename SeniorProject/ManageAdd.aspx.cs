@@ -60,23 +60,23 @@ public partial class Manage : System.Web.UI.Page
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
         */
 
-        
+        /*
         string server = "localhost";
         string database = "daricsag_ela";
         string uid = "daricsag_ela";
         string password = "english";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        
+        */
 
-        /*
+        
         string server = "mysql5018.site4now.net";
         string database = "db_a38d8d_lambe";
         string uid = "a38d8d_lambe";
         string password = "Lambejor000";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
+        
 
         return connectionString;
     }
