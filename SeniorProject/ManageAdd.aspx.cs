@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Services;
+using System.Web;
 
 public partial class Manage : System.Web.UI.Page
 {
@@ -15,28 +16,23 @@ public partial class Manage : System.Web.UI.Page
     private List<string> listlesson = new List<string>();
     private List<string> listtopic = new List<string>();
 
+    //ClientScript.RegisterStartupScript(this.GetType(), "Success", "alert('Lesson: Successfully Added');", true);
 
     #region Page_Load
 
     protected void Page_Load(object sender, EventArgs e)
     {
         bool run = GetSession();
+
         //makes sure they aren't going around the login
         if (run)
         {
-
-            ValueHiddenField.Value = num.ToString();
-
+            
             if (!Page.IsPostBack)
             {
                 UpdateAllData();
             }
-
-
-
-            //*all code goes in here*
-
-
+            
         }//end if
         else
             Response.Redirect("Login.aspx");
@@ -60,23 +56,23 @@ public partial class Manage : System.Web.UI.Page
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
         */
 
-        /*
+        
         string server = "localhost";
         string database = "daricsag_ela";
         string uid = "daricsag_ela";
         string password = "english";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
-
         
+
+        /*
         string server = "mysql5018.site4now.net";
         string database = "db_a38d8d_lambe";
         string uid = "a38d8d_lambe";
         string password = "Lambejor000";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        
+        */
 
         return connectionString;
     }
@@ -88,8 +84,18 @@ public partial class Manage : System.Web.UI.Page
     private MySqlConnection GetSqlConnection()
     {
         string connectionString = GetConnectionString();
-        
-        return new MySqlConnection(connectionString);
+        MySqlConnection conn = null;
+
+        try
+        {
+            conn = new MySqlConnection(connectionString);
+        }
+        catch(Exception e)
+        {
+            throw new ArgumentException();
+        }
+
+        return conn;
     }
 
     #endregion Get SQL Connection
@@ -106,35 +112,32 @@ public partial class Manage : System.Web.UI.Page
         DisableBoxes();
 
         String text = "Good";
-
-        MySqlConnection connection = GetSqlConnection();
+        MySqlConnection connection = null;
 
         try
         {
-
-            UpdateCountries(connection);
-
-            UpdateGrades(connection);
-
-            UpdateTopics(connection);
-
-            UpdateCountryGrade(connection);
-
-            UpdateCountryGradeTopic(connection);
-
-            UpdateLessons(connection);
-
-        }//end try
-        catch (MySqlException ex)
+            connection = GetSqlConnection();
+        }
+        catch(ArgumentException ae)
         {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
 
-            text += MySqlExceptionHandler(ex.Number);
+        UpdateCountries(connection);
 
-            text += " bad";
+        UpdateGrades(connection);
 
-        }//end catch
+        UpdateTopics(connection);
 
-        errormsgDB.Text = text;
+        UpdateCountryGrade(connection);
+
+        UpdateCountryGradeTopic(connection);
+
+        UpdateLessons(connection);
+        
+        errormsgDB.Text = text; //TODO: display to the messagebox
 
     }
 
@@ -145,26 +148,44 @@ public partial class Manage : System.Web.UI.Page
     private void UpdateCountries(MySqlConnection connection)
     {
 
-        connection.Open();
-
         BlanksOnDropList(dlCGcountry);
 
-        //display the countries
-        String sql = "SELECT * FROM countries";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
-            //add to bulletlist display
-            stringhelper = (String)rdr[0];
-            listcountry.Add(stringhelper);
+            connection.Open();
 
-            //add to country droplists
-            dlCGcountry.Items.Add(new ListItem((String)rdr[0], (String)rdr[0]));
+            //display the countries
+            String sql = "SELECT * FROM countries";
 
-        }//end while
-        rdr.Close();
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+            {
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        //add to bulletlist display
+                        stringhelper = (String)rdr[0];
+                        listcountry.Add(stringhelper);
+
+                        //add to country droplists
+                        dlCGcountry.Items.Add(new ListItem((String)rdr[0], (String)rdr[0]));
+
+                    }//end while
+                }
+            }
+        }
+        catch(MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch(Exception e)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
+
         connection.Close();
 
         blcountry.DataSource = listcountry;
@@ -177,20 +198,37 @@ public partial class Manage : System.Web.UI.Page
 
     private void UpdateGrades(MySqlConnection connection)
     {
-        connection.Open();
-        //TODO
-        //BlanksOnDropList(dlCGcountry);
 
-        String sql = "SELECT * FROM grades";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
-            stringhelper = rdr[0].ToString();
-            listgrade.Add(stringhelper);
-        }//end while
-        rdr.Close();
+            connection.Open();
+
+            String sql = "SELECT * FROM grades";
+
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+            {
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        stringhelper = rdr[0].ToString();
+                        listgrade.Add(stringhelper);
+                    }//end while
+                }
+            }
+        }
+        catch(MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch(Exception e)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
+
         connection.Close();
 
         blgrades.DataSource = listgrade;
@@ -203,20 +241,37 @@ public partial class Manage : System.Web.UI.Page
 
     private void UpdateTopics(MySqlConnection connection)
     {
-        connection.Open();
-        //TODO
-        //BlanksOnDropList(dlCGcountry);
 
-        String sql = "SELECT * FROM topics";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
-            stringhelper = (String)rdr[0];
-            listtopic.Add(stringhelper);
-        }//end while
-        rdr.Close();
+            connection.Open();
+
+            String sql = "SELECT * FROM topics";
+
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+            {
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        stringhelper = (String)rdr[0];
+                        listtopic.Add(stringhelper);
+                    }//end while
+                }
+            }
+        }
+        catch (MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch (Exception e)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
+
         connection.Close();
 
         bltopics.DataSource = listtopic;
@@ -230,23 +285,41 @@ public partial class Manage : System.Web.UI.Page
     private void UpdateCountryGrade(MySqlConnection connection)
     {
 
-        connection.Open();
-
         BlanksOnDropList(dlCGTcountrygrade);
 
-        //display the countries
-        String sql = "SELECT * FROM country_grade_relationship";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
+            connection.Open();
 
-            //add to countrygrade droplist
-            dlCGTcountrygrade.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString(), (String)rdr[0] + " " + rdr[1].ToString()));
+            //display the countries
+            String sql = "SELECT * FROM country_grade_relationship";
 
-        }//end while
-        rdr.Close();
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+            {
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+
+                        //add to countrygrade droplist
+                        dlCGTcountrygrade.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString(), (String)rdr[0] + " " + rdr[1].ToString()));
+
+                    }//end while
+                }
+            }
+        }
+        catch (MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch (Exception e)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
+
         connection.Close();
 
     }
@@ -258,23 +331,41 @@ public partial class Manage : System.Web.UI.Page
     private void UpdateCountryGradeTopic(MySqlConnection connection)
     {
 
-        connection.Open();
-
         BlanksOnDropList(dlLesson);
 
-        //display the countries
-        String sql = "SELECT * FROM country_grade_topic_relation";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
+            connection.Open();
 
-            //add to countrygrade droplist
-            dlLesson.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2], (String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2]));
+            //display the countries
+            String sql = "SELECT * FROM country_grade_topic_relation";
 
-        }//end while
-        rdr.Close();
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+            {
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+
+                        //add to countrygrade droplist
+                        dlLesson.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2], (String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2]));
+
+                    }//end while
+                }
+            }
+        }
+        catch (MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch (Exception e)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
+
         connection.Close();
 
     }
@@ -285,24 +376,43 @@ public partial class Manage : System.Web.UI.Page
 
     private void UpdateLessons(MySqlConnection connection)
     {
-        connection.Open();
 
-        String sql = "SELECT * FROM lessons";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
-            stringhelper = rdr[0] + " | " +
-                            rdr[1].ToString() + " | " +
-                            rdr[2] + " | " +
-                            rdr[3] + " | " +
-                            rdr[4] + " | " +
-                            rdr[5] + " | " +
-                            rdr[6];
-            listlesson.Add(stringhelper);
-        }//end while
-        rdr.Close();
+            connection.Open();
+
+            String sql = "SELECT * FROM lessons";
+
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+            {
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        stringhelper = rdr[0] + " | " +
+                                        rdr[1].ToString() + " | " +
+                                        rdr[2] + " | " +
+                                        rdr[3] + " | " +
+                                        rdr[4] + " | " +
+                                        rdr[5] + " | " +
+                                        rdr[6];
+                        listlesson.Add(stringhelper);
+                    }//end while
+                }
+            }
+        }
+        catch (MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch (Exception e)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
+
         connection.Close();
 
         bllessons.DataSource = listlesson;
@@ -312,7 +422,7 @@ public partial class Manage : System.Web.UI.Page
     #endregion Update Lessons
 
     #endregion UpdateData
-
+    
     #region Disable Boxes
 
     private void DisableBoxes()
@@ -391,20 +501,19 @@ public partial class Manage : System.Web.UI.Page
 
         if (txtcountryAdd.Text.Length == 0)
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country: field not filled');", true);
+            tblog.Text += Environment.NewLine + "~Country: field not filled";
             return;
         }
 
         string country = txtcountryAdd.Text;
 
-        string text = "Good";
-
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        bool good = true;
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+        
             connection.Open();
 
             String sql = "INSERT INTO countries (cid) VALUES (@cid)";
@@ -415,23 +524,46 @@ public partial class Manage : System.Web.UI.Page
 
             cmd.ExecuteNonQuery();
 
+            connection.Close();
+
+            UpdateCountries(connection);
+
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
 
-            text += MySqlExceptionHandler(ex.Number);
+            good = false;
 
-            text += " bad";
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-        }//end catch
+            //TODO: email
+
+        }
+        catch (ArgumentException ae)
+        {
+
+            good = false;
+
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch(Exception ex)
+        {
+
+            good = false;
+
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
-
+        
         txtcountryAdd.Text = "";
 
-        UpdateCountries(GetSqlConnection());
+        if (good)
+            tblog.Text += Environment.NewLine + "~Country: Successfully Added";
 
     }//end method
 
@@ -444,20 +576,19 @@ public partial class Manage : System.Web.UI.Page
 
         if (txttopicAdd.Text.Length == 0)
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Topic: field not filled');", true);
+            tblog.Text += Environment.NewLine + "~Topic: field not filled.";
             return;
         }
 
         string topic = txttopicAdd.Text;
 
-        string text = "Good";
-
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        bool good = true;
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             String sql = "INSERT INTO topics (tid) VALUES (@tid)";
@@ -468,23 +599,46 @@ public partial class Manage : System.Web.UI.Page
 
             cmd.ExecuteNonQuery();
 
+            connection.Close();
+
+            UpdateTopics(connection);
+
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
 
-            text += MySqlExceptionHandler(ex.Number);
+            good = false;
 
-            text += " bad";
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-        }//end catch
+            //TODO: email
+
+        }
+        catch (ArgumentException ae)
+        {
+
+            good = false;
+
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch (Exception ex)
+        {
+
+            good = false;
+
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
-
+        
         txttopicAdd.Text = "";
 
-        UpdateTopics(GetSqlConnection());
+        if (good)
+            tblog.Text += Environment.NewLine + "~Topic: Successfully Added";
 
     }//end method
 
@@ -502,22 +656,20 @@ public partial class Manage : System.Web.UI.Page
 
         if (dlCGcountry.Text.Length == 0)
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: country field not filled');", true);
+            tblog.Text += Environment.NewLine + "~Country_Grade: country field not filled";
             return;
         }
-
+        
+        string country = dlCGcountry.Text;
+        
         bool canContinue = true;
 
-        string country = dlCGcountry.Text;
-
-        string text = "Good";
-
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             //this selects all the gid from the 'grades' tables that does not yet
@@ -527,41 +679,51 @@ public partial class Manage : System.Web.UI.Page
                          "WHERE gid NOT IN " +
                             "(SELECT gid FROM country_grade_relationship WHERE cid = (@cid));";
 
-            MySqlCommand cmd = new MySqlCommand(sql, connection);
-
-            cmd.Parameters.AddWithValue("@cid", country);
-
-            MySqlDataReader rdr = cmd.ExecuteReader();
-
-            if (!rdr.HasRows)
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: no content to add');", true);
-                canContinue = false;
+                cmd.Parameters.AddWithValue("@cid", country);
+
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    if (!rdr.HasRows)
+                    {
+                        tblog.Text += Environment.NewLine + "~Country_Grade: no content to add";
+                        canContinue = false;
+                    }
+
+                    while (rdr.Read())
+                    {
+
+                        //add to dlCGgrade
+                        dlCGgrade.Items.Add(new ListItem(rdr[0].ToString()));
+
+                    }//end while
+                }
             }
 
-            while (rdr.Read())
-            {
-
-                //add to dlCGgrade
-                dlCGgrade.Items.Add(new ListItem(rdr[0].ToString()));
-
-            }//end while
-            rdr.Close();
-
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-            text += MySqlExceptionHandler(ex.Number);
+            //TODO: email
 
-            text += " bad";
-
-        }//end catch
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
-
+        
         if (!canContinue)
         {
             UpdateAllData();
@@ -579,21 +741,20 @@ public partial class Manage : System.Web.UI.Page
     {
         if (dlCGcountry.Text.Length == 0 || dlCGgrade.Text.Length == 0)
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade: not all fields filled');", true);
+            tblog.Text += Environment.NewLine + "~Country_Grade: not all fields filled,";
             return;
         }
 
         String country = dlCGcountry.Text;
         String grade = dlCGgrade.Text;
 
-        string text = "Good";
-
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        bool good = true;
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             String sql = "INSERT INTO country_grade_relationship (cid,gid) VALUES (@cid,@gid)";
@@ -606,20 +767,41 @@ public partial class Manage : System.Web.UI.Page
             cmd.ExecuteNonQuery();
 
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
 
-            text += MySqlExceptionHandler(ex.Number);
+            good = false;
 
-            text += " bad";
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-        }//end catch
+            //TODO: email
+
+        }
+        catch (ArgumentException ae)
+        {
+
+            good = false;
+
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch (Exception ex)
+        {
+
+            good = false;
+
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
-
+        
         UpdateAllData();
+
+        if(good)
+            tblog.Text += Environment.NewLine + "~Country_Grade: Successfully Added";
 
     }
 
@@ -639,25 +821,23 @@ public partial class Manage : System.Web.UI.Page
 
         if (dlCGTcountrygrade.Text.Length == 0)
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade Topic: country_grade field not filled');", true);
+            tblog.Text += Environment.NewLine + "~Country_Grade_Topic: country_grade field filled.";
             return;
         }
-
-        bool canContinue = true;
-
+        
         string tempCountryGrade = dlCGTcountrygrade.Text;
         string[] countrygradeSplit = tempCountryGrade.Split(' ');
         string country = countrygradeSplit[0];
         string grade = countrygradeSplit[1];
+        
+        bool canContinue = true;
 
-        string text = "Good";
-
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             //this selects all the tid from the 'topics' table that does not yet
@@ -667,41 +847,51 @@ public partial class Manage : System.Web.UI.Page
                          "WHERE tid NOT IN " +
                             "(SELECT tid FROM country_grade_topic_relation WHERE cid = (@cid) AND gid = (@gid));";
 
-            MySqlCommand cmd = new MySqlCommand(sql, connection);
-
-            cmd.Parameters.AddWithValue("@cid", country);
-            cmd.Parameters.AddWithValue("@gid", grade);
-
-            MySqlDataReader rdr = cmd.ExecuteReader();
-
-            if (!rdr.HasRows)
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade Topic: no content to add');", true);
-                canContinue = false;
+                cmd.Parameters.AddWithValue("@cid", country);
+                cmd.Parameters.AddWithValue("@gid", grade);
+
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    if (!rdr.HasRows)
+                    {
+                        ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade Topic: no content to add');", true);
+                        canContinue = false;
+                    }
+
+                    while (rdr.Read())
+                    {
+
+                        //add to dlCGgrade
+                        dlCGTtopic.Items.Add(new ListItem(rdr[0].ToString()));
+
+                    }//end while
+                }
             }
 
-            while (rdr.Read())
-            {
-
-                //add to dlCGgrade
-                dlCGTtopic.Items.Add(new ListItem(rdr[0].ToString()));
-
-            }//end while
-            rdr.Close();
-
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-            text += MySqlExceptionHandler(ex.Number);
+            //TODO: email
 
-            text += " bad";
-
-        }//end catch
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
 
         if (!canContinue)
         {
@@ -720,7 +910,7 @@ public partial class Manage : System.Web.UI.Page
     {
         if (dlCGTcountrygrade.Text.Length == 0 || dlCGTtopic.Text.Length == 0)
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade Topic: not all fields filled');", true);
+            tblog.Text += Environment.NewLine + "Country_Grade_Topic: not all fields filled";
             return;
         }
 
@@ -730,41 +920,62 @@ public partial class Manage : System.Web.UI.Page
         string grade = countrygradeSplit[1];
         string topic = dlCGTtopic.Text;
 
-        string text = "Good";
-
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        bool good = true;
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             String sql = "INSERT INTO country_grade_topic_relation (cid,gid,tid) VALUES (@cid,@gid,@tid)";
 
-            MySqlCommand cmd = new MySqlCommand(sql, connection);
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+            {
+                cmd.Parameters.AddWithValue("@cid", country);
+                cmd.Parameters.AddWithValue("@gid", grade);
+                cmd.Parameters.AddWithValue("@tid", topic);
 
-            cmd.Parameters.AddWithValue("@cid", country);
-            cmd.Parameters.AddWithValue("@gid", grade);
-            cmd.Parameters.AddWithValue("@tid", topic);
-
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
+            }
 
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
 
-            text += MySqlExceptionHandler(ex.Number);
+            good = false;
 
-            text += " bad";
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-        }//end catch
+            //TODO: email
+
+        }
+        catch (ArgumentException ae)
+        {
+
+            good = false;
+
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch (Exception ex)
+        {
+
+            good = false;
+
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
-
+        
         UpdateAllData();
+
+        if(good)
+            tblog.Text += Environment.NewLine + "~Country_Grade_Topic: Successfully Added";
 
     }
 
@@ -782,35 +993,37 @@ public partial class Manage : System.Web.UI.Page
     {
         if (dlLesson.Text.Length == 0 || txtLessonName.Text.Length == 0)
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Lesson: not all fields filled');", true);
+            tblog.Text += Environment.NewLine + "~Lesson: not all fields filled";
             return;
         }
 
         if (!fileMP3.HasFile)
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Lesson: no file uploaded');", true);
+            tblog.Text += Environment.NewLine + "~Lesson: no file uploaded";
             return;
         }
 
         if(fileMP3.PostedFile.ContentType != "audio/mp3")
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Lesson: file was not an mp3');", true);
+            tblog.Text += Environment.NewLine + "~Lesson: file was not an mp3";
             return;
         }
 
         if (fileMP3.PostedFile.ContentLength > 512000)     //500KB = 500 * 1024
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Lesson: file too large (>500KB)');", true);
+            tblog.Text += Environment.NewLine + "~Lesson: file too large (>500KB)";
             return;
         }
+
+
 
 
 
         //TODO: restricct all additions to size of database columns
 
 
+        
 
-        //TODO: change path to be in to Audio folder
 
         string tempCountryGradeTopic = dlLesson.Text;
         string[] countrygradetopicSplit = tempCountryGradeTopic.Split(' ');
@@ -818,30 +1031,45 @@ public partial class Manage : System.Web.UI.Page
         string grade = countrygradetopicSplit[1];
         string topic = countrygradetopicSplit[2];
         string name = txtLessonName.Text;
-        string lessonText = "N/A";
+        string lessonText = tbtext.Text.Length == 0 ? "*no words for this lesson*" : tbtext.Text;
         string filename = fileMP3.FileName;
 
-        string text = "Good";
-        bool canAddToDB = false;
+        if (filename.Length > 50)     //500KB = 500 * 1024
+        {
+            tblog.Text += Environment.NewLine + "~Lesson: filename+extension cannot be larger than 50 characters.";
+            return;
+        }
 
-        string audioPath = Server.MapPath(".//Audio//");
-        string filePath = audioPath + filename;
+        bool good = true;
+        bool canAddToDB = false;
+        bool existed = false;
+
+        string physicalAudioPath = Server.MapPath(".//Audio//");
+        string physicalFilePath = physicalAudioPath + filename;
+
+        string virtualCurrentPath = HttpContext.Current.Request.Url.AbsoluteUri;
+        string virtualAudioPath = virtualCurrentPath + "/Audio/";
+        string virtualFilePath = virtualAudioPath + filename;
         
-        if (!System.IO.File.Exists(filePath))
+        if (!System.IO.File.Exists(physicalFilePath))
         {
             try
             {
-                fileMP3.SaveAs(filePath);
+                fileMP3.SaveAs(physicalFilePath);
                 canAddToDB = true;
             }
             catch (Exception ex)
             {
                 canAddToDB = false;
+                //TODO: email
+                tblog.Text += Environment.NewLine + "~Error: could not save file | contact admin";
+                return;
             }
         }
         else
         {
-            //TODO: inform that it already existed?
+            tblog.Text += Environment.NewLine + "~Lesson: File already existed, did not upload again";
+            existed = true;
             canAddToDB = true;
         }
 
@@ -850,64 +1078,86 @@ public partial class Manage : System.Web.UI.Page
         if (canAddToDB)
         {
 
-            string connectionString = GetConnectionString();
-
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            MySqlConnection connection = null;
 
             try
             {
+                connection = GetSqlConnection();
+
                 connection.Open();
 
                 String sql = "INSERT INTO lessons(cid, gid, tid, lid, text, path, filename) VALUES(@cid,@gid,@tid,@lid,@text,@path,@fn)";
 
-                MySqlCommand cmd = new MySqlCommand(sql, connection);
+                using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+                {
+                    cmd.Parameters.AddWithValue("@cid", country);
+                    cmd.Parameters.AddWithValue("@gid", grade);
+                    cmd.Parameters.AddWithValue("@tid", topic);
+                    cmd.Parameters.AddWithValue("@lid", name);
+                    cmd.Parameters.AddWithValue("@text", lessonText);
+                    cmd.Parameters.AddWithValue("@path", virtualFilePath);
+                    cmd.Parameters.AddWithValue("@fn", filename);
 
-                cmd.Parameters.AddWithValue("@cid", country);
-                cmd.Parameters.AddWithValue("@gid", grade);
-                cmd.Parameters.AddWithValue("@tid", topic);
-                cmd.Parameters.AddWithValue("@lid", name);
-                cmd.Parameters.AddWithValue("@text", lessonText);
-                cmd.Parameters.AddWithValue("@path", filePath);
-                cmd.Parameters.AddWithValue("@fn", filename);
-
-                cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
+                }
 
                 successfulInsert = true;
 
+                connection.Close();
+
+                UpdateLessons(connection);
+
             }//end try
-            catch (MySqlException ex)
+            catch (MySqlException mse)
             {
 
-                text += MySqlExceptionHandler(ex.Number);
+                good = false;
 
-                text += " bad";
+                string text = MySqlExceptionNumberHandler(mse.Number);
+                tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-                successfulInsert = false;
+                //TODO: email
 
-            }//end catch
+            }
+            catch (ArgumentException ae)
+            {
+
+                good = false;
+
+                //TODO: email
+                tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+                return;
+            }
+            catch (Exception ex)
+            {
+
+                good = false;
+
+                //TODO: email
+                tblog.Text += Environment.NewLine + "~Error: contact admin";
+            }
 
             connection.Close();
-
-            errormsgDB.Text = text;
-
-        }
-        else
-        {
-            //TODO: could not upload file
+            
         }
 
         //TODO: try-cacth
-        if (!successfulInsert)
+        if (!successfulInsert && !existed)
         {
-            System.IO.File.Delete(filePath);
-            ClientScript.RegisterStartupScript(this.GetType(), "Failure", "alert('Lesson: Failed insert');", true);
+            try
+            {
+                System.IO.File.Delete(physicalFilePath);
+            }
+            catch (Exception ex)
+            {
+                tblog.Text += Environment.NewLine + "~Error: deleting file complication | contact admin";
+            }
+            tblog.Text += Environment.NewLine + "~Lesson: database insertion failed | contact admin";
             return;
         }
-
-
-        ClientScript.RegisterStartupScript(this.GetType(), "Success", "alert('Lesson: Successfully Added');", true);
-        UpdateLessons(GetSqlConnection());
-
+        
+        if(good)
+            tblog.Text += Environment.NewLine + "~Lesson: Successfully Added";
     }
 
     #endregion AddLesson_Click
@@ -932,7 +1182,7 @@ public partial class Manage : System.Web.UI.Page
 
     #region MySqlExceptionHandler
 
-    private string MySqlExceptionHandler(int exceptionNum)
+    private string MySqlExceptionNumberHandler(int exceptionNum)
     {
         //When handling errors, you can your application's response based 
         //on the error number.
@@ -943,119 +1193,22 @@ public partial class Manage : System.Web.UI.Page
         {
             case 0:
                 return "Cannot connect to server.  Contact administrator";
+            case 1042:
+                return "Cannot resolve server name";
             case 1045:
                 return "Invalid username/password, please try again";
+            case 1062:
+                return "Duplicate Entry";
             default:
                 return "number: " + exceptionNum;
         }//end switch
     }
 
     #endregion MySqlExceptionHandler
-
-
-    #region Unused Ajax
-
-    private bool SetAjaxSession()
-    {
-
-        bool isGood = true;
-
-        TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-        int secondsSinceEpoch = (int)t.TotalSeconds;
-
-        /*
-        string text = "Good";
-        string server = "162.241.244.134";
-        string database = "jordape8_EnglishApp";
-        string uid = "jordape8_Default";
-        string password = "Default1!";
-        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
-        string text = "Good";
-        string server = "localhost";
-        string database = "daricsag_ela";
-        string uid = "daricsag_ela";
-        string password = "english";
-        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
-
-        try
-        {
-            connection.Open();
-
-            String sql = "DELETE FROM session";
-
-            MySqlCommand cmd = new MySqlCommand(sql, connection);
-            cmd.ExecuteNonQuery();
-
-            cmd.CommandText = "INSERT INTO session (id,time) VALUES(@id, @time)";
-            cmd.Parameters.AddWithValue("@id", num);
-            cmd.Parameters.AddWithValue("@time", secondsSinceEpoch);
-            cmd.ExecuteNonQuery();
-
-        }//end try
-        catch (MySqlException ex)
-        {
-            //When handling errors, you can your application's response based 
-            //on the error number.
-            //The two most common error numbers when connecting are as follows:
-            //0: Cannot connect to server.
-            //1045: Invalid user name and/or password.
-            switch (ex.Number)
-            {
-                case 0:
-                    text = "Cannot connect to server.  Contact administrator";
-                    break;
-
-                case 1045:
-                    text = "Invalid username/password, please try again";
-                    break;
-                default:
-                    text = "number: " + ex.Number;
-                    break;
-            }//end switch
-            text += " bad";
-            isGood = false;
-        }//end catch
-
-        connection.Close();
-
-        errormsgDB.Text = text;
-
-        return isGood;
-    }
-
-    [WebMethod]
-    public static string AjaxSendTest(object data)
-    {
-
-        /*
-        Dictionary<string, object> d = (Dictionary<string, object>)data;
-
-        List<string> keyList = new List<string>(d.Keys);
-        
-        object tt = d["Data"];
-
-        object[] oa = (object[])tt;
-
-        object one = oa[1];
-        */
-
-        return "here";
-
-    }
-
-    #endregion Unused Ajax
-
+    
     protected void Btndeletelink_Click(object sender, EventArgs e)
     {
         Response.Redirect("ManageDelete.aspx");
     }//end method
-
-
-
+    
 }//end class

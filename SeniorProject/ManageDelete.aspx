@@ -35,15 +35,14 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <asp:Label ID="Label1" runat="server" Text="English Listening APP" style="z-index: 1; left: 290px; top: 5px; position: absolute" Font-Bold="true" Font-Size="XX-Large" Font-Underline="true" ></asp:Label>
-            <asp:Label ID="Label2" runat="server" Text="What Would You Like To Delete" style="z-index: 1; left: 350px; top: 50px; position: absolute"></asp:Label>
-            <asp:Button ID="btnaddlink" Width="60" runat="server" Text="Add" style="z-index: 1; left: 580px; top: 50px; position: absolute" OnClick="Btnaddlink_Click" />
-
+            <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 330px; top: 0px; position: absolute" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
+                    <asp:Label ID="lblinfo" runat="server" Text="How would you like to change the database:" style="z-index: 1; left: 450px; top: 85px; position: absolute"></asp:Label>
+            <asp:Button ID="btndeletelink" runat="server" Text="Add" style="z-index: 1; left: 740px; top: 85px; position: absolute; width: 65px;" OnClick="Btnaddlink_Click" />
         </div>
 
         <div class="scrolling-table-container">
         <!-- Table for Country Delete / Edit -->
-        <asp:GridView ID="gridCountry" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Country_RowCommand"
+        <asp:GridView ID="gridCountry" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Country_RowCommand" 
             OnRowEditing="Country_OnRowEditing" OnRowCancelingEdit="Country_OnRowCancelingEdit" OnRowUpdating="Country_OnRowUpdating" OnRowDeleting="Country_OnRowDeleting">
             <Columns>
                 <asp:BoundField HeaderText="Country" DataField="cid" ReadOnly="false"/>
@@ -59,6 +58,7 @@
 
         <div class="scrolling-table-container">
         <!-- Table for Topic Delete / Edit -->
+
         <asp:GridView ID="gridTopic" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Topic_RowCommand"
             OnRowEditing="Topic_OnRowEditing" OnRowCancelingEdit="Topic_OnRowCancelingEdit" OnRowUpdating="Topic_OnRowUpdating" OnRowDeleting="Topic_OnRowDeleting">
             <Columns>
@@ -75,6 +75,7 @@
 
         <div class="scrolling-table-container">
         <!-- Table for Country_Grade Delete -->
+        
         <asp:GridView ID="gridCountryGrade" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGrade_RowCommand"
              OnRowDeleting="CountryGrade_OnRowDeleting">
             <Columns>
@@ -91,6 +92,7 @@
 
         <div class="scrolling-table-container">
         <!-- Table for Country_Grade_Topic Delete -->
+         
         <asp:GridView ID="gridCountryGradeTopic" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGradeTopic_RowCommand"
             OnRowDeleting="CountryGradeTopic_OnRowDeleting">
             <Columns>
@@ -108,6 +110,7 @@
 
         <div class="scrolling-table-container">
         <!-- Table for Lesson Delete / Edit -->
+        
         <asp:GridView ID="gridLesson" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowDataBound="Lesson_DataBound" OnRowCommand="Lesson_RowCommand"
             OnRowEditing="Lesson_OnRowEditing" OnRowCancelingEdit="Lesson_OnRowCancelingEdit" OnRowUpdating="Lesson_OnRowUpdating" OnRowDeleting="Lesson_OnRowDeleting">
             <Columns>
@@ -126,10 +129,10 @@
 	        </Columns>
         </asp:GridView>
         </div>
-
+        
         <div>
         <!-- Error Labels -->
-        <asp:Label ID="errormsgDB" runat="server"></asp:Label>
+        <asp:Label ID="errormsgDB" runat="server" style="z-index: 1; left: 500px; top: 1000px; position: absolute"></asp:Label>
 
 
          <!-- Display Countries -->

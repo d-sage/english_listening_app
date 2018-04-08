@@ -70,23 +70,23 @@ public partial class ManageDelete : System.Web.UI.Page
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
         */
 
-        /*
+        
         string server = "localhost";
         string database = "daricsag_ela";
         string uid = "daricsag_ela";
         string password = "english";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
-
         
+
+        /*
         string server = "mysql5018.site4now.net";
         string database = "db_a38d8d_lambe";
         string uid = "a38d8d_lambe";
         string password = "Lambejor000";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        
+        */
 
         return connectionString;
     }
@@ -1565,7 +1565,7 @@ public partial class ManageDelete : System.Web.UI.Page
     private bool RemoveFile(string country, string grade, string topic, string lid)
     {
 
-        string path = "";
+        string filename = "";
         int pathCount = 1;
 
         bool good = true;
@@ -1578,7 +1578,7 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             connection.Open();
 
-            String sql = "SELECT COUNT(cid) as count, path FROM lessons WHERE path = (" +
+            String sql = "SELECT COUNT(cid) as count, filename FROM lessons WHERE path = (" +
                                     "SELECT path FROM lessons WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid) AND lid = (@lid));";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
@@ -1596,7 +1596,7 @@ public partial class ManageDelete : System.Web.UI.Page
                 {
                     pathCount = Convert.ToInt32(rdr[0]);
 
-                    path = (string)rdr[1];
+                    filename = (string)rdr[1];
                 }
 
             }//end rdr
@@ -1623,16 +1623,18 @@ public partial class ManageDelete : System.Web.UI.Page
             return false;
         }
 
+        string physicalAudioPath = Server.MapPath(".//Audio//");
+        string physicalFilePath = physicalAudioPath + filename;
 
         if (pathCount == 1)
         {
             try
             {
-                if (System.IO.File.Exists(path))
+                if (System.IO.File.Exists(physicalFilePath))
                 {
                     try
                     {
-                        System.IO.File.Delete(path);
+                        System.IO.File.Delete(physicalFilePath);
                     }
                     catch (Exception ex)
                     {

@@ -27,7 +27,7 @@
 <body>
     <form id="form1" runat="server">
     <div>
-            <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 330px; top: 5px; position: absolute" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
+            <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 330px; top: 0px; position: absolute" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
         </div>
     
         <asp:Label ID="lblTime" runat="server" style="z-index: 1; left: 15px; top: 100px; position: absolute" ></asp:Label>
@@ -37,7 +37,7 @@
         <asp:Label ID="lbluser" runat="server" Text="Username:" style="z-index: 1; left: 527px; top: 330px; position: absolute"></asp:Label>
         
         <!-- Password box and labels -->        
-        <asp:TextBox ID="pass" runat="server" style="z-index: 1; left: 600px; top: 360px; position: absolute"></asp:TextBox>
+        <asp:TextBox ID="pass" runat="server" TextMode="Password" style="z-index: 1; left: 600px; top: 360px; position: absolute"></asp:TextBox>
         <asp:Label ID="lblpass" runat="server" Text="Password:" style="z-index: 1; left: 530px; top: 360px; position: absolute"></asp:Label>
     
         <!-- Submit box and error message -->
