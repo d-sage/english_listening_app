@@ -24,6 +24,7 @@ public partial class ManageDelete : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         bool run = GetSession();
+
         //makes sure they aren't going around the login
         if (run)
         {
@@ -41,12 +42,7 @@ public partial class ManageDelete : System.Web.UI.Page
                 Session["oldText"] = "";
                 //temp?
             }
-
-
-
-            //*all code goes in here*
-
-
+            
         }//end if
         else
             Response.Redirect("Login.aspx");
@@ -98,8 +94,18 @@ public partial class ManageDelete : System.Web.UI.Page
     private MySqlConnection GetSqlConnection()
     {
         string connectionString = GetConnectionString();
+        MySqlConnection conn = null;
 
-        return new MySqlConnection(connectionString);
+        try
+        {
+            conn = new MySqlConnection(connectionString);
+        }
+        catch (Exception e)
+        {
+            throw new ArgumentException();
+        }
+
+        return conn;
     }
 
     #endregion Get SQL Connection
@@ -113,34 +119,30 @@ public partial class ManageDelete : System.Web.UI.Page
 
         String text = "Good";
 
-        MySqlConnection connection = GetSqlConnection();
+        MySqlConnection connection = null;
 
         try
         {
-
-            UpdateCountries(connection);
-
-            //UpdateGrades(connection);
-
-            UpdateTopics(connection);
-
-            UpdateCountryGrade(connection);
-
-            UpdateCountryGradeTopic(connection);
-
-            UpdateLessons(connection);
-
-        }//end try
-        catch (MySqlException ex)
+            connection = GetSqlConnection();
+        }
+        catch (ArgumentException ae)
         {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
 
-            text += MySqlExceptionHandler(ex.Number);
+        UpdateCountries(connection);
 
-            text += " bad";
+        //UpdateGrades(connection);
 
-        }//end catch
+        UpdateTopics(connection);
 
-        errormsgDB.Text = text;
+        UpdateCountryGrade(connection);
+
+        UpdateCountryGradeTopic(connection);
+
+        UpdateLessons(connection);
 
     }
 
@@ -151,47 +153,34 @@ public partial class ManageDelete : System.Web.UI.Page
     private void UpdateCountries(MySqlConnection connection)
     {
 
-        connection.Open();
-
-        //display the countries
-        String sql = "SELECT cid FROM countries";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        /*MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
-            //add to bulletlist display
-            stringhelper = (String)rdr[0];
-            listcountry.Add(stringhelper);
+            connection.Open();
 
-            //add to countries to table
-            //dlCGcountry.Items.Add(new ListItem((String)rdr[0], (String)rdr[0]));
+            //display the countries
+            String sql = "SELECT cid FROM countries";
 
-        }//end while*/
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
 
+            DataTable dt = new DataTable();
+            MySqlDataAdapter src = new MySqlDataAdapter(cmd);
+            src.Fill(dt);
+            gridCountry.DataSource = dt;
+            gridCountry.DataBind();
+        }
+        catch (MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch (Exception e)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
-
-        //test
-        DataTable dt = new DataTable();
-        MySqlDataAdapter src = new MySqlDataAdapter(cmd);
-        src.Fill(dt);
-        gridCountry.DataSource = dt;
-        gridCountry.DataBind();
-        //test
-
-
-
-
-        //rdr.Close();
         connection.Close();
-
-        //databind countries to bullet lists
-        //blcountry.DataSource = listcountry;
-        //blcountry.DataBind();
-
-        //databind countries to table
-        //gridCountry.DataSource = listcountry;
-        //gridCountry.DataBind();
         
     }
 
@@ -227,35 +216,34 @@ public partial class ManageDelete : System.Web.UI.Page
 
     private void UpdateTopics(MySqlConnection connection)
     {
-        connection.Open();
-        //TODO
-        //BlanksOnDropList(dlCGcountry);
-
-        String sql = "SELECT * FROM topics";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        /*MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
-            stringhelper = (String)rdr[0];
-            listtopic.Add(stringhelper);
-        }//end while*/
+            connection.Open();
 
+            String sql = "SELECT * FROM topics";
 
-        //test
-        DataTable dt = new DataTable();
-        MySqlDataAdapter src = new MySqlDataAdapter(cmd);
-        src.Fill(dt);
-        gridTopic.DataSource = dt;
-        gridTopic.DataBind();
-        //test
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+            
+            DataTable dt = new DataTable();
+            MySqlDataAdapter src = new MySqlDataAdapter(cmd);
+            src.Fill(dt);
+            gridTopic.DataSource = dt;
+            gridTopic.DataBind();
 
+        }
+        catch (MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch (Exception e)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
-        //rdr.Close();
         connection.Close();
-
-        //bltopics.DataSource = dt;
-        //bltopics.DataBind();
     }
 
     #endregion Update Topics
@@ -264,33 +252,34 @@ public partial class ManageDelete : System.Web.UI.Page
 
     private void UpdateCountryGrade(MySqlConnection connection)
     {
-
-        connection.Open();
-
-        //display the countries
-        String sql = "SELECT * FROM country_grade_relationship";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        /*MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
+            connection.Open();
 
-            //add to countrygrade droplist
-            //dlCGTcountrygrade.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString(), (String)rdr[0] + " " + rdr[1].ToString()));
+            //display the countries
+            String sql = "SELECT * FROM country_grade_relationship";
 
-        }//end while
-        rdr.Close();*/
-
-        //test
-        DataTable dt = new DataTable();
-        MySqlDataAdapter src = new MySqlDataAdapter(cmd);
-        src.Fill(dt);
-        gridCountryGrade.DataSource = dt;
-        gridCountryGrade.DataBind();
-        //test
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+            
+            DataTable dt = new DataTable();
+            MySqlDataAdapter src = new MySqlDataAdapter(cmd);
+            src.Fill(dt);
+            gridCountryGrade.DataSource = dt;
+            gridCountryGrade.DataBind();
+        }
+        catch (MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch (Exception e)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
     }
 
     #endregion Update Country_Grade
@@ -299,35 +288,35 @@ public partial class ManageDelete : System.Web.UI.Page
 
     private void UpdateCountryGradeTopic(MySqlConnection connection)
     {
-
-        connection.Open();
-
-        //display the countries
-        String sql = "SELECT * FROM country_grade_topic_relation";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        /*MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
+            connection.Open();
 
-            //add to countrygrade droplist
-            //dlLesson.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2], (String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2]));
+            //display the countries
+            String sql = "SELECT * FROM country_grade_topic_relation";
 
-        }//end while
-        rdr.Close();*/
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+            
+            DataTable dt = new DataTable();
+            MySqlDataAdapter src = new MySqlDataAdapter(cmd);
+            src.Fill(dt);
+            gridCountryGradeTopic.DataSource = dt;
+            gridCountryGradeTopic.DataBind();
 
-
-        //test
-        DataTable dt = new DataTable();
-        MySqlDataAdapter src = new MySqlDataAdapter(cmd);
-        src.Fill(dt);
-        gridCountryGradeTopic.DataSource = dt;
-        gridCountryGradeTopic.DataBind();
-        //test
-
+        }
+        catch (MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch (Exception e)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
     }
 
     #endregion Update Country_Grade_Topic
@@ -336,39 +325,37 @@ public partial class ManageDelete : System.Web.UI.Page
 
     private void UpdateLessons(MySqlConnection connection)
     {
-        connection.Open();
-
-        String sql = "SELECT cid,gid,tid,lid,text,filename FROM lessons";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        /*MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
+        try
         {
-            stringhelper = rdr[0] + " | " +
-                            rdr[1].ToString() + " | " +
-                            rdr[2] + " | " +
-                            rdr[3] + " | " +
-                            rdr[4] + " | " +
-                            rdr[5] + " | " +
-                            rdr[6];
-            listlesson.Add(stringhelper);
-        }//end while
-        rdr.Close();*/
+            connection.Open();
 
+            String sql = "SELECT cid,gid,tid,lid,text,filename FROM lessons";
 
-        //test
-        DataTable dt = new DataTable();
-        MySqlDataAdapter src = new MySqlDataAdapter(cmd);
-        src.Fill(dt);
-        gridLesson.DataSource = dt;
-        gridLesson.DataBind();
-        //test
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
 
+            DataTable dt = new DataTable();
+            MySqlDataAdapter src = new MySqlDataAdapter(cmd);
+            src.Fill(dt);
+            gridLesson.DataSource = dt;
+            gridLesson.DataBind();
+
+        }
+        catch (MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch (Exception e)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
 
-        bllessons.DataSource = listlesson;
-        bllessons.DataBind();
+        //bllessons.DataSource = listlesson;
+        //bllessons.DataBind();
     }
 
     #endregion Update Lessons
@@ -386,7 +373,21 @@ public partial class ManageDelete : System.Web.UI.Page
         Session["oldCid"] = gridCountry.Rows[e.NewEditIndex].Cells[0].Text;
         
         gridCountry.EditIndex = e.NewEditIndex;
-        UpdateCountries(GetSqlConnection());
+
+        try
+        {
+            UpdateCountries(GetSqlConnection());
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
     }
 
     #endregion Country RowEditing
@@ -398,14 +399,13 @@ public partial class ManageDelete : System.Web.UI.Page
         GridViewRow row = gridCountry.Rows[e.RowIndex];
         string newCid = ((TextBox)(row.Cells[0].Controls[0])).Text;
         string oldCid = (string)Session["oldCid"];
-
-        string text = "Good";
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             String sql = "UPDATE countries SET cid = (@newCid) WHERE cid = (@oldCid)";
@@ -421,19 +421,28 @@ public partial class ManageDelete : System.Web.UI.Page
             }//end cmd
 
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
-            
-            text += MySqlExceptionHandler(ex.Number);
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-            text += " bad";
+            //TODO: email
 
-        }//end catch
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
-
+        
         Session["oldCid"] = "";
         gridCountry.EditIndex = -1;
         UpdateAllData();
@@ -447,7 +456,21 @@ public partial class ManageDelete : System.Web.UI.Page
     {
         Session["oldCid"] = "";
         gridCountry.EditIndex = -1;
-        UpdateCountries(GetSqlConnection());
+
+        try
+        {
+            UpdateCountries(GetSqlConnection());
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
     }
 
     #endregion Country RowCancelEdit
@@ -456,29 +479,25 @@ public partial class ManageDelete : System.Web.UI.Page
 
     protected void Country_OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
-
-        //TODO
-        //Test
+        
         if (!Session["oldCid"].Equals(""))
         {
             ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country: in editing mode, cannot delete');", true);
+            //TODO
             return;
         }
-        //Test
-
-
 
         GridViewRow row = gridCountry.Rows[e.RowIndex];
         string countryToDelete = row.Cells[0].Text;
-
-        string text = "Good";
+        
         bool canRemove = false;
-        string connectionString = GetConnectionString();
 
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             String sql = "SELECT COUNT(cid) as count FROM country_grade_relationship WHERE cid = (@cid)";
@@ -505,33 +524,31 @@ public partial class ManageDelete : System.Web.UI.Page
 
                     cmd.ExecuteNonQuery();
 
+                    connection.Close();
+
+                    UpdateCountries(connection);
                 }
                 else
                 {
                     ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country: content associateed with Country, cannot remove');", true);
+                    //TODO
                 }
             }//end cmd
 
-        }//end try
-        catch (MySqlException ex)
+        }
+        catch (ArgumentException ae)
         {
-
-            canRemove = false;
-
-            text += MySqlExceptionHandler(ex.Number);
-
-            text += " bad";
-
-        }//end catch
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
-
-        if(canRemove)
-        {
-            UpdateCountries(GetSqlConnection());
-        }
     }
 
     #endregion Country RowDelete
@@ -632,7 +649,7 @@ public partial class ManageDelete : System.Web.UI.Page
 
             canRemove = false;
 
-            text += MySqlExceptionHandler(ex.Number);
+            text += MySqlExceptionNumberHandler(ex.Number);
 
             text += " bad";
 
@@ -680,9 +697,22 @@ public partial class ManageDelete : System.Web.UI.Page
     protected void Topic_OnRowEditing(object sender, GridViewEditEventArgs e)
     {
         Session["oldTid"] = gridTopic.Rows[e.NewEditIndex].Cells[0].Text;
-
         gridTopic.EditIndex = e.NewEditIndex;
-        UpdateTopics(GetSqlConnection());
+
+        try
+        {
+            UpdateTopics(GetSqlConnection());
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
     }
 
     #endregion Topic RowEditing
@@ -695,13 +725,12 @@ public partial class ManageDelete : System.Web.UI.Page
         string newTid = ((TextBox)(row.Cells[0].Controls[0])).Text;
         string oldTid = (string)Session["oldTid"];
 
-        string text = "Good";
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             String sql = "UPDATE topics SET tid = (@newTid) WHERE tid = (@oldTid)";
@@ -717,19 +746,28 @@ public partial class ManageDelete : System.Web.UI.Page
             }//end cmd
 
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-            text += MySqlExceptionHandler(ex.Number);
+            //TODO: email
 
-            text += " bad";
-
-        }//end catch
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
-
+        
         Session["oldTid"] = "";
         gridTopic.EditIndex = -1;
         UpdateAllData();
@@ -743,7 +781,21 @@ public partial class ManageDelete : System.Web.UI.Page
     {
         Session["oldTid"] = "";
         gridTopic.EditIndex = -1;
-        UpdateTopics(GetSqlConnection());
+
+        try
+        {
+            UpdateTopics(GetSqlConnection());
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
     }
 
     #endregion Topic RowCancelEdit
@@ -752,29 +804,24 @@ public partial class ManageDelete : System.Web.UI.Page
 
     protected void Topic_OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
-
-        //TODO
-        //Test
         if (!Session["oldTid"].Equals(""))
         {
             ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Topic: in editing mode, cannot delete');", true);
+            //TODO
             return;
         }
-        //Test
-
-
-
+        
         GridViewRow row = gridTopic.Rows[e.RowIndex];
         string topicToDelete = row.Cells[0].Text;
-
-        string text = "Good";
+        
         bool canRemove = false;
-        string connectionString = GetConnectionString();
 
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             String sql = "SELECT COUNT(tid) as count FROM country_grade_topic_relation WHERE tid = (@tid)";
@@ -801,32 +848,39 @@ public partial class ManageDelete : System.Web.UI.Page
 
                     cmd.ExecuteNonQuery();
 
+                    connection.Close();
+
+                    UpdateTopics(connection);
                 }
                 else
                 {
                     ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Topic: content associateed with Topic, cannot remove');", true);
+                    //TODO
                 }
             }//end cmd
 
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
-            canRemove = false;
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-            text += MySqlExceptionHandler(ex.Number);
+            //TODO: email
 
-            text += " bad";
-
-        }//end catch
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
-
-        if (canRemove)
-        {
-            UpdateTopics(GetSqlConnection());
-        }
     }
 
     #endregion Topic RowDelete
@@ -925,7 +979,7 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             canRemove = false;
 
-            text += MySqlExceptionHandler(ex.Number);
+            text += MySqlExceptionNumberHandler(ex.Number);
 
             text += " bad";
 
@@ -968,15 +1022,15 @@ public partial class ManageDelete : System.Web.UI.Page
         GridViewRow row = gridCountryGrade.Rows[e.RowIndex];
         string countryToDelete = row.Cells[0].Text;
         string gradeToDelete = row.Cells[1].Text;
-
-        string text = "Good";
+        
         bool canRemove = false;
-        string connectionString = GetConnectionString();
 
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             String sql = "SELECT COUNT(cid) as count FROM country_grade_topic_relation WHERE cid = (@cid) AND gid = (@gid)";
@@ -1004,32 +1058,40 @@ public partial class ManageDelete : System.Web.UI.Page
 
                     cmd.ExecuteNonQuery();
 
+                    connection.Close();
+
+                    UpdateCountryGrade(GetSqlConnection());
                 }
                 else
                 {
                     ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_grade: content associateed with Country_Grade, cannot remove');", true);
+                    //TODO
                 }
             }//end cmd
 
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
-            canRemove = false;
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-            text += MySqlExceptionHandler(ex.Number);
+            //TODO: email
 
-            text += " bad";
-
-        }//end catch
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return;
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
         
-        if (canRemove)
-        {
-            UpdateCountryGrade(GetSqlConnection());
-        }
     }
 
     #endregion Country_Grade RowDelete
@@ -1127,7 +1189,7 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             canRemove = false;
 
-            text += MySqlExceptionHandler(ex.Number);
+            text += MySqlExceptionNumberHandler(ex.Number);
 
             text += " bad";
 
@@ -1152,13 +1214,7 @@ public partial class ManageDelete : System.Web.UI.Page
 
     protected void CountryGradeTopic_OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
-
-        string text = "Good";
-        bool good = true;
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
-
+        
         GridViewRow row = gridCountryGradeTopic.Rows[e.RowIndex];
         string country = row.Cells[0].Text;
         string grade = row.Cells[1].Text;
@@ -1166,8 +1222,12 @@ public partial class ManageDelete : System.Web.UI.Page
 
         if (RemoveTopic(country, grade, topic))
         {
+            MySqlConnection connection = null;
+
             try
             {
+                connection = GetSqlConnection();
+
                 connection.Open();
 
                 String sql = "DELETE FROM country_grade_topic_relation WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid)";
@@ -1181,35 +1241,43 @@ public partial class ManageDelete : System.Web.UI.Page
 
                     cmd.ExecuteNonQuery();
 
+                    connection.Close();
+
+                    UpdateCountryGradeTopic(connection);
+                    UpdateLessons(connection);
+
                 }//end cmd
 
             }//end try
-            catch (MySqlException ex)
+            catch (MySqlException mse)
             {
-                good = false;
+                string text = MySqlExceptionNumberHandler(mse.Number);
+                //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-                text += MySqlExceptionHandler(ex.Number);
+                //TODO: email
 
-                text += " bad";
-
-            }//end catch
+            }
+            catch (ArgumentException ae)
+            {
+                //TODO: email
+                //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+                return;
+            }
+            catch (Exception ex)
+            {
+                //TODO: email
+                //tblog.Text += Environment.NewLine + "~Error: contact admin";
+            }
 
             connection.Close();
-
-            errormsgDB.Text = text;
-
+            
         }
         else
         {
             ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade_Topic: topic removal failed, contact admin');", true);
-            good = false;
+            //TODO
         }
         
-        if (good)
-        {
-            UpdateCountryGradeTopic(GetSqlConnection());
-            UpdateLessons(GetSqlConnection());
-        }
     }
 
     #endregion Country_Grade_Topic RowDelete
@@ -1219,62 +1287,65 @@ public partial class ManageDelete : System.Web.UI.Page
     {
 
         List<String> lids = new List<string>();
-
-        bool good = true;
-        string text = "Good";
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             String sql = "SELECT lid FROM lessons WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid);";
 
-            MySqlCommand cmd = new MySqlCommand(sql, connection);
-
-            cmd.Parameters.AddWithValue("@cid", country);
-            cmd.Parameters.AddWithValue("@gid", grade);
-            cmd.Parameters.AddWithValue("@tid", topic);
-
-            using (MySqlDataReader rdr = cmd.ExecuteReader())
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
             {
-                while (rdr.Read())
+                cmd.Parameters.AddWithValue("@cid", country);
+                cmd.Parameters.AddWithValue("@gid", grade);
+                cmd.Parameters.AddWithValue("@tid", topic);
+
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
                 {
-                    lids.Add((string)rdr[0]);
-                }
-            }//end rdr
+                    while (rdr.Read())
+                    {
+                        lids.Add((string)rdr[0]);
+                    }
+                }//end rdr
+            }//end cmd
 
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-            good = false;
+            //TODO: email
 
-            text += MySqlExceptionHandler(ex.Number);
-
-            text += " bad";
-
-        }//end catch
+            return false;
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            return false; ;
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
-
-        errormsgDB.Text = text;
-
+        
         foreach (string lid in lids)
         {
-            /*if (!RemoveFile(country, grade, topic, lid))
-            {
-                return false;
-            }*/
             if (!LessonDelete(country, grade, topic, lid))
             {
                 return false;
             }
         }
 
-        return good;
+        return true;
     }
     #endregion Country_Grade_Topic RemoveTopic
 
@@ -1352,7 +1423,7 @@ public partial class ManageDelete : System.Web.UI.Page
             {
                 good = false;
 
-                text += MySqlExceptionHandler(ex.Number);
+                text += MySqlExceptionNumberHandler(ex.Number);
 
                 text += " bad";
 
@@ -1398,7 +1469,21 @@ public partial class ManageDelete : System.Web.UI.Page
         Session["oldText"] = gridLesson.Rows[e.NewEditIndex].Cells[4].Text;
 
         gridLesson.EditIndex = e.NewEditIndex;
-        UpdateLessons(GetSqlConnection());
+
+        try
+        {
+            UpdateLessons(GetSqlConnection());
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
     }
 
     #endregion Lesson RowEditing
@@ -1415,13 +1500,12 @@ public partial class ManageDelete : System.Web.UI.Page
         string gid = row.Cells[1].Text;
         string tid = row.Cells[2].Text;
 
-        string text = "Good";
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        MySqlConnection connection = null;
 
         try
         {
+            connection = GetSqlConnection();
+
             connection.Open();
 
             String sql = "UPDATE lessons SET lid = (@newLid), text = (@newText) WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid) AND lid = (@oldLid)";
@@ -1438,25 +1522,36 @@ public partial class ManageDelete : System.Web.UI.Page
 
                 cmd.ExecuteNonQuery();
 
+                connection.Close();
+
+                Session["oldLid"] = "";
+                gridLesson.EditIndex = -1;
+                UpdateLessons(connection);
+
             }//end cmd
 
         }//end try
-        catch (MySqlException ex)
+        catch (MySqlException mse)
         {
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-            text += MySqlExceptionHandler(ex.Number);
+            //TODO: email
 
-            text += " bad";
-
-        }//end catch
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
 
         connection.Close();
 
-        errormsgDB.Text = text;
-
-        Session["oldLid"] = "";
-        gridLesson.EditIndex = -1;
-        UpdateLessons(GetSqlConnection());
     }
 
     #endregion Lesson RowUpdating
@@ -1467,7 +1562,21 @@ public partial class ManageDelete : System.Web.UI.Page
     {
         Session["oldLid"] = "";
         gridLesson.EditIndex = -1;
-        UpdateLessons(GetSqlConnection());
+
+        try
+        {
+            UpdateLessons(GetSqlConnection());
+        }
+        catch (ArgumentException ae)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+        }
+        catch (Exception ex)
+        {
+            //TODO: email
+            //tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
     }
 
     #endregion Lesson RowCancelEdit
@@ -1476,16 +1585,13 @@ public partial class ManageDelete : System.Web.UI.Page
 
     protected void Lesson_OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
-
-        //TODO
-        //Test
+        
         if (!Session["oldLid"].Equals(""))
         {
             ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Lesson: in editing mode, cannot delete');", true);
+            //TODO
             return;
         }
-        //Test
-
         
         GridViewRow row = gridLesson.Rows[e.RowIndex];
         string country = row.Cells[0].Text;
@@ -1495,7 +1601,20 @@ public partial class ManageDelete : System.Web.UI.Page
 
         if(LessonDelete(country, grade, topic, lid))
         {
-            UpdateLessons(GetSqlConnection());
+            try
+            {
+                UpdateLessons(GetSqlConnection());
+            }
+            catch (ArgumentException ae)
+            {
+                //TODO: email
+                //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            }
+            catch (Exception ex)
+            {
+                //TODO: email
+                //tblog.Text += Environment.NewLine + "~Error: contact admin";
+            }
         }
 
     }
@@ -1506,17 +1625,15 @@ public partial class ManageDelete : System.Web.UI.Page
 
     private bool LessonDelete(string country, string grade, string topic, string lid)
     {
-        bool good = true;
-        string text = "Good";
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
-
+        
         if (RemoveFile(country, grade, topic, lid))
         {
+            MySqlConnection connection = null;
 
             try
             {
+                connection = GetSqlConnection();
+
                 connection.Open();
 
                 String sql = "DELETE FROM lessons WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid) AND lid = (@lid)";
@@ -1534,29 +1651,39 @@ public partial class ManageDelete : System.Web.UI.Page
                 }//end cmd
 
             }//end try
-            catch (MySqlException ex)
+            catch (MySqlException mse)
             {
+                string text = MySqlExceptionNumberHandler(mse.Number);
+                //tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
 
-                good = false;
+                //TODO: email
 
-                text += MySqlExceptionHandler(ex.Number);
-
-                text += " bad";
-
-            }//end catch
+                return false;
+            }
+            catch (ArgumentException ae)
+            {
+                //TODO: email
+                //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+                return false; ;
+            }
+            catch (Exception ex)
+            {
+                //TODO: email
+                //tblog.Text += Environment.NewLine + "~Error: contact admin";
+                return false;
+            }
 
             connection.Close();
-
-            errormsgDB.Text = text;
-
+            
         }
         else
         {
             ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Lesson: file removal failed, contact admin');", true);
-            good = false;
+            //TODO
+            return false;
         }
 
-        return good;
+        return true;
     }
 
     #endregion LessonDelete()
@@ -1608,7 +1735,7 @@ public partial class ManageDelete : System.Web.UI.Page
 
             good = false;
 
-            text += MySqlExceptionHandler(ex.Number);
+            text += MySqlExceptionNumberHandler(ex.Number);
 
             text += " bad";
 
@@ -1735,7 +1862,7 @@ public partial class ManageDelete : System.Web.UI.Page
 
     #region MySqlExceptionHandler
 
-    private string MySqlExceptionHandler(int exceptionNum)
+    private string MySqlExceptionNumberHandler(int exceptionNum)
     {
         //When handling errors, you can your application's response based 
         //on the error number.
@@ -1746,8 +1873,12 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             case 0:
                 return "Cannot connect to server.  Contact administrator";
+            case 1042:
+                return "Cannot resolve server name";
             case 1045:
                 return "Invalid username/password, please try again";
+            case 1062:
+                return "Duplicate Entry";
             default:
                 return "number: " + exceptionNum;
         }//end switch

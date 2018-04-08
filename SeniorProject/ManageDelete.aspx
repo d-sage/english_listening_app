@@ -101,7 +101,7 @@
                 <asp:BoundField HeaderText="Topic" DataField="tid"/>
 		        <asp:TemplateField HeaderText="Delete">
 			        <ItemTemplate>
-				        <asp:Button ID="deleteCountryGradeTopic" runat="server" CommandName="Delete" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return confirm('Are you sure you want to delete this country grade?');"/>
+				        <asp:Button ID="deleteCountryGradeTopic" runat="server" CommandName="Delete" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return confirm('Are you sure you want to delete this country grade topic? This will remove all lessons associated with it as well.');"/>
 			        </ItemTemplate>
 		        </asp:TemplateField>
 	        </Columns>

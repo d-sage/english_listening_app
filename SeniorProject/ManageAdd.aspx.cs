@@ -137,8 +137,6 @@ public partial class Manage : System.Web.UI.Page
 
         UpdateLessons(connection);
         
-        errormsgDB.Text = text; //TODO: display to the messagebox
-
     }
 
     #endregion Update All Data
