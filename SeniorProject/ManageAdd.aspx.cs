@@ -1049,9 +1049,9 @@ public partial class Manage : System.Web.UI.Page
         string physicalFilePath = physicalAudioPath + filename;
 
         string virtualCurrentPath = HttpContext.Current.Request.Url.AbsoluteUri;
-        string virtualAudioPath = virtualCurrentPath + "/Audio/";
+        string virtualAudioPath = virtualCurrentPath.Substring(0, virtualCurrentPath.LastIndexOf('/')) + "/Audio/";
         string virtualFilePath = virtualAudioPath + filename;
-        
+
         if (!System.IO.File.Exists(physicalFilePath))
         {
             try
@@ -1141,8 +1141,7 @@ public partial class Manage : System.Web.UI.Page
             connection.Close();
             
         }
-
-        //TODO: try-cacth
+        
         if (!successfulInsert && !existed)
         {
             try
@@ -1152,8 +1151,10 @@ public partial class Manage : System.Web.UI.Page
             catch (Exception ex)
             {
                 tblog.Text += Environment.NewLine + "~Error: deleting file complication | contact admin";
+                //TODO: email
             }
             tblog.Text += Environment.NewLine + "~Lesson: database insertion failed | contact admin";
+            //TODO: email
             return;
         }
         
