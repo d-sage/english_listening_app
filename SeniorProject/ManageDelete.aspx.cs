@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -117,7 +119,7 @@ public partial class ManageDelete : System.Web.UI.Page
     private void UpdateAllData()
     {
 
-        String text = "Good";
+        String text = "";
 
         MySqlConnection connection = null;
 
@@ -127,7 +129,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         catch (ArgumentException ae)
         {
-            //TODO: email
+            EmailError(text);
             //tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
             return;
         }
@@ -602,7 +604,7 @@ public partial class ManageDelete : System.Web.UI.Page
         GridViewRow row = gridCountry.Rows[rowIndex];
         string countryToDelete = row.Cells[0].Text;
 
-        string text = "Good";
+        string text = "";
         bool canRemove = false;
         string connectionString = GetConnectionString();
 
@@ -933,7 +935,7 @@ public partial class ManageDelete : System.Web.UI.Page
         GridViewRow row = gridTopic.Rows[rowIndex];
         string topicToDelete = row.Cells[0].Text;
 
-        string text = "Good";
+        string text = "";
         bool canRemove = false;
         string connectionString = GetConnectionString();
 
@@ -1142,7 +1144,7 @@ public partial class ManageDelete : System.Web.UI.Page
         string countryToDelete = row.Cells[0].Text;
         string gradeToDelete = row.Cells[1].Text;
 
-        string text = "Good";
+        string text = "";
         bool canRemove = false;
         string connectionString = GetConnectionString();
 
@@ -1388,7 +1390,7 @@ public partial class ManageDelete : System.Web.UI.Page
     private bool Country_Grade_TopicDelete(int rowIndex)
     {
         
-        string text = "Good";
+        string text = "";
         bool good = true;
         string connectionString = GetConnectionString();
 
@@ -1696,7 +1698,7 @@ public partial class ManageDelete : System.Web.UI.Page
         int pathCount = 1;
 
         bool good = true;
-        string text = "Good";
+        string text = "";
         string connectionString = GetConnectionString();
 
         MySqlConnection connection = new MySqlConnection(connectionString);
@@ -1890,15 +1892,14 @@ public partial class ManageDelete : System.Web.UI.Page
 
     private bool GetSession()
     {
-        /*if((Session["confirm"]) == null)
+        if((Session["confirm"]) == null)
             return false;
         else
         {
             bool matching = (bool)Session["confirm"];
-            //num = (int)Session["number"];
             if (matching)
                 return true;
-        }//end else*/
+        }//end else
         return true;
     }//end method
 
@@ -1909,5 +1910,23 @@ public partial class ManageDelete : System.Web.UI.Page
         Response.Redirect("ManageAdd.aspx");
     }//end method
 
+    protected void EmailError(String strmess)
+    {
+        try
+        {
+            String mypwd = "";
+            var client = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential("yourEmail@gmail.com", mypwd),
+                EnableSsl = true
+            };
+            MailMessage message = new MailMessage("yourEmail@gmail.com", "EmailToSendTo", "Error Occurred", strmess);
+            client.Send(message);
+        }//end try
+        catch (Exception e)
+        {
+            errormsgDB.Text = "Email failed to send! " + e.ToString();
+        }//end catch
+    }//end method
 
 }//end class

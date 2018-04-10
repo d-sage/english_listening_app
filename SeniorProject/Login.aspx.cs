@@ -8,6 +8,8 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Net.Mail;
+using System.Net;
 
 public partial class _Default : System.Web.UI.Page
 {
@@ -26,8 +28,6 @@ public partial class _Default : System.Web.UI.Page
         Session["oldText"] = "";
 
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
-        int num = RandomInteger(0, 100000000);
-        Session["number"] = num;
 
         //This is for the credentials
         /*
@@ -88,16 +88,18 @@ public partial class _Default : System.Web.UI.Page
             {
                 case 0:
                     text = "Cannot connect to server.  Contact administrator";
+                    EmailError(text);
                     break;
-
                 case 1045:
                     text = "Invalid username/password, please try again";
+                    EmailError(text);
                     break;
                 default:
                     text = "number: " + ex.Number;
+                    EmailError(text);
                     break;
             }//end switch
-            text += " bad";
+            text += "bad";
         }//end catch
 
         connection.Close();    
@@ -187,5 +189,23 @@ public partial class _Default : System.Web.UI.Page
         return (int)(min + (max - min) * (scale / (double)uint.MaxValue));
     }//end method
 
+    protected void EmailError(String strmess)
+    {
+        try
+        {
+            String mypwd = "";
+            var client = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential("yourEmail@gmail.com", mypwd),
+                EnableSsl = true
+            };
+            MailMessage message = new MailMessage("yourEmail@gmail.com", "EmailToSendTo", "Error Occurred", strmess);
+            client.Send(message);
+        }//end try
+        catch (Exception e)
+        {
+            errormsgDB.Text = "Email failed to send! " + e.ToString();
+        }//end catch
+    }//end method
 
 }//end class

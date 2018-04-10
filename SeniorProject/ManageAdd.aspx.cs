@@ -5,6 +5,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Services;
 using System.Web;
+using System.Net.Mail;
+using System.Net;
 
 public partial class Manage : System.Web.UI.Page
 {
@@ -92,6 +94,7 @@ public partial class Manage : System.Web.UI.Page
         }
         catch(Exception e)
         {
+            EmailError(e.ToString());
             throw new ArgumentException();
         }
 
@@ -111,7 +114,7 @@ public partial class Manage : System.Web.UI.Page
 
         DisableBoxes();
 
-        String text = "Good";
+        String text = "";
         MySqlConnection connection = null;
 
         try
@@ -1163,16 +1166,15 @@ public partial class Manage : System.Web.UI.Page
     #region GetSession
 
     private bool GetSession()
-    {/*
+    {
         if((Session["confirm"]) == null)
             return false;
         else
         {
             bool matching = (bool)Session["confirm"];
-            num = (int)Session["number"];
             if (matching)
                 return true;
-        }//end else*/
+        }//end else
         return true;
     }//end method
 
@@ -1208,5 +1210,25 @@ public partial class Manage : System.Web.UI.Page
     {
         Response.Redirect("ManageDelete.aspx");
     }//end method
+
+    protected void EmailError(String strmess)
+    {
+        try
+        {
+            String mypwd = "";
+            var client = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential("yourEmail@gmail.com", mypwd),
+                EnableSsl = true
+            };
+            MailMessage message = new MailMessage("yourEmail@gmail.com", "EmailToSendTo", "Error Occurred" , strmess);
+            client.Send(message);
+        }//end try
+        catch (Exception e)
+        {
+            errormsgDB.Text = "Email failed to send! " + e.ToString();
+        }//end catch
+    }//end method
+
     
 }//end class
