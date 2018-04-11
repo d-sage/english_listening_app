@@ -1010,11 +1010,11 @@ public partial class Manage : System.Web.UI.Page
             return;
         }
 
-        if (fileMP3.PostedFile.ContentLength > 512000)     //500KB = 500 * 1024
+        /*if (fileMP3.PostedFile.ContentLength > 512000)     //500KB = 500 * 1024
         {
             tblog.Text += Environment.NewLine + "~Lesson: file too large (>500KB)";
             return;
-        }
+        }*/
 
 
 
