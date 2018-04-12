@@ -7,6 +7,7 @@ using System.Web.Services;
 using System.Web;
 using System.Net.Mail;
 using System.Net;
+using System.Text.RegularExpressions;
 
 public partial class Manage : System.Web.UI.Page
 {
@@ -17,6 +18,14 @@ public partial class Manage : System.Web.UI.Page
     private List<string> listgrade = new List<string>();
     private List<string> listlesson = new List<string>();
     private List<string> listtopic = new List<string>();
+
+    //Constants
+    private const int DB_COUNTRY_LENGTH_MAX = 30;
+    private const int DB_TOPIC_LENGTH_MAX = 50;
+    private const int DB_LID_LENGTH_MAX = 100;
+    private const int DB_TEXT_LENGTH_MAX = 2500;
+    private const int FILE_NAME_LENGTH_MAX = 50;
+    private const int FILE_SIZE_MAX = 15728640;
 
     //ClientScript.RegisterStartupScript(this.GetType(), "Success", "alert('Lesson: Successfully Added');", true);
 
@@ -303,7 +312,7 @@ public partial class Manage : System.Web.UI.Page
                     {
 
                         //add to countrygrade droplist
-                        dlCGTcountrygrade.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString(), (String)rdr[0] + " " + rdr[1].ToString()));
+                        dlCGTcountrygrade.Items.Add(new ListItem((String)rdr[0] + " ~~ " + rdr[1].ToString(), (String)rdr[0] + "|" + rdr[1].ToString()));
 
                     }//end while
                 }
@@ -349,7 +358,7 @@ public partial class Manage : System.Web.UI.Page
                     {
 
                         //add to countrygrade droplist
-                        dlLesson.Items.Add(new ListItem((String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2], (String)rdr[0] + " " + rdr[1].ToString() + " " + (String)rdr[2]));
+                        dlLesson.Items.Add(new ListItem((String)rdr[0] + " ~~ " + rdr[1].ToString() + " ~~ " + (String)rdr[2], (String)rdr[0] + "|" + rdr[1].ToString() + "|" + (String)rdr[2]));
 
                     }//end while
                 }
@@ -423,7 +432,59 @@ public partial class Manage : System.Web.UI.Page
     #endregion Update Lessons
 
     #endregion UpdateData
-    
+
+    #region Regex
+
+    private bool Regex_TopicCheck(string topic)
+    {
+        String TopicRegex = @"^([a-zA-Z0-9,\-:]{1}[ ]?){1,49}[a-zA-Z0-9]{1}$";
+
+        if (!Regex.IsMatch(topic, TopicRegex))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool Regex_CountryCheck(string topic)
+    {
+        String CountryRegex = @"^([a-zA-Z\-]{1}[ ]?){1,29}[a-zA-Z]{1}$";
+
+        if (!Regex.IsMatch(topic, CountryRegex))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool Regex_LidCheck(string topic)
+    {
+        String LidRegex = @"^([a-zA-Z0-9,\-:]{1}[ ]?){1,99}[a-zA-Z0-9]{1}$";
+
+        if (!Regex.IsMatch(topic, LidRegex))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool Regex_FilenameCheck(string topic)
+    {
+        String FilenameRegex = @"^([a-zA-Z0-9_]{1,47})((\.mp3)|(\.MP3))$";
+
+        if (!Regex.IsMatch(topic, FilenameRegex))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    #endregion Regex
+
     #region Disable Boxes
 
     private void DisableBoxes()
@@ -508,6 +569,12 @@ public partial class Manage : System.Web.UI.Page
 
         string country = txtcountryAdd.Text;
 
+        if(!Regex_CountryCheck(country))
+        {
+            tblog.Text += Environment.NewLine + "~Country: Countries can only contain alphabetical letters, spaces, and '-' and size up to 30 characters.";
+            return;
+        }
+
         bool good = true;
         MySqlConnection connection = null;
 
@@ -560,11 +627,12 @@ public partial class Manage : System.Web.UI.Page
         }
 
         connection.Close();
-        
-        txtcountryAdd.Text = "";
 
         if (good)
+        {
+            txtcountryAdd.Text = "";
             tblog.Text += Environment.NewLine + "~Country: Successfully Added";
+        }
 
     }//end method
 
@@ -582,6 +650,12 @@ public partial class Manage : System.Web.UI.Page
         }
 
         string topic = txttopicAdd.Text;
+
+        if (!Regex_TopicCheck(topic))
+        {
+            tblog.Text += Environment.NewLine + "~Topic: Topics can only contain alphanumeric characters, spaces and ',' and '-' and ':' and size up to 50 characters.";
+            return;
+        }
 
         bool good = true;
         MySqlConnection connection = null;
@@ -635,11 +709,12 @@ public partial class Manage : System.Web.UI.Page
         }
 
         connection.Close();
-        
-        txttopicAdd.Text = "";
 
         if (good)
+        {
+            txttopicAdd.Text = "";
             tblog.Text += Environment.NewLine + "~Topic: Successfully Added";
+        }
 
     }//end method
 
@@ -826,8 +901,8 @@ public partial class Manage : System.Web.UI.Page
             return;
         }
         
-        string tempCountryGrade = dlCGTcountrygrade.Text;
-        string[] countrygradeSplit = tempCountryGrade.Split(' ');
+        string tempCountryGrade = dlCGTcountrygrade.SelectedValue;
+        string[] countrygradeSplit = tempCountryGrade.Split('|');
         string country = countrygradeSplit[0];
         string grade = countrygradeSplit[1];
         
@@ -915,8 +990,8 @@ public partial class Manage : System.Web.UI.Page
             return;
         }
 
-        string tempCountryGrade = dlCGTcountrygrade.Text;
-        string[] countrygradeSplit = tempCountryGrade.Split(' ');
+        string tempCountryGrade = dlCGTcountrygrade.SelectedValue;
+        string[] countrygradeSplit = tempCountryGrade.Split('|');
         string country = countrygradeSplit[0];
         string grade = countrygradeSplit[1];
         string topic = dlCGTtopic.Text;
@@ -992,6 +1067,7 @@ public partial class Manage : System.Web.UI.Page
      */
     protected void AddLesson_Click(object sender, EventArgs e)
     {
+        #region TextBox checks and File Checks
         if (dlLesson.Text.Length == 0 || txtLessonName.Text.Length == 0)
         {
             tblog.Text += Environment.NewLine + "~Lesson: not all fields filled";
@@ -1010,47 +1086,48 @@ public partial class Manage : System.Web.UI.Page
             return;
         }
 
-        /*if (fileMP3.PostedFile.ContentLength > 512000)     //500KB = 500 * 1024
+        if (fileMP3.PostedFile.ContentLength > FILE_SIZE_MAX)
         {
-            tblog.Text += Environment.NewLine + "~Lesson: file too large (>500KB)";
+            tblog.Text += Environment.NewLine + "~Lesson: file too large (>15MB (15728640 bytes))";
             return;
-        }*/
-
-
-
-
-
-        //TODO: restricct all additions to size of database columns
-
-
-        
-
+        }
+        #endregion TextBox checks and File Checks
 
         string tempCountryGradeTopic = dlLesson.Text;
-        string[] countrygradetopicSplit = tempCountryGradeTopic.Split(' ');
+        string[] countrygradetopicSplit = tempCountryGradeTopic.Split('|');
         string country = countrygradetopicSplit[0];
         string grade = countrygradetopicSplit[1];
         string topic = countrygradetopicSplit[2];
-        string name = txtLessonName.Text;
+        string lid = txtLessonName.Text;
         string lessonText = tbtext.Text.Length == 0 ? "*no words for this lesson*" : tbtext.Text;
         string filename = fileMP3.FileName;
 
-        if (filename.Length > 50)     //500KB = 500 * 1024
+        #region Filename Regex and LID Regex
+        if (!Regex_FilenameCheck(filename))
         {
-            tblog.Text += Environment.NewLine + "~Lesson: filename+extension cannot be larger than 50 characters.";
+            tblog.Text += Environment.NewLine + "~Lesson: Filename can only contain alphanumeric and '_' and size up to 50 characters with '.mp3 or .MP3' extension.";
             return;
         }
+
+        if(!Regex_LidCheck(lid))
+        {
+            tblog.Text += Environment.NewLine + "~Lesson: Lesson title can only contain alphanumeric, spaces, and ',' and '-' and ':' and size up to 100 characters.";
+            return;
+        }
+        #endregion Filename Regex and LID Regex
 
         bool good = true;
         bool canAddToDB = false;
         bool existed = false;
 
+        #region Path Work
         string physicalAudioPath = Server.MapPath(".//Audio//");
         string physicalFilePath = physicalAudioPath + filename;
 
         string virtualCurrentPath = HttpContext.Current.Request.Url.AbsoluteUri;
         string virtualAudioPath = virtualCurrentPath.Substring(0, virtualCurrentPath.LastIndexOf('/')) + "/Audio/";
         string virtualFilePath = virtualAudioPath + filename;
+        #endregion Path Work
 
         if (!System.IO.File.Exists(physicalFilePath))
         {
@@ -1094,7 +1171,7 @@ public partial class Manage : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@cid", country);
                     cmd.Parameters.AddWithValue("@gid", grade);
                     cmd.Parameters.AddWithValue("@tid", topic);
-                    cmd.Parameters.AddWithValue("@lid", name);
+                    cmd.Parameters.AddWithValue("@lid", lid);
                     cmd.Parameters.AddWithValue("@text", lessonText);
                     cmd.Parameters.AddWithValue("@path", virtualFilePath);
                     cmd.Parameters.AddWithValue("@fn", filename);
@@ -1157,9 +1234,14 @@ public partial class Manage : System.Web.UI.Page
             //TODO: email
             return;
         }
-        
-        if(good)
+
+        if (good)
+        {
+            BlanksOnDropList(dlLesson);
+            txtLessonName.Text = "";
+            tbtext.Text = "";
             tblog.Text += Environment.NewLine + "~Lesson: Successfully Added";
+        }
     }
 
     #endregion AddLesson_Click

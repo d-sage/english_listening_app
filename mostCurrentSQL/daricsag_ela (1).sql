@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 05, 2018 at 04:45 AM
+-- Generation Time: Apr 13, 2018 at 12:09 AM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -52,7 +52,7 @@ CREATE TABLE `country_grade_relationship` (
 CREATE TABLE `country_grade_topic_relation` (
   `cid` varchar(30) NOT NULL,
   `gid` tinyint(4) NOT NULL,
-  `tid` varchar(30) NOT NULL
+  `tid` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -86,9 +86,9 @@ CREATE TABLE `grades` (
 CREATE TABLE `lessons` (
   `cid` varchar(30) NOT NULL,
   `gid` tinyint(4) NOT NULL,
-  `tid` varchar(30) NOT NULL,
-  `lid` varchar(30) NOT NULL,
-  `text` varchar(500) NOT NULL,
+  `tid` varchar(50) NOT NULL,
+  `lid` varchar(100) NOT NULL,
+  `text` varchar(2500) NOT NULL,
   `path` varchar(260) NOT NULL,
   `filename` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -100,7 +100,7 @@ CREATE TABLE `lessons` (
 --
 
 CREATE TABLE `topics` (
-  `tid` varchar(30) NOT NULL
+  `tid` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

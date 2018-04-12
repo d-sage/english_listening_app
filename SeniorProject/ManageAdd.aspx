@@ -47,7 +47,7 @@
     
         <!-- Boxes and Labels for topic add -->
         <asp:Label ID="lbltopicAdd" runat="server" Text="Topic:" style="z-index: 1; left: 100px; top: 180px; position: absolute"></asp:Label>
-        <asp:TextBox ID="txttopicAdd" runat="server" MaxLength="30" style="z-index: 1; left: 150px; top: 180px; position: absolute" ></asp:TextBox>
+        <asp:TextBox ID="txttopicAdd" runat="server" MaxLength="50" style="z-index: 1; left: 150px; top: 180px; position: absolute" ></asp:TextBox>
 
         <!-- Drop Boxes for Country Grade add -->
         <asp:Label ID="lblCountryGradeAdd" runat="server" Text="Country Grade:" style="z-index: 1; left: 44px; top: 240px; position: absolute"></asp:Label>
@@ -62,7 +62,7 @@
         <!-- Boxes and Labels for lessons add -->
         <asp:Label ID="lbllessonAdd" runat="server" Text="Lesson:" style="z-index: 1; left: 95px; top: 350px; position: absolute"></asp:Label>
         <asp:DropDownList ID="dlLesson" runat="server" style="z-index: 1; left: 150px; top: 350px; position: absolute; width: 250px;"></asp:DropDownList>
-        <asp:TextBox ID="txtLessonName" runat="server" MaxLength="30" style="z-index: 1; left: 442px; top: 350px; position: absolute; width: 190px;" ></asp:TextBox>
+        <asp:TextBox ID="txtLessonName" runat="server" MaxLength="100" style="z-index: 1; left: 442px; top: 350px; position: absolute; width: 190px;" ></asp:TextBox>
         <asp:FileUpload ID="fileMP3" runat="server" accept="audio/mpeg" ErrorMessage="Only mp3 files is allowed!" ValidationExpression ="^(.+(\.mp3|\.MP3))$" style="z-index: 1; left: 850px; top: 350px; position: absolute; right: 895px;"/>
         
         <!-- Submit buttons -->
@@ -101,7 +101,7 @@
 
         <!-- TextBox for the text -->
         <asp:Label ID="lblLessonText" runat="server" Text="Enter text here:" style="z-index: 1; left: 700px; top: 350px; position: absolute;"></asp:Label>
-        <asp:TextBox ID="tbtext" runat="server" TextMode="MultiLine" MaxLength="500" style="z-index: 1; left: 644px; top: 372px; position: absolute; height: 124px; width: 193px;"></asp:TextBox>
+        <asp:TextBox ID="tbtext" runat="server" TextMode="MultiLine" MaxLength="2500" style="z-index: 1; left: 644px; top: 372px; position: absolute; height: 124px; width: 193px;"></asp:TextBox>
        
 
         <!-- Log TextBox -->
