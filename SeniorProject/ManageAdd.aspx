@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ManageAdd.aspx.cs" Inherits="Manage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ManageAdd.aspx.cs" Inherits="Manage" MaintainScrollPositionOnPostback="true" %>
 
 <!DOCTYPE html>
 
@@ -62,15 +62,15 @@
         <!-- Boxes and Labels for lessons add -->
         <asp:Label ID="lbllessonAdd" runat="server" Text="Lesson:" style="z-index: 1; left: 95px; top: 350px; position: absolute"></asp:Label>
         <asp:DropDownList ID="dlLesson" runat="server" style="z-index: 1; left: 150px; top: 350px; position: absolute; width: 250px;"></asp:DropDownList>
-        <asp:TextBox ID="txtLessonName" runat="server" MaxLength="100" style="z-index: 1; left: 442px; top: 350px; position: absolute; width: 190px;" ></asp:TextBox>
-        <asp:FileUpload ID="fileMP3" runat="server" accept="audio/mpeg" ErrorMessage="Only mp3 files is allowed!" ValidationExpression ="^(.+(\.mp3|\.MP3))$" style="z-index: 1; left: 850px; top: 350px; position: absolute; right: 895px;"/>
+        <asp:TextBox ID="txtLessonName" runat="server" MaxLength="100" style="z-index: 1; left: 410px; top: 350px; position: absolute; width: 190px;" ></asp:TextBox>
+        <asp:FileUpload ID="fileMP3" runat="server" accept="audio/mpeg" ErrorMessage="Only mp3 files is allowed!" ValidationExpression ="^(.+(\.mp3|\.MP3))$" style="z-index: 1; left: 810px; top: 350px; position: absolute; right: 895px;"/>
         
         <!-- Submit buttons -->
         <asp:Button ID="addCountry" runat="server" Text="Add Country" style="z-index: 1; left: 350px; top: 130px; position: absolute" OnClick="AddCountry_Click" />
         <asp:Button ID="addTopic" runat="server" Text="Add Topic" style="z-index: 1; left: 350px; top: 180px; position: absolute; width: 109px;" OnClick="AddTopic_Click" />
         <asp:Button ID="addCountryGrade" runat="server" Text="Add Country Grade" style="z-index: 1; left: 550px; top: 240px; position: absolute" OnClick="AddCountryGrade_Click" />
         <asp:Button ID="addCountryGradeTopic" runat="server" Text="Add Country Grade Topic" style="z-index: 1; left: 600px; top: 300px; position: absolute;" OnClick="AddCountryGradeTopic_Click" />
-        <asp:Button ID="addLesson" runat="server" Text="Add Lesson" style="z-index: 1; left: 1030px; top: 350px; position: absolute;" OnClick="AddLesson_Click" />
+        <asp:Button ID="addLesson" runat="server" Text="Add Lesson" style="z-index: 1; left: 1000px; top: 350px; position: absolute;" OnClick="AddLesson_Click" />
  
 
 
@@ -79,17 +79,16 @@
 
 
          <!-- Display Countries -->
-        <asp:Label ID="countrydisplay" runat="server" style="z-index: 1; left: 92px; top: 450px; position: absolute"></asp:Label>
-        <asp:BulletedList ID="blcountry" runat="server" style="z-index: 1; left: 85px; top: 492px; position: absolute" ></asp:BulletedList>
+        <asp:BulletedList ID="blcountry" runat="server" BorderStyle="Solid" BorderWidth="1" style="z-index: 1; left: 100px; top: 650px; position: absolute" ></asp:BulletedList>
 
         <!-- Display Grades -->
-        <asp:BulletedList ID="blgrades" runat="server" style="z-index: 1; left: 225px; top: 487px; position: absolute" ></asp:BulletedList>
+        <asp:BulletedList ID="blgrades" runat="server" BorderStyle="Solid" BorderWidth="1" style="z-index: 1; left: 230px; top: 650px; position: absolute" ></asp:BulletedList>
 
         <!-- Display Topics -->
-        <asp:BulletedList ID="bltopics" runat="server" style="z-index: 1; left: 370px; top: 487px; position: absolute" ></asp:BulletedList>
+        <asp:BulletedList ID="bltopics" runat="server" BorderStyle="Solid" BorderWidth="1" style="z-index: 1; left: 350px; top: 650px; position: absolute" ></asp:BulletedList>
 
         <!-- Display Lessons -->
-        <asp:BulletedList ID="bllessons" runat="server" style="z-index: 1; left: 522px; top: 483px; position: absolute" ></asp:BulletedList>
+        <asp:BulletedList ID="bllessons" runat="server" BorderStyle="Solid" BorderWidth="1" style="z-index: 1; left: 550px; top: 650px; position: absolute" ></asp:BulletedList>
 
 
 
@@ -100,12 +99,12 @@
 
 
         <!-- TextBox for the text -->
-        <asp:Label ID="lblLessonText" runat="server" Text="Enter text here:" style="z-index: 1; left: 700px; top: 350px; position: absolute;"></asp:Label>
-        <asp:TextBox ID="tbtext" runat="server" TextMode="MultiLine" MaxLength="2500" style="z-index: 1; left: 644px; top: 372px; position: absolute; height: 124px; width: 193px;"></asp:TextBox>
+        <asp:Label ID="lblLessonText" runat="server" Text="Enter text here:" style="z-index: 1; left: 660px; top: 330px; position: absolute;"></asp:Label>
+        <asp:TextBox ID="tbtext" runat="server" TextMode="MultiLine" MaxLength="2500" style="z-index: 1; left: 610px; top: 350px; position: absolute; height: 216px; width: 193px;"></asp:TextBox>
        
 
         <!-- Log TextBox -->
-        <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1119px; top: 0px; position: absolute; height: 700px; width: 250px;"></asp:TextBox>
+        <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1103px; top: 0px; position: absolute; height: 619px; width: 240px;"></asp:TextBox>
 
 
 

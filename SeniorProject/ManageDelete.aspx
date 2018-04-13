@@ -1,7 +1,7 @@
 ﻿
 <!-- Credit: https://asna.com/us/tech/kb/doc/scrolling-web-grid-->
 
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ManageDelete.aspx.cs" Inherits="ManageDelete" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ManageDelete.aspx.cs" Inherits="ManageDelete" MaintainScrollPositionOnPostback="true" %>
 
 <!DOCTYPE html>
 
@@ -31,19 +31,23 @@
             overflow-x: scroll;
         }
     </style>
+
 </head>
+
 <body>
     <form id="form1" runat="server">
         <div>
-            <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 330px; top: 0px; position: absolute" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
-                    <asp:Label ID="lblinfo" runat="server" Text="How would you like to change the database:" style="z-index: 1; left: 450px; top: 85px; position: absolute"></asp:Label>
-            <asp:Button ID="btndeletelink" runat="server" Text="Add" style="z-index: 1; left: 740px; top: 85px; position: absolute; width: 65px;" OnClick="Btnaddlink_Click" />
+            <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 330px; top: 0px; position:relative" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
+            <br />
+                    <asp:Label ID="lblinfo" runat="server" Text="How would you like to change the database:" style="z-index: 1; left: 450px; top: 85px; position:absolute"></asp:Label>
+            <asp:Button ID="btndeletelink" runat="server" Text="Add" style="z-index: 1; left: 740px; top: 85px; width: 65px; position:absolute" OnClick="Btnaddlink_Click" />
+            <br />
         </div>
 
         <div class="scrolling-table-container">
         <!-- Table for Country Delete / Edit -->
         <asp:GridView ID="gridCountry" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Country_RowCommand" 
-            OnRowEditing="Country_OnRowEditing" OnRowCancelingEdit="Country_OnRowCancelingEdit" OnRowUpdating="Country_OnRowUpdating" OnRowDeleting="Country_OnRowDeleting">
+            OnRowEditing="Country_OnRowEditing" OnRowCancelingEdit="Country_OnRowCancelingEdit" OnRowUpdating="Country_OnRowUpdating" OnRowDeleting="Country_OnRowDeleting" >
             <Columns>
                 <asp:BoundField HeaderText="Country" DataField="cid" ReadOnly="false"/>
                 <asp:TemplateField>
@@ -133,19 +137,7 @@
         <div>
         <!-- Error Labels -->
         <asp:Label ID="errormsgDB" runat="server" style="z-index: 1; left: 500px; top: 1000px; position: absolute"></asp:Label>
-
-
-         <!-- Display Countries -->
-        <asp:BulletedList ID="blcountry" runat="server"></asp:BulletedList>
-
-        <!-- Display Grades -->
-        <asp:BulletedList ID="blgrades" runat="server"></asp:BulletedList>
-
-        <!-- Display Topics -->
-        <asp:BulletedList ID="bltopics" runat="server"></asp:BulletedList>
-
-        <!-- Display Lessons -->
-        <asp:BulletedList ID="bllessons" runat="server"></asp:BulletedList>
+<asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1079px; top: 0px; position: absolute; height: 1095px; width: 264px;"></asp:TextBox>
         </div>
         
 
