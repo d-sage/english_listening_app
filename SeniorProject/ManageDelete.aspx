@@ -40,7 +40,7 @@
             <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 330px; top: 0px; position:relative" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
             <br />
                     <asp:Label ID="lblinfo" runat="server" Text="How would you like to change the database:" style="z-index: 1; left: 450px; top: 85px; position:absolute"></asp:Label>
-            <asp:Button ID="btndeletelink" runat="server" Text="Add" style="z-index: 1; left: 740px; top: 85px; width: 65px; position:absolute" OnClick="Btnaddlink_Click" />
+            <asp:Button ID="btndeletelink" runat="server" Text="Go To Add Page" style="z-index: 1; left: 740px; top: 85px; position:absolute" OnClick="Btnaddlink_Click" />
             <br />
         </div>
 

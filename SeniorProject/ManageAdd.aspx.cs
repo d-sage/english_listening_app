@@ -27,6 +27,12 @@ public partial class Manage : System.Web.UI.Page
     private const int FILE_NAME_LENGTH_MAX = 50;
     private const int FILE_SIZE_MAX = 15728640;
 
+    private const string DROPLIST_COUNTRY_TEXT = "country...";
+    private const string DROPLIST_TOPIC_TEXT = "topic...";
+    private const string DROPLIST_GRADE_TEXT = "grade...";
+    private const string DROPLIST_COUNTRY_GRADE_TEXT = "country grade...";
+    private const string DROPLIST_COUNTRY_GRADE_TOPIC_TEXT = "country grade topic...";
+
     //ClientScript.RegisterStartupScript(this.GetType(), "Success", "alert('Lesson: Successfully Added');", true);
 
     #region Page_Load
@@ -119,7 +125,7 @@ public partial class Manage : System.Web.UI.Page
     private void UpdateAllData()
     {
 
-        BlanksOnAllDropLists();
+        BlanksOnAllDropLists_WithText();
 
         DisableBoxes();
 
@@ -158,7 +164,7 @@ public partial class Manage : System.Web.UI.Page
     private void UpdateCountries(MySqlConnection connection)
     {
 
-        BlanksOnDropList(dlCGcountry);
+        BlanksOnDropList_WithText(dlCGcountry, DROPLIST_COUNTRY_TEXT);
 
         try
         {
@@ -295,7 +301,7 @@ public partial class Manage : System.Web.UI.Page
     private void UpdateCountryGrade(MySqlConnection connection)
     {
 
-        BlanksOnDropList(dlCGTcountrygrade);
+        BlanksOnDropList_WithText(dlCGTcountrygrade, DROPLIST_COUNTRY_GRADE_TEXT);
 
         try
         {
@@ -341,7 +347,7 @@ public partial class Manage : System.Web.UI.Page
     private void UpdateCountryGradeTopic(MySqlConnection connection)
     {
 
-        BlanksOnDropList(dlLesson);
+        BlanksOnDropList_WithText(dlLesson, DROPLIST_COUNTRY_GRADE_TOPIC_TEXT);
 
         try
         {
@@ -437,6 +443,7 @@ public partial class Manage : System.Web.UI.Page
 
     private bool Regex_TopicCheck(string topic)
     {
+        //alphanumeric and [,-:]
         String TopicRegex = @"^([a-zA-Z0-9,\-:]{1}[ ]?){1,49}[a-zA-Z0-9]{1}$";
 
         if (!Regex.IsMatch(topic, TopicRegex))
@@ -449,6 +456,7 @@ public partial class Manage : System.Web.UI.Page
 
     private bool Regex_CountryCheck(string topic)
     {
+        //alphabetic and [-]
         String CountryRegex = @"^([a-zA-Z\-]{1}[ ]?){1,29}[a-zA-Z]{1}$";
 
         if (!Regex.IsMatch(topic, CountryRegex))
@@ -461,6 +469,7 @@ public partial class Manage : System.Web.UI.Page
 
     private bool Regex_LidCheck(string topic)
     {
+        //alphanumeric and [,-:]
         String LidRegex = @"^([a-zA-Z0-9,\-:]{1}[ ]?){1,99}[a-zA-Z0-9]{1}$";
 
         if (!Regex.IsMatch(topic, LidRegex))
@@ -473,6 +482,7 @@ public partial class Manage : System.Web.UI.Page
 
     private bool Regex_FilenameCheck(string topic)
     {
+        //alphanumeric and [_]
         String FilenameRegex = @"^([a-zA-Z0-9_]{1,47})((\.mp3)|(\.MP3))$";
 
         if (!Regex.IsMatch(topic, FilenameRegex))
@@ -505,7 +515,14 @@ public partial class Manage : System.Web.UI.Page
 
     #endregion Disable Boxes
 
-    #region BlanksOnDropLists Methods
+    #region DropLists Methods
+
+    private void BlanksOnDropList_WithText(DropDownList ddl, string text)
+    {
+        ddl.Items.Clear();
+        ddl.Items.Add(new ListItem(text, String.Empty));
+        ddl.SelectedIndex = 0;
+    }
 
     private void BlanksOnDropList(DropDownList ddl)
     {
@@ -514,47 +531,38 @@ public partial class Manage : System.Web.UI.Page
         ddl.SelectedIndex = 0;
     }
 
-    private void BlanksOnAllDropLists()
+    private void BlanksOnAllDropLists_WithText()
     {
         //initiate dropdownlists to have a blank
 
         //for country_grade
         dlCGcountry.Items.Clear();
-        dlCGcountry.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlCGcountry.Items.Add(new ListItem(DROPLIST_COUNTRY_TEXT, String.Empty));
         dlCGcountry.SelectedIndex = 0;
 
         dlCGgrade.Items.Clear();
-        dlCGgrade.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlCGgrade.Items.Add(new ListItem(DROPLIST_GRADE_TEXT, String.Empty));
         dlCGgrade.SelectedIndex = 0;
 
         //for country_grade_topic
         dlCGTcountrygrade.Items.Clear();
-        dlCGTcountrygrade.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlCGTcountrygrade.Items.Add(new ListItem(DROPLIST_COUNTRY_GRADE_TEXT, String.Empty));
         dlCGTcountrygrade.SelectedIndex = 0;
 
         dlCGTtopic.Items.Clear();
-        dlCGTtopic.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlCGTtopic.Items.Add(new ListItem(DROPLIST_TOPIC_TEXT, String.Empty));
         dlCGTtopic.SelectedIndex = 0;
 
         //for lesson
         dlLesson.Items.Clear();
-        dlLesson.Items.Add(new ListItem(String.Empty, String.Empty));
+        dlLesson.Items.Add(new ListItem(DROPLIST_COUNTRY_GRADE_TOPIC_TEXT, String.Empty));
         dlLesson.SelectedIndex = 0;
-
-
-
+        
     }
 
-    private void BlanksOnAllDropLists_exceptCountries()
-    {
-        /*
-        dlCGgrade.Items.Clear();
-        dlCGgrade.Items.Add(new ListItem(String.Empty, String.Empty));
-        dlCGgrade.SelectedIndex = 0;
-        */
-    }
+    #endregion DropLists Methods
 
-    #endregion BlanksOnDropLists Methods
+    #region Add Methods
 
     #region AddCountry_Click
 
@@ -712,6 +720,7 @@ public partial class Manage : System.Web.UI.Page
 
         if (good)
         {
+            //TODO: update topics
             txttopicAdd.Text = "";
             tblog.Text += Environment.NewLine + "~Topic: Successfully Added";
         }
@@ -727,16 +736,16 @@ public partial class Manage : System.Web.UI.Page
     protected void CountryGrade_country_IndexChange(object sender, EventArgs e)
     {
 
-        BlanksOnDropList(dlCGgrade);
+        BlanksOnDropList_WithText(dlCGgrade, DROPLIST_GRADE_TEXT);
         DisableBox(dlCGgrade);
 
-        if (dlCGcountry.Text.Length == 0)
+        if (dlCGcountry.SelectedValue.Length == 0)
         {
             tblog.Text += Environment.NewLine + "~Country_Grade: country field not filled";
             return;
         }
         
-        string country = dlCGcountry.Text;
+        string country = dlCGcountry.SelectedValue;
         
         bool canContinue = true;
 
@@ -777,6 +786,13 @@ public partial class Manage : System.Web.UI.Page
                 }
             }
 
+            connection.Close();
+
+            if (!canContinue)
+            {
+                UpdateCountries(connection);
+            }
+
         }//end try
         catch (MySqlException mse)
         {
@@ -799,11 +815,11 @@ public partial class Manage : System.Web.UI.Page
         }
 
         connection.Close();
-        
+        /*
         if (!canContinue)
         {
             UpdateAllData();
-        }
+        }*/
 
         dlCGgrade.Enabled = canContinue;
 
@@ -815,14 +831,14 @@ public partial class Manage : System.Web.UI.Page
 
     protected void AddCountryGrade_Click(object sender, EventArgs e)
     {
-        if (dlCGcountry.Text.Length == 0 || dlCGgrade.Text.Length == 0)
+        if (dlCGcountry.SelectedValue.Length == 0 || dlCGgrade.SelectedValue.Length == 0)
         {
-            tblog.Text += Environment.NewLine + "~Country_Grade: not all fields filled,";
+            tblog.Text += Environment.NewLine + "~Country_Grade: not all fields filled";
             return;
         }
 
-        String country = dlCGcountry.Text;
-        String grade = dlCGgrade.Text;
+        String country = dlCGcountry.SelectedValue;
+        String grade = dlCGgrade.SelectedValue;
 
         bool good = true;
         MySqlConnection connection = null;
@@ -842,6 +858,15 @@ public partial class Manage : System.Web.UI.Page
 
             cmd.ExecuteNonQuery();
 
+            connection.Close();
+
+            //TODO: test
+            UpdateCountryGrade(connection);
+            dlCGcountry.SelectedIndex = 0;
+            DisableBox(dlCGgrade);
+            BlanksOnDropList_WithText(dlCGgrade, DROPLIST_GRADE_TEXT);
+            //test
+
         }//end try
         catch (MySqlException mse)
         {
@@ -874,10 +899,12 @@ public partial class Manage : System.Web.UI.Page
 
         connection.Close();
         
-        UpdateAllData();
+        //UpdateAllData();
 
-        if(good)
+        if (good)
+        {
             tblog.Text += Environment.NewLine + "~Country_Grade: Successfully Added";
+        }
 
     }
 
@@ -892,10 +919,10 @@ public partial class Manage : System.Web.UI.Page
     protected void CountryGradeTopic_countrygrade_IndexChange(object sender, EventArgs e)
     {
 
-        BlanksOnDropList(dlCGTtopic);
+        BlanksOnDropList_WithText(dlCGTtopic, DROPLIST_TOPIC_TEXT);
         DisableBox(dlCGTtopic);
 
-        if (dlCGTcountrygrade.Text.Length == 0)
+        if (dlCGTcountrygrade.SelectedValue.Length == 0)
         {
             tblog.Text += Environment.NewLine + "~Country_Grade_Topic: country_grade field filled.";
             return;
@@ -946,6 +973,13 @@ public partial class Manage : System.Web.UI.Page
                 }
             }
 
+            connection.Close();
+
+            if (!canContinue)
+            {
+                UpdateCountryGrade(connection);
+            }
+
         }//end try
         catch (MySqlException mse)
         {
@@ -968,11 +1002,11 @@ public partial class Manage : System.Web.UI.Page
         }
 
         connection.Close();
-
+        /*
         if (!canContinue)
         {
             UpdateAllData();
-        }
+        }*/
 
         dlCGTtopic.Enabled = canContinue;
 
@@ -984,7 +1018,7 @@ public partial class Manage : System.Web.UI.Page
 
     protected void AddCountryGradeTopic_Click(object sender, EventArgs e)
     {
-        if (dlCGTcountrygrade.Text.Length == 0 || dlCGTtopic.Text.Length == 0)
+        if (dlCGTcountrygrade.SelectedValue.Length == 0 || dlCGTtopic.SelectedValue.Length == 0)
         {
             tblog.Text += Environment.NewLine + "Country_Grade_Topic: not all fields filled";
             return;
@@ -1014,6 +1048,16 @@ public partial class Manage : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@tid", topic);
 
                 cmd.ExecuteNonQuery();
+
+                connection.Close();
+                
+                //TODO: test
+                UpdateCountryGradeTopic(connection);
+                dlCGTcountrygrade.SelectedIndex = 0;
+                DisableBox(dlCGTtopic);
+                BlanksOnDropList_WithText(dlCGTtopic, DROPLIST_TOPIC_TEXT);
+                //test
+
             }
 
         }//end try
@@ -1047,11 +1091,12 @@ public partial class Manage : System.Web.UI.Page
         }
 
         connection.Close();
-        
-        UpdateAllData();
+        //UpdateAllData();
 
-        if(good)
+        if (good)
+        {
             tblog.Text += Environment.NewLine + "~Country_Grade_Topic: Successfully Added";
+        }
 
     }
 
@@ -1068,7 +1113,7 @@ public partial class Manage : System.Web.UI.Page
     protected void AddLesson_Click(object sender, EventArgs e)
     {
         #region TextBox checks and File Checks
-        if (dlLesson.Text.Length == 0 || txtLessonName.Text.Length == 0)
+        if (dlLesson.SelectedValue.Length == 0 || txtLessonName.Text.Length == 0)
         {
             tblog.Text += Environment.NewLine + "~Lesson: not all fields filled";
             return;
@@ -1093,7 +1138,7 @@ public partial class Manage : System.Web.UI.Page
         }
         #endregion TextBox checks and File Checks
 
-        string tempCountryGradeTopic = dlLesson.Text;
+        string tempCountryGradeTopic = dlLesson.SelectedValue;
         string[] countrygradetopicSplit = tempCountryGradeTopic.Split('|');
         string country = countrygradetopicSplit[0];
         string grade = countrygradetopicSplit[1];
@@ -1237,7 +1282,7 @@ public partial class Manage : System.Web.UI.Page
 
         if (good)
         {
-            BlanksOnDropList(dlLesson);
+            BlanksOnDropList_WithText(dlLesson, DROPLIST_COUNTRY_GRADE_TOPIC_TEXT);
             txtLessonName.Text = "";
             tbtext.Text = "";
             tblog.Text += Environment.NewLine + "~Lesson: Successfully Added";
@@ -1245,6 +1290,8 @@ public partial class Manage : System.Web.UI.Page
     }
 
     #endregion AddLesson_Click
+
+    #endregion Add Methods
 
     #region GetSession
 

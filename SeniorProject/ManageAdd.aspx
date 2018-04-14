@@ -32,7 +32,7 @@
     <form id="form1" runat="server">
         <div>
             <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 330px; top: 0px; position: absolute" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
-            <asp:Button ID="btndeletelink" runat="server" Text="Delete" style="z-index: 1; left: 740px; top: 85px; position: absolute" OnClick="Btndeletelink_Click" />
+            <asp:Button ID="btndeletelink" runat="server" Text="Go To Delete/Edit Page" style="z-index: 1; left: 740px; top: 85px; position: absolute" OnClick="Btndeletelink_Click" />
         </div>
 
         <!-- Info for opening web page -->
@@ -42,25 +42,25 @@
 
         <!-- Add to database controls -->
         <!-- Boxes and Labels for country add -->
-        <asp:Label ID="lblCountryAdd" runat="server" Text="Country:" style="z-index: 1; left: 85px; top: 130px; position: absolute"></asp:Label>
+        <asp:Label ID="lblCountryAdd" runat="server" Text="Add a Country:" style="z-index: 1; left: 42px; top: 130px; position: absolute"></asp:Label>
         <asp:TextBox ID="txtcountryAdd" runat="server" MaxLength="30" style="z-index: 1; left: 150px; top: 130px; position: absolute" ></asp:TextBox>
     
         <!-- Boxes and Labels for topic add -->
-        <asp:Label ID="lbltopicAdd" runat="server" Text="Topic:" style="z-index: 1; left: 100px; top: 180px; position: absolute"></asp:Label>
+        <asp:Label ID="lbltopicAdd" runat="server" Text="Add a Topic:" style="z-index: 1; left: 60px; top: 180px; position: absolute"></asp:Label>
         <asp:TextBox ID="txttopicAdd" runat="server" MaxLength="50" style="z-index: 1; left: 150px; top: 180px; position: absolute" ></asp:TextBox>
 
         <!-- Drop Boxes for Country Grade add -->
-        <asp:Label ID="lblCountryGradeAdd" runat="server" Text="Country Grade:" style="z-index: 1; left: 44px; top: 240px; position: absolute"></asp:Label>
+        <asp:Label ID="lblCountryGradeAdd" runat="server" Text="Add a Grade<br>to a Country:" style="z-index: 1; left: 57px; top: 230px; position: absolute"></asp:Label>
         <asp:DropDownList ID="dlCGcountry" runat="server" style="z-index: 1; left: 150px; top: 240px; position: absolute; width: 170px;" AutoPostBack="True" OnSelectedIndexChanged="CountryGrade_country_IndexChange"></asp:DropDownList>
         <asp:DropDownList ID="dlCGgrade" runat="server" style="z-index: 1; left: 350px; top: 240px; position: absolute; width: 170px;"></asp:DropDownList>
 
         <!-- Drop Boxes for Country Grade Topic add -->
-        <asp:Label ID="lblCountryGradeTopicAdd" runat="server" Text="Country Grade Topic:" style="z-index: 1; left: 7px; top: 300px; position: absolute"></asp:Label>
+        <asp:Label ID="lblCountryGradeTopicAdd" runat="server" Text="Add a Topic to a<br>Country's Grade:" style="z-index: 1; left: 31px; top: 290px; position: absolute"></asp:Label>
         <asp:DropDownList ID="dlCGTcountrygrade" runat="server" style="z-index: 1; left: 150px; top: 300px; position: absolute; width: 210px;" AutoPostBack="True" OnSelectedIndexChanged="CountryGradeTopic_countrygrade_IndexChange"></asp:DropDownList>
         <asp:DropDownList ID="dlCGTtopic" runat="server" style="z-index: 1; left: 400px; top: 300px; position: absolute; width: 170px;"></asp:DropDownList>
         
         <!-- Boxes and Labels for lessons add -->
-        <asp:Label ID="lbllessonAdd" runat="server" Text="Lesson:" style="z-index: 1; left: 95px; top: 350px; position: absolute"></asp:Label>
+        <asp:Label ID="lbllessonAdd" runat="server" Text="Add a Lesson:" style="z-index: 1; left: 50px; top: 350px; position: absolute"></asp:Label>
         <asp:DropDownList ID="dlLesson" runat="server" style="z-index: 1; left: 150px; top: 350px; position: absolute; width: 250px;"></asp:DropDownList>
         <asp:TextBox ID="txtLessonName" runat="server" MaxLength="100" style="z-index: 1; left: 410px; top: 350px; position: absolute; width: 190px;" ></asp:TextBox>
         <asp:FileUpload ID="fileMP3" runat="server" accept="audio/mpeg" ErrorMessage="Only mp3 files is allowed!" ValidationExpression ="^(.+(\.mp3|\.MP3))$" style="z-index: 1; left: 810px; top: 350px; position: absolute; right: 895px;"/>
