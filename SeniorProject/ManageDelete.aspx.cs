@@ -160,7 +160,7 @@ public partial class ManageDelete : System.Web.UI.Page
             connection.Open();
 
             //display the countries
-            String sql = "SELECT cid FROM countries";
+            String sql = "SELECT cid FROM countries ORDER BY cid ASC";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
 
@@ -222,7 +222,7 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             connection.Open();
 
-            String sql = "SELECT * FROM topics";
+            String sql = "SELECT tid FROM topics ORDER BY tid ASC";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
             
@@ -259,7 +259,7 @@ public partial class ManageDelete : System.Web.UI.Page
             connection.Open();
 
             //display the countries
-            String sql = "SELECT * FROM country_grade_relationship";
+            String sql = "SELECT cid,gid FROM country_grade_relationship ORDER BY cid,gid ASC";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
             
@@ -295,7 +295,7 @@ public partial class ManageDelete : System.Web.UI.Page
             connection.Open();
 
             //display the countries
-            String sql = "SELECT * FROM country_grade_topic_relation";
+            String sql = "SELECT cid,gid,tid FROM country_grade_topic_relation ORDER BY cid,gid,tid ASC";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
             
@@ -331,7 +331,7 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             connection.Open();
 
-            String sql = "SELECT cid,gid,tid,lid,text,filename FROM lessons";
+            String sql = "SELECT cid,gid,tid,lid,text,filename FROM lessons  ORDER BY cid,gid,tid,lid ASC";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
 

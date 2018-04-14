@@ -25,10 +25,29 @@
            background-color: aqua;
         }
         .scrolling-table-container {
-            height: 200px;
-            width: 80%;
+            display: inline-block;
+            height: 340px;
             overflow-y: scroll;
             overflow-x: scroll;
+        }
+        .inlineBlockDiv{
+            display: inline-block;
+            height: 290px;
+            overflow-y: scroll;
+            overflow-x: scroll;
+        }
+        .inlineDiv{
+            display: inline;
+        }
+        .blockDiv{
+            display: block;
+        }
+        div{
+            padding-bottom: 5px;
+        }
+        .heading{
+            width: 80%;
+            text-align:center
         }
     </style>
 
@@ -36,31 +55,31 @@
 
 <body>
     <form id="form1" runat="server">
-        <div>
-            <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 330px; top: 0px; position:relative" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
+        <div class="heading">
+            <asp:Label ID="SiteName" runat="server" Text="English Listening APP" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
             <br />
-                    <asp:Label ID="lblinfo" runat="server" Text="How would you like to change the database:" style="z-index: 1; left: 450px; top: 85px; position:absolute"></asp:Label>
-            <asp:Button ID="btndeletelink" runat="server" Text="Go To Add Page" style="z-index: 1; left: 740px; top: 85px; position:absolute" OnClick="Btnaddlink_Click" />
+            <asp:Label ID="lblinfo" runat="server" Text="How would you like to change the database:" ></asp:Label>
+            <asp:Button ID="btndeletelink" runat="server" Text="Go To Add Page" OnClick="Btnaddlink_Click" />
             <br />
         </div>
 
-        <div class="scrolling-table-container">
+        <div class="inlineBlockDiv">
         <!-- Table for Country Delete / Edit -->
         <asp:GridView ID="gridCountry" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Country_RowCommand" 
             OnRowEditing="Country_OnRowEditing" OnRowCancelingEdit="Country_OnRowCancelingEdit" OnRowUpdating="Country_OnRowUpdating" OnRowDeleting="Country_OnRowDeleting" >
             <Columns>
                 <asp:BoundField HeaderText="Country" DataField="cid" ReadOnly="false"/>
-                <asp:TemplateField>
+                <asp:TemplateField HeaderText="Delete">
 			        <ItemTemplate>
 				        <asp:Button ID="deleteCountry" runat="server" CommandName="Delete" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return confirm('Are you sure you want to delete this country?');"/>
 			        </ItemTemplate>
 		        </asp:TemplateField>
-                <asp:CommandField ShowEditButton="true" ButtonType="Button" EditText="Edit" UpdateText="Update" CancelText="Cancel" />
+                <asp:CommandField HeaderText="Edit" ShowEditButton="true" ButtonType="Button" EditText="Edit" UpdateText="Update" CancelText="Cancel" />
 	        </Columns>
         </asp:GridView>
         </div>
 
-        <div class="scrolling-table-container">
+        <div class="inlineBlockDiv">
         <!-- Table for Topic Delete / Edit -->
 
         <asp:GridView ID="gridTopic" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Topic_RowCommand"
@@ -72,12 +91,12 @@
 				        <asp:Button ID="deleteTopic" runat="server" CommandName="Delete" Text="Delete" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return confirm('Are you sure you want to delete this topic?');"/>
 			        </ItemTemplate>
 		        </asp:TemplateField>
-                <asp:CommandField ShowEditButton="true" ButtonType="Button" EditText="Edit" UpdateText="Update" CancelText="Cancel" />
+                <asp:CommandField HeaderText="Edit" ShowEditButton="true" ButtonType="Button" EditText="Edit" UpdateText="Update" CancelText="Cancel" />
 	        </Columns>
         </asp:GridView>
         </div>
 
-        <div class="scrolling-table-container">
+        <div class="inlineBlockDiv">
         <!-- Table for Country_Grade Delete -->
         
         <asp:GridView ID="gridCountryGrade" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGrade_RowCommand"
@@ -94,7 +113,7 @@
         </asp:GridView>
         </div>
 
-        <div class="scrolling-table-container">
+        <div class="inlineBlockDiv">
         <!-- Table for Country_Grade_Topic Delete -->
          
         <asp:GridView ID="gridCountryGradeTopic" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGradeTopic_RowCommand"
@@ -137,7 +156,7 @@
         <div>
         <!-- Error Labels -->
         <asp:Label ID="errormsgDB" runat="server" style="z-index: 1; left: 500px; top: 1000px; position: absolute"></asp:Label>
-<asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1079px; top: 0px; position: absolute; height: 1095px; width: 264px;"></asp:TextBox>
+<asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1079px; top: 0px; position: absolute; height: 750px; width: 264px;"></asp:TextBox>
         </div>
         
 
