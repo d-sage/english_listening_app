@@ -720,7 +720,6 @@ public partial class Manage : System.Web.UI.Page
 
         if (good)
         {
-            //TODO: update topics
             txttopicAdd.Text = "";
             tblog.Text += Environment.NewLine + "~Topic: Successfully Added";
         }
@@ -790,7 +789,7 @@ public partial class Manage : System.Web.UI.Page
 
             if (!canContinue)
             {
-                UpdateCountries(connection);
+                dlCGcountry.SelectedIndex = 0;
             }
 
         }//end try
@@ -815,11 +814,6 @@ public partial class Manage : System.Web.UI.Page
         }
 
         connection.Close();
-        /*
-        if (!canContinue)
-        {
-            UpdateAllData();
-        }*/
 
         dlCGgrade.Enabled = canContinue;
 
@@ -859,13 +853,8 @@ public partial class Manage : System.Web.UI.Page
             cmd.ExecuteNonQuery();
 
             connection.Close();
-
-            //TODO: test
+            
             UpdateCountryGrade(connection);
-            dlCGcountry.SelectedIndex = 0;
-            DisableBox(dlCGgrade);
-            BlanksOnDropList_WithText(dlCGgrade, DROPLIST_GRADE_TEXT);
-            //test
 
         }//end try
         catch (MySqlException mse)
@@ -899,10 +888,11 @@ public partial class Manage : System.Web.UI.Page
 
         connection.Close();
         
-        //UpdateAllData();
-
         if (good)
         {
+            dlCGcountry.SelectedIndex = 0;
+            BlanksOnDropList_WithText(dlCGgrade, DROPLIST_GRADE_TEXT);
+            DisableBox(dlCGgrade);
             tblog.Text += Environment.NewLine + "~Country_Grade: Successfully Added";
         }
 
@@ -959,7 +949,7 @@ public partial class Manage : System.Web.UI.Page
                 {
                     if (!rdr.HasRows)
                     {
-                        ClientScript.RegisterStartupScript(this.GetType(), "Invalid Entry", "alert('Country Grade Topic: no content to add');", true);
+                        tblog.Text += Environment.NewLine + "Country Grade Topic: no content to add";
                         canContinue = false;
                     }
 
@@ -977,7 +967,7 @@ public partial class Manage : System.Web.UI.Page
 
             if (!canContinue)
             {
-                UpdateCountryGrade(connection);
+                dlCGTcountrygrade.SelectedIndex = 0;
             }
 
         }//end try
@@ -1002,12 +992,7 @@ public partial class Manage : System.Web.UI.Page
         }
 
         connection.Close();
-        /*
-        if (!canContinue)
-        {
-            UpdateAllData();
-        }*/
-
+        
         dlCGTtopic.Enabled = canContinue;
 
     }
@@ -1051,12 +1036,7 @@ public partial class Manage : System.Web.UI.Page
 
                 connection.Close();
                 
-                //TODO: test
                 UpdateCountryGradeTopic(connection);
-                dlCGTcountrygrade.SelectedIndex = 0;
-                DisableBox(dlCGTtopic);
-                BlanksOnDropList_WithText(dlCGTtopic, DROPLIST_TOPIC_TEXT);
-                //test
 
             }
 
@@ -1091,10 +1071,12 @@ public partial class Manage : System.Web.UI.Page
         }
 
         connection.Close();
-        //UpdateAllData();
 
         if (good)
         {
+            dlCGTcountrygrade.SelectedIndex = 0;
+            BlanksOnDropList_WithText(dlCGTtopic, DROPLIST_TOPIC_TEXT);
+            DisableBox(dlCGTtopic);
             tblog.Text += Environment.NewLine + "~Country_Grade_Topic: Successfully Added";
         }
 
@@ -1282,7 +1264,7 @@ public partial class Manage : System.Web.UI.Page
 
         if (good)
         {
-            BlanksOnDropList_WithText(dlLesson, DROPLIST_COUNTRY_GRADE_TOPIC_TEXT);
+            dlLesson.SelectedIndex = 0;
             txtLessonName.Text = "";
             tbtext.Text = "";
             tblog.Text += Environment.NewLine + "~Lesson: Successfully Added";
@@ -1292,6 +1274,8 @@ public partial class Manage : System.Web.UI.Page
     #endregion AddLesson_Click
 
     #endregion Add Methods
+
+    #region Helpers
 
     #region GetSession
 
@@ -1356,9 +1340,10 @@ public partial class Manage : System.Web.UI.Page
         }//end try
         catch (Exception e)
         {
-            errormsgDB.Text = "Email failed to send! " + e.ToString();
+            tblog.Text += "Email failed to send! " + e.ToString();
         }//end catch
     }//end method
 
-    
+    #endregion Helpers
+
 }//end class
