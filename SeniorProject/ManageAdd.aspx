@@ -22,6 +22,14 @@
            width: 100%;
            background-color: aqua;
         }
+
+        .scrolling-table-container {
+            display: inline-block;
+            height: 400px;
+            width: 100%;
+            overflow-y: scroll;
+            overflow-x: scroll;
+        }
     </style>
 
 
@@ -78,21 +86,35 @@
         <asp:Label ID="errormsgDB" runat="server" style="z-index: 1; left: 386px; top: 448px; position: absolute"></asp:Label>
 
 
-         <!-- Display Countries -->
+         <!-- Display Countries 
         <asp:BulletedList ID="blcountry" runat="server" BorderStyle="Solid" BorderWidth="1" style="z-index: 1; left: 100px; top: 650px; position: absolute" ></asp:BulletedList>
 
-        <!-- Display Grades -->
+        <!-- Display Grades 
         <asp:BulletedList ID="blgrades" runat="server" BorderStyle="Solid" BorderWidth="1" style="z-index: 1; left: 230px; top: 650px; position: absolute" ></asp:BulletedList>
 
-        <!-- Display Topics -->
+        <!-- Display Topics 
         <asp:BulletedList ID="bltopics" runat="server" BorderStyle="Solid" BorderWidth="1" style="z-index: 1; left: 350px; top: 650px; position: absolute" ></asp:BulletedList>
-
-        <!-- Display Lessons -->
+             
+        <!-- Display Lessons 
         <asp:BulletedList ID="bllessons" runat="server" BorderStyle="Solid" BorderWidth="1" style="z-index: 1; left: 550px; top: 650px; position: absolute" ></asp:BulletedList>
+        -->
 
 
 
-
+        <div class="scrolling-table-container" style="z-index: 1; left: 0px; top: 580px; position: absolute">
+        <!-- Table for Lesson Display -->
+        
+        <asp:GridView ID="gridLesson" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowDataBound="Lesson_DataBound">
+            <Columns>
+                <asp:BoundField HeaderText="Country" DataField="cid" ReadOnly="true"/>
+                <asp:BoundField HeaderText="Grade" DataField="gid" ReadOnly="true"/>
+                <asp:BoundField HeaderText="Topic" DataField="tid" ReadOnly="true"/>
+                <asp:BoundField HeaderText="Title" DataField="lid"/>
+                <asp:BoundField HeaderText="Text" DataField="text"/>
+                <asp:BoundField HeaderText="Filename" DataField="filename" ReadOnly="true"/>
+	        </Columns>
+        </asp:GridView>
+        </div>
 
 
 
@@ -104,7 +126,21 @@
        
 
         <!-- Log TextBox -->
-        <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1103px; top: 0px; position: absolute; height: 619px; width: 240px;"></asp:TextBox>
+        <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1103px; top: 0px; position: absolute; height: 563px; width: 240px;"></asp:TextBox>
+
+
+
+       
+
+
+        
+
+
+
+       
+
+
+        
 
 
 

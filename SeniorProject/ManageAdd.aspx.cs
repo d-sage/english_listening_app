@@ -8,6 +8,7 @@ using System.Web;
 using System.Net.Mail;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Data;
 
 public partial class Manage : System.Web.UI.Page
 {
@@ -392,7 +393,7 @@ public partial class Manage : System.Web.UI.Page
 
     private void UpdateLessons(MySqlConnection connection)
     {
-
+        GridLessons(connection);
         try
         {
             connection.Open();
@@ -1345,5 +1346,51 @@ public partial class Manage : System.Web.UI.Page
     }//end method
 
     #endregion Helpers
+
+    #region LessonDisplay
+
+    private void GridLessons(MySqlConnection connection)
+    {
+        try
+        {
+            connection.Open();
+
+            String sql = "SELECT cid,gid,tid,lid,text,filename FROM lessons  ORDER BY cid,gid,tid,lid ASC";
+
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
+
+            DataTable dt = new DataTable();
+            MySqlDataAdapter src = new MySqlDataAdapter(cmd);
+            src.Fill(dt);
+            gridLesson.DataSource = dt;
+            gridLesson.DataBind();
+
+        }
+        catch (MySqlException mse)
+        {
+            //TODO: email
+            string text = MySqlExceptionNumberHandler(mse.Number);
+            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+        }
+        catch (Exception e)
+        {
+            //TODO: email
+            tblog.Text += Environment.NewLine + "~Error: contact admin";
+        }
+
+        connection.Close();
+    }
+
+    protected void Lesson_DataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            e.Row.Cells[4].Attributes.Add("style", "width:770px;word-break:break-all;word-wrap:break-word;");
+        }
+    }
+
+    #endregion LessonDisplay
+
+
 
 }//end class
