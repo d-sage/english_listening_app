@@ -1,3 +1,8 @@
+//TODO
+//make text box half screen and adjust the rest of screen accordingly
+//see if its possible to have text follow audio
+//speed up and slow down rate of audio along with a default button.
+
 import React from 'react';
 import {
   Image,
@@ -7,27 +12,22 @@ import {
   TouchableHighlight,
   View,
   ScrollView,
+  Platform,
 } from 'react-native';
-import { Audio, SQLite, FileSystem, Asset, Permissions } from 'expo';
+import { Audio, SQLite, FileSystem, Asset } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import styles from "./Styles.js";
 
-class Icon {
-  constructor(module, width, height) {
-    this.module = module;
-    this.width = width;
-    this.height = height;
-    Asset.fromModule(this.module).downloadAsync();
-  }
-}
-
-const ICON_RECORD_BUTTON = new Icon(require('./assets/images/record_button.png'), 70, 119);
-const ICON_RECORDING = new Icon(require('./assets/images/record_icon.png'), 20, 14);
-const ICON_PLAY_BUTTON = new Icon(require('./assets/images/play_button.png'), 34, 51);
-const ICON_PAUSE_BUTTON = new Icon(require('./assets/images/pause_button.png'), 34, 51);
-const ICON_STOP_BUTTON = new Icon(require('./assets/images/stop_button.png'), 22, 22);
-const ICON_DOWNLOAD_BUTTON = new Icon(require('./assets/images/download_button.png'), 10, 10);
-const ICON_DELETE_BUTTON = new Icon(require('./assets/images/delete_button.png'), 10, 10);
+const ICON_RECORD_BUTTON = require('./assets/images/record_button.png');
+const ICON_RECORDING = require('./assets/images/record_icon.png');
+const ICON_PLAY_BUTTON = require('./assets/images/play_button.png');
+const ICON_PAUSE_BUTTON = require('./assets/images/pause_button.png');
+const ICON_STOP_BUTTON = require('./assets/images/stop_button.png');
+const ICON_DOWNLOAD_BUTTON = require('./assets/images/download_button.png');
+const ICON_DELETE_BUTTON = require('./assets/images/delete_button.png');
+const ICON_UP_RATE_BUTTON = require('./assets/images/rateUp_button.png');
+const ICON_DOWN_RATE_BUTTON = require('./assets/images/rateDown_button.png');
+const ICON_RESET_RATE_BUTTON = require('./assets/images/rateReset_button.png');
 
 const BACKGROUND_COLOR = '#87ceeb';
 const DISABLED_OPACITY = 0.5;
@@ -60,13 +60,16 @@ export default class AudioPlayer extends React.Component{
 			isPlaybackAllowed: false,
 			audioShouldPlay: false,
 			recordingShouldPlay: false,
-			haveRecordingPermissions: false,
+			rate: 1.0,
 		};
 		this.audioPlayPause = this.audioPlayPause.bind(this);
 		this.audioStop = this.audioStop.bind(this);
 		this.audioDownload = this.audioDownload.bind(this);
 		this.audioDelete = this.audioDelete.bind(this);
 		this.recordingPressed = this.recordingPressed.bind(this);
+		this.setRateUp = this.setRateUp.bind(this);
+		this.setRateDown = this.setRateDown.bind(this);
+		this.setRateDefault = this.setRateDefault.bind(this);
 		this.recordingSettings = JSON.parse(JSON.stringify(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY));
 	}
 	
@@ -75,7 +78,6 @@ export default class AudioPlayer extends React.Component{
 		if(this.audio == null)
 			this.loadAudio();
 		Expo.ScreenOrientation.allow(Expo.ScreenOrientation.Orientation.PORTRAIT_UP);
-		this.askForPermissions();
 	}
 	
 	componentWillUnmount() {
@@ -95,13 +97,6 @@ export default class AudioPlayer extends React.Component{
 			this.recordingFinished = null;
 		}
 	}	
-
-	askForPermissions = async () => {
-		const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-		this.setState({
-			haveRecordingPermissions: response.status === 'granted',
-		});
-	};
   
 	async loadAudio() {	
 		this.setState({ isLoading: true, });
@@ -361,25 +356,50 @@ export default class AudioPlayer extends React.Component{
 		return padWithZero(minutes) + ':' + padWithZero(seconds); 
 	}
 	
+	setRate = async (rate, shouldCorrectPitch) => {
+		if (this.audio != null) {
+			try { await this.audio.setRateAsync(rate, shouldCorrectPitch); } 
+			catch (error) {}// Rate changing could not be performed, possibly because the client's Android API is too old.
+		}
+	};
+	
+	setRateUp(){
+		if(Platform.Version < 23)
+			alert('Your version of android is not supported to change the rate.');
+		else if(this.state.rate < 5.0){
+			this.setState({rate: this.state.rate+0.2,});
+			this.setRate(this.state.rate, true);	
+		}
+		else
+			alert('Can\'t set rate any higher.');
+	}
+	
+	setRateDown(){
+		if(Platform.Version < 23)
+			alert('Your version of android is not supported to change the rate.');
+		else if(this.state.rate > 0.0){
+			this.setState({rate: this.state.rate-0.2,});
+			this.setRate(this.state.rate, true);
+		}
+		else
+			alert('Can\'t set rate any lower.');
+	}
+	
+	setRateDefault(){
+		if(Platform.Version < 23)
+			alert('Your version of android is not supported to change the rate.');
+		else{
+			this.setState({rate: 1.0,});
+			this.setRate(1.0, true);
+		}
+	}
+	
 	render(){
 		var texts;
 		if(this.props.navigation.state.params.textSubs == 'undefined') 
-			texts = "No Text To Diaplay, so here's some advice!\n" +
-			"10 REASONS YOU KNOW YOU BOUGHT A BAD COMPUTER\n"+
-			"1. Lower corner of screen has the words Etch-a-sketch on it. \n"+
-			"2. It's celebrity spokesman is that Hey Vern! guy. \n"+
-			"3. In order to start it you need some jumper cables and a friend's car. \n"+
-			"4. It's slogan is Pentium: redefining mathematics. \n"+
-			"5. The quick reference manual is 120 pages long. \n"+
-			"6. Whenever you turn it on, all the dogs in your neighborhood start howling. \n"+
-			"7. The screen often displays the message, Ain't it break time yet? \n"+
-			"8. The manual contains only one sentence: Good Luck! \n"+
-			"9. The only chip inside is a Dorito. \n"+
-			"10. You've decided that your computer is an excellent addition to your fabulous paperweight collection.";
+			texts = "No Text To Diaplay";
 		else
 			texts = this.props.navigation.state.params.textSubs;
-		if(!this.state.haveRecordingPermissions)
-			return(<View><Text>You must enable permissions to use this app.</Text></View>);
 		return(
 			<View>
 				<View style={styles.textContainer}>
@@ -388,97 +408,126 @@ export default class AudioPlayer extends React.Component{
 					</ScrollView>
 				</View>
 				<View style={styles.playerContainer}>
-					<Slider
-						style={styles.playbackSlider}
-						value={this.audioSeekSliderPosition()}
-						onValueChange={this.audioSeekSliderValueChange}
-						onSlidingComplete={this.audioSeekSlidingComplete}
-					/>  
-					<Text>{this.audioRemaining()}</Text>
+					<View style={styles.sliderContainer}>
+						<Slider
+							style={styles.playbackSlider}
+							value={this.audioSeekSliderPosition()}
+							onValueChange={this.audioSeekSliderValueChange}
+							onSlidingComplete={this.audioSeekSlidingComplete}
+						/>  
+						<Text>{this.audioRemaining()}</Text>
+					</View>
 					<View style={styles.buttonsContainer}>
-						<View style={styles.downloadContainer}>
-							<View style={styles.buttonPlayerContainer}>
+						<View style={styles.fifthButtonsContainer}>
+							<TouchableHighlight
+								underlayColor={BACKGROUND_COLOR}
+								style={styles.wrapper}
+								onPress={this.props.navigation.state.params.connected ? this.audioDownload : this.audioDelete}
+								disabled={this.state.isLoading}>
+								<Image style={styles.image} source={this.props.navigation.state.params.connected ? ICON_DOWNLOAD_BUTTON : ICON_DELETE_BUTTON} />
+							</TouchableHighlight>
+							<Text>{this.props.navigation.state.params.connected ? 'Download' : 'Delete'}</Text>
+						</View>
+						<View style={styles.fifthButtonsContainer }>
+							<TouchableHighlight
+								underlayColor={BACKGROUND_COLOR}
+								style={styles.wrapper}
+								onPress={this.setRateUp}
+								disabled={this.state.isLoading}>
+								<Image style={styles.image} source={ICON_UP_RATE_BUTTON} />
+							</TouchableHighlight>
+								<TouchableHighlight
+								underlayColor={BACKGROUND_COLOR}
+								style={styles.wrapper}
+								onPress={this.setRateDown}
+								disabled={this.state.isLoading}>
+								<Image style={styles.image} source={ICON_DOWN_RATE_BUTTON} />
+							</TouchableHighlight>
+							<Text>{'Rate'}</Text>
+						</View>
+						<View style={styles.fifthButtonsContainer}>
+							<View style={styles.eighthButtonsContainer}>
 								<TouchableHighlight
 									underlayColor={BACKGROUND_COLOR}
 									style={styles.wrapper}
-									onPress={this.props.navigation.state.params.connected ? this.audioDownload : this.audioDelete}
+									onPress={this.setRateDefault}
 									disabled={this.state.isLoading}>
-									<Image style={styles.image} source={this.props.navigation.state.params.connected ? ICON_DOWNLOAD_BUTTON.module : ICON_DELETE_BUTTON.module} />
+									<Image style={styles.image} source={ICON_RESET_RATE_BUTTON} />
 								</TouchableHighlight>
-								<Text>{this.props.navigation.state.params.connected ? 'Download' : 'Delete'}</Text>
+								<Text>{'Default'}</Text>
 							</View>
 						</View>
-						<View style={styles.playStopContainer}>
-							<View style={styles.buttonPlayerContainer}>
-								<TouchableHighlight
-									underlayColor={BACKGROUND_COLOR}
-									style={styles.wrapper}
-									onPress={this.audioPlayPause}
-									disabled={this.state.isLoading}>
-									<Image style={styles.image}
-										source={ this.state.isAudioPlaying ? ICON_PAUSE_BUTTON.module : ICON_PLAY_BUTTON.module }
-									/>
-								</TouchableHighlight>
-								<Text>{this.state.isAudioPlaying ? 'Pause' : 'Play'}</Text>
-							</View>
-							<View style={styles.buttonPlayerContainer}>
-								<TouchableHighlight
-									underlayColor={BACKGROUND_COLOR}
-									style={styles.wrapper}
-									onPress={this.audioStop}
-									disabled={this.state.isLoading}>
-									<Image style={styles.image} source={ICON_STOP_BUTTON.module}/>
-								</TouchableHighlight>
-								<Text>{'Stop'}</Text>
-							</View>
+						<View style={styles.fifthButtonsContainer}>
+							<TouchableHighlight
+								underlayColor={BACKGROUND_COLOR}
+								style={styles.wrapper}
+								onPress={this.audioPlayPause}
+								disabled={this.state.isLoading}>
+								<Image style={styles.image}
+									source={ this.state.isAudioPlaying ? ICON_PAUSE_BUTTON : ICON_PLAY_BUTTON }
+								/>
+							</TouchableHighlight>
+							<Text>{this.state.isAudioPlaying ? 'Pause' : 'Play'}</Text>
+						</View>
+						<View style={styles.fifthButtonsContainer}>
+							<TouchableHighlight
+								underlayColor={BACKGROUND_COLOR}
+								style={styles.wrapper}
+								onPress={this.audioStop}
+								disabled={this.state.isLoading}>
+								<Image style={styles.image} source={ICON_STOP_BUTTON}/>
+							</TouchableHighlight>
+							<Text>{'Stop'}</Text>
 						</View>
 					</View>
 				</View>
 				<View style={styles.playerContainer}>
-					<Slider
-						style={styles.playbackSlider}
-						value={this.recordingFinishedSeekSliderPosition()}
-						onValueChange={this.recordingSeekSliderValueChange}
-						onSlidingComplete={this.recordingFinishedSeekSlidingComplete}
-						disabled={!this.state.isPlaybackAllowed || this.state.isLoading}
-					/>
-					<Text style={{opacity: this.recordingFinished != null ? 1.0 : 0.0 }}>{this.recordingRemaining()}</Text>
+					<View style={styles.sliderContainer}>
+						<Slider
+							style={styles.playbackSlider}
+							value={this.recordingFinishedSeekSliderPosition()}
+							onValueChange={this.recordingSeekSliderValueChange}
+							onSlidingComplete={this.recordingFinishedSeekSlidingComplete}
+							disabled={!this.state.isPlaybackAllowed || this.state.isLoading}
+						/>
+						<Text style={{opacity: this.recordingFinished != null ? 1.0 : 0.0 }}>{this.recordingRemaining()}</Text>
+					</View>
 					<View style={styles.buttonsContainer}>
-						<View style={styles.downloadRecordContainer}>
-							<View style={styles.buttonPlayerContainer}>
+						<View style={styles.halfButtonsContainer}>
+							<View style={styles.fourthButtonsContainer}>
 								<TouchableHighlight
 									underlayColor={BACKGROUND_COLOR}
 									style={styles.wrapper}
 									onPress={this.recordingPressed}>
-									<Image style={styles.image} source={this.state.isRecording ? ICON_RECORDING.module : ICON_RECORD_BUTTON.module }/>
+									<Image style={styles.image} source={this.state.isRecording ? ICON_RECORDING : ICON_RECORD_BUTTON }/>
 								</TouchableHighlight>
 								<Text>{this.state.isRecording ? 'Stop' : 'Record'}</Text>
 							</View>
-							<View style={styles.recordingContainer}>
-								<Text> {this.state.isRecording ? 'RECORDING:' : ''} </Text>
+							<View style={styles.fourthButtonsContainer}>
+								<Text style={{fontSize: 13, color: 'red'}}> {this.state.isRecording ? 'RECORDING:' : ''} </Text>
 								<Text style={{opacity: this.state.isRecording ? 1.0 : 0.0 }}>{this.getRecordingTimestamp()}</Text>
 							</View>
 						</View>
-						<View style={[styles.playStopContainer, { opacity: !this.state.isPlaybackAllowed || this.state.isLoading ? DISABLED_OPACITY : 1.0, },]}>
-							<View style={styles.buttonPlayerContainer}>
+						<View style={[styles.halfButtonsContainer, { opacity: !this.state.isPlaybackAllowed || this.state.isLoading ? DISABLED_OPACITY : 1.0, },]}>
+							<View style={styles.fourthButtonsContainer}>
 								<TouchableHighlight
 									underlayColor={BACKGROUND_COLOR}
 									style={styles.wrapper}
 									onPress={this.recordingFinishedPlayPause}
 									disabled={!this.state.isPlaybackAllowed || this.state.isLoading}>
 									<Image style={styles.image}
-										source={ this.state.isRecordingPlaying ? ICON_PAUSE_BUTTON.module : ICON_PLAY_BUTTON.module }
+										source={ this.state.isRecordingPlaying ? ICON_PAUSE_BUTTON : ICON_PLAY_BUTTON }
 									/>
 								</TouchableHighlight>
 								<Text>{this.state.isRecordingPlaying ? 'Pause' : 'Play'}</Text>
 							</View>
-							<View style={styles.buttonPlayerContainer}>
+							<View style={styles.fourthButtonsContainer}>
 								<TouchableHighlight
 									underlayColor={BACKGROUND_COLOR}
 									style={styles.wrapper}
 									onPress={this.recordingFinishedStop}
 									disabled={!this.state.isPlaybackAllowed || this.state.isLoading}>
-									<Image style={styles.image} source={ICON_STOP_BUTTON.module}/>
+									<Image style={styles.image} source={ICON_STOP_BUTTON}/>
 								</TouchableHighlight>
 								<Text>{'Stop'}</Text>
 							</View>

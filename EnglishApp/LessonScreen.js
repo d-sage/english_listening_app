@@ -12,7 +12,7 @@ class LessonScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text>Lesson Screen</Text>
+					<Text style={{fontSize: 20}}>Please select a Lesson</Text>
 				</View>
 				<ListView
 					enableEmptySections

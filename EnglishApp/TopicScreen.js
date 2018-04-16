@@ -12,7 +12,7 @@ class TopicScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text>Topic Screen</Text>
+					<Text style={{fontSize: 20}}>Please select a Topic</Text>
 				</View>
 				<ListView
 					enableEmptySections
@@ -60,7 +60,7 @@ class TopicScreen extends React.Component {
 			}
 		}).done();
 	}
-
+	
 	fetchOfflineData(){
 		db.transaction(tx => {
 			tx.executeSql('SELECT DISTINCT cid,gid,tid FROM lessons WHERE cid = ? AND gid = ?;', [this.props.navigation.state.params.country,this.props.navigation.state.params.grade], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
