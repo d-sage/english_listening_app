@@ -125,8 +125,9 @@
         <asp:TextBox ID="tbtext" runat="server" TextMode="MultiLine" MaxLength="2500" style="z-index: 1; left: 610px; top: 350px; position: absolute; height: 216px; width: 193px;"></asp:TextBox>
        
 
-        <!-- Log TextBox -->
+        <!-- Log TextBox/ title name -->
         <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1103px; top: 0px; position: absolute; height: 563px; width: 240px;"></asp:TextBox>
+        <asp:Label ID="lbltitle" runat="server" Text="Title:" style="z-index: 1; left: 490px; top: 330px; position: absolute; bottom: 125px;"></asp:Label>
 
 
 
@@ -148,6 +149,33 @@
 
 
         
+
+
+
+       
+
+
+
+
+
+       
+
+
+        
+
+
+
+       
+
+
+        
+
+
+
+       
+
+
+       
 
 
 
