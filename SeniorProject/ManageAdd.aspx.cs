@@ -580,7 +580,7 @@ public partial class Manage : System.Web.UI.Page
 
         if(!Regex_CountryCheck(country))
         {
-            tblog.Text += Environment.NewLine + "~Country: Countries can only contain alphabetical letters, spaces, and '-' and size up to 30 characters.";
+            tblog.Text += Environment.NewLine + "~Country: Countries can only contain: alphabetical characters, spaces, and dashes. Max length = up to 30 characters.";
             return;
         }
 
@@ -662,7 +662,7 @@ public partial class Manage : System.Web.UI.Page
 
         if (!Regex_TopicCheck(topic))
         {
-            tblog.Text += Environment.NewLine + "~Topic: Topics can only contain alphanumeric characters, spaces and ',' and '-' and ':' and size up to 50 characters.";
+            tblog.Text += Environment.NewLine + "~Topic: Topics can only contain: alphanumeric characters, spaces, commas, dashes and colons. Max length = up to 50 characters.";
             return;
         }
 
@@ -772,7 +772,7 @@ public partial class Manage : System.Web.UI.Page
                 {
                     if (!rdr.HasRows)
                     {
-                        tblog.Text += Environment.NewLine + "~Country_Grade: no content to add";
+                        tblog.Text += Environment.NewLine + "~Country_Grade: all grades are associated with " + country + ", no more grades to add";
                         canContinue = false;
                     }
 
@@ -915,7 +915,7 @@ public partial class Manage : System.Web.UI.Page
 
         if (dlCGTcountrygrade.SelectedValue.Length == 0)
         {
-            tblog.Text += Environment.NewLine + "~Country_Grade_Topic: country_grade field filled.";
+            tblog.Text += Environment.NewLine + "~Country_Grade_Topic: country_grade field not filled.";
             return;
         }
         
@@ -950,7 +950,7 @@ public partial class Manage : System.Web.UI.Page
                 {
                     if (!rdr.HasRows)
                     {
-                        tblog.Text += Environment.NewLine + "Country Grade Topic: no content to add";
+                        tblog.Text += Environment.NewLine + "Country Grade Topic: all topics are associated with " + country + "~~" + grade + ", no more topics to add";
                         canContinue = false;
                     }
 
@@ -1133,13 +1133,13 @@ public partial class Manage : System.Web.UI.Page
         #region Filename Regex and LID Regex
         if (!Regex_FilenameCheck(filename))
         {
-            tblog.Text += Environment.NewLine + "~Lesson: Filename can only contain alphanumeric and '_' and size up to 50 characters with '.mp3 or .MP3' extension.";
+            tblog.Text += Environment.NewLine + "~Lesson: Filename can only contain: alphanumeric characters and dashes. Max length = up to 50 characters with '.mp3 or .MP3' extension.";
             return;
         }
 
         if(!Regex_LidCheck(lid))
         {
-            tblog.Text += Environment.NewLine + "~Lesson: Lesson title can only contain alphanumeric, spaces, and ',' and '-' and ':' and size up to 100 characters.";
+            tblog.Text += Environment.NewLine + "~Lesson: Lesson title can only contain: alphanumeric characters, spaces, commas, dashes, and colons. Max length = up to 100 characters.";
             return;
         }
         #endregion Filename Regex and LID Regex
@@ -1168,7 +1168,7 @@ public partial class Manage : System.Web.UI.Page
             {
                 canAddToDB = false;
                 //TODO: email
-                tblog.Text += Environment.NewLine + "~Error: could not save file | contact admin";
+                tblog.Text += Environment.NewLine + "~Error: could not save/upload file | contact admin";
                 return;
             }
         }
