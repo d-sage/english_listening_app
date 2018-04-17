@@ -1278,6 +1278,15 @@ public partial class Manage : System.Web.UI.Page
 
     #region Helpers
 
+    #region Clear Log
+
+    protected void ClearLog_Click(object sender, EventArgs e)
+    {
+        tblog.Text = "";
+    }
+
+    #endregion Clear Log
+
     #region GetSession
 
     private bool GetSession()

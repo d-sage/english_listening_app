@@ -126,7 +126,9 @@
        
 
         <!-- Log TextBox/ title name -->
-        <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1103px; top: 0px; position: absolute; height: 563px; width: 240px;"></asp:TextBox>
+        <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1103px; top: 20px; position: absolute; height: 563px; width: 240px;"></asp:TextBox>
+        <asp:Label ID="lblLogBox" runat="server" Text="Log Box" style="z-index: 1; left: 1150px; top: 0px; position: absolute;"></asp:Label>
+        <asp:Button ID="btnClearLog" runat="server" Text="Clear Log" style="z-index: 1; left: 1024px; top: 0px; position: absolute;" OnClick="ClearLog_Click"/>
         <asp:Label ID="lbltitle" runat="server" Text="Title:" style="z-index: 1; left: 490px; top: 330px; position: absolute; bottom: 125px;"></asp:Label>
 
 
