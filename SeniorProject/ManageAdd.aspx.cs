@@ -41,11 +41,26 @@ public partial class Manage : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         bool run = GetSession();
-
+        bool isPageRefreshed = false;
         //makes sure they aren't going around the login
         if (run)
         {
-            
+            if (!IsPostBack)
+            {
+                ViewState["ViewStateId"] = System.Guid.NewGuid().ToString();
+                Session["SessionId"] = ViewState["ViewStateId"].ToString();
+            }
+            else
+            {
+                if (ViewState["ViewStateId"].ToString() != Session["SessionId"].ToString())
+                {
+                    isPageRefreshed = true;
+                    Response.Redirect("ManageAdd.aspx");
+                }
+
+                Session["SessionId"] = System.Guid.NewGuid().ToString();
+                ViewState["ViewStateId"] = Session["SessionId"].ToString();
+            }
             if (!Page.IsPostBack)
             {
                 UpdateAllData();

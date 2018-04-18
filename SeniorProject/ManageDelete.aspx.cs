@@ -1509,7 +1509,7 @@ public partial class ManageDelete : System.Web.UI.Page
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            e.Row.Cells[4].Attributes.Add("style", "width:200px;word-break:break-all;word-wrap:break-word;");
+            e.Row.Cells[4].Attributes.Add("style", "width:500px;word-break:break-all;word-wrap:break-word;");
         }
     }
     #endregion Lesson DataBound

@@ -5,7 +5,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-
         <style type="text/css">
         html 
         {
@@ -39,13 +38,13 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 330px; top: 0px; position: absolute" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
-            <asp:Button ID="btndeletelink" runat="server" Text="Go To Delete/Edit Page" style="z-index: 1; left: 740px; top: 85px; position: absolute" OnClick="Btndeletelink_Click" />
+            <asp:Label ID="SiteName" runat="server" Text="English Listening APP" style="z-index: 1; left: 0px; top: 0px; position: absolute" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
+            <asp:Button ID="btndeletelink" runat="server" Text="Go To Delete/Edit Page" style="z-index: 1; left: 297px; top: 82px; position: absolute; right: 452px;" OnClick="Btndeletelink_Click" />
         </div>
 
         <!-- Info for opening web page -->
-        <asp:Label ID="lblinfo" runat="server" Text="How would you like to change the database:" style="z-index: 1; left: 450px; top: 85px; position: absolute"></asp:Label>
-        <asp:Label ID="lbladd" runat="server" Text="Add to Database:" style="z-index: 1; left: 175px; top: 100px; position: absolute"></asp:Label>
+        <asp:Label ID="lblinfo" runat="server" Text="How would you like to change the database:" style="z-index: 1; left: 0px; top: 85px; position: absolute"></asp:Label>
+        <asp:Label ID="lbladd" runat="server" Text="Add to Database:" style="z-index: 1; left: 176px; top: 106px; position: absolute"></asp:Label>
 
 
         <!-- Add to database controls -->
@@ -126,9 +125,9 @@
        
 
         <!-- Log TextBox/ title name -->
-        <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1103px; top: 20px; position: absolute; height: 563px; width: 240px;"></asp:TextBox>
-        <asp:Label ID="lblLogBox" runat="server" Text="Log Box" style="z-index: 1; left: 1150px; top: 0px; position: absolute;"></asp:Label>
-        <asp:Button ID="btnClearLog" runat="server" Text="Clear Log" style="z-index: 1; left: 1024px; top: 0px; position: absolute;" OnClick="ClearLog_Click"/>
+        <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1103px; top: 41px; position: absolute; height: 527px; width: 240px;"></asp:TextBox>
+        <asp:Label ID="lblLogBox" runat="server" Text="Log Box:" style="z-index: 1; left: 1107px; top: 20px; position: absolute; width: 73px;"></asp:Label>
+        <asp:Button ID="btnClearLog" runat="server" Text="Clear Log" style="z-index: 1; left: 1265px; top: 15px; position: absolute;" OnClick="ClearLog_Click"/>
         <asp:Label ID="lbltitle" runat="server" Text="Title:" style="z-index: 1; left: 490px; top: 330px; position: absolute; bottom: 125px;"></asp:Label>
 
 

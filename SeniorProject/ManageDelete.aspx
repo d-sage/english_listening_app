@@ -8,6 +8,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
+    <script type="text/javascript">
+    function warning()
+    {
+        window.location = "ManageDelete.aspx";;
+    }
+    window.onbeforeunload = warning;
+    </script>
     <style type="text/css">
         html 
         {
@@ -27,6 +34,7 @@
         .scrolling-table-container {
             display: inline-block;
             height: 340px;
+            width: 83%;
             overflow-y: scroll;
             overflow-x: scroll;
         }
@@ -47,7 +55,7 @@
         }
         .heading{
             width: 80%;
-            text-align:center
+            text-align:left
         }
     </style>
 
@@ -114,7 +122,7 @@
         <div class="inlineBlockDiv">
             <!-- Table for Country_Grade_Topic Delete -->
             <asp:GridView ID="gridCountryGradeTopic" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGradeTopic_RowCommand"
-                OnRowDeleting="CountryGradeTopic_OnRowDeleting">
+                OnRowDeleting="CountryGradeTopic_OnRowDeleting" Width="480px">
                 <Columns>
                     <asp:BoundField HeaderText="Country" DataField="cid"/>
                     <asp:BoundField HeaderText="Grade" DataField="gid"/>
@@ -155,13 +163,15 @@
         
         
         
-        <div>
             <!-- Error Labels -->
-            <asp:Label ID="errormsgDB" runat="server" style="z-index: 1; left: 500px; top: 1000px; position: absolute"></asp:Label>
-            <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1079px; top: 20px; position: absolute; height: 750px; width: 264px;"></asp:TextBox>
-            <asp:Label ID="lblLogBox" runat="server" Text="Log Box" style="z-index: 1; left: 1026px; top: 0px; position: absolute;"></asp:Label>
-            <asp:Button ID="btnClearLog" runat="server" Text="Clear Log" style="z-index: 1; left: 1000px; top: 0px; position: absolute;" OnClick="ClearLog_Click"/>
-        </div>
+            <asp:Label ID="errormsgDB" runat="server" style="z-index: 1; left: 809px; top: 35px; position: absolute"></asp:Label>
+            <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1120px; top: 34px; position: absolute; height: 723px; width: 223px;"></asp:TextBox>
+        
+
+
+            <asp:Label ID="lblLogBox" runat="server" Text="Log Box:" style="z-index: 1; left: 1121px; top: 11px; position: absolute; width: 75px;"></asp:Label>
+            <asp:Button ID="btnClearLog" runat="server" Text="Clear Log" style="z-index: 1; left: 1267px; top: 8px; position: absolute;" OnClick="ClearLog_Click"/>
+
         
 
     </form>
