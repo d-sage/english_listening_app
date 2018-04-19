@@ -34,7 +34,7 @@
         .scrolling-table-container {
             display: inline-block;
             height: 340px;
-            width: 83%;
+            width: 100%;
             overflow-y: scroll;
             overflow-x: scroll;
         }
@@ -165,7 +165,7 @@
         
             <!-- Error Labels -->
             <asp:Label ID="errormsgDB" runat="server" style="z-index: 1; left: 809px; top: 35px; position: absolute"></asp:Label>
-            <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1120px; top: 34px; position: absolute; height: 723px; width: 223px;"></asp:TextBox>
+            <asp:TextBox ID="tblog" runat="server" TextMode="MultiLine" style="z-index: 1; left: 1120px; top: 34px; position: absolute; height: 376px; width: 223px;"></asp:TextBox>
         
 
 
