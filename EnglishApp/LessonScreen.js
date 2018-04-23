@@ -12,7 +12,7 @@ class LessonScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text style={{fontSize: 20}}>Please select a Lesson</Text>
+					<Text style={{fontSize: 20}}>Select a Lesson</Text>
 				</View>
 				<ListView
 					enableEmptySections
@@ -29,7 +29,8 @@ class LessonScreen extends React.Component {
 									 textSubs: rowData.text+"",
 									 path: rowData.path,
 									 name: rowData.filename+"",
-									 connected: this.props.navigation.state.params.connected})}
+									 connected: this.props.navigation.state.params.connected,
+									 fromRecoring: false,})}
 								title = {rowData.lid+""}
 							/>
 						</View>

@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, } from 'react-native';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 const BACKGROUND_COLOR = '#87ceeb';
@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
 	mainContainer: {
 		flex: 1,
 		justifyContent: 'center',
+		paddingTop: (Platform.OS === 'ios') ? 20 : 0, 
 	},
 	buttonContainer: {
 		margin: 15
@@ -18,12 +19,19 @@ const styles = StyleSheet.create({
 	dataContainer: {
 		flex: 1,
 		marginTop: 20,
-	},
+	},	
+	text: {
+		textAlign: 'center',
+        fontSize: 15,
+        color: 'black',
+        padding: 10,
+		backgroundColor: BACKGROUND_COLOR,
+    },	
 	textBox: {
 		fontSize: 20,
 		margin: 10,
-		textAlign: 'center',
-		backgroundColor: 'white',
+		textAlign: 'left',
+		backgroundColor: 'whitesmoke',
 	},
 	image: {
 		backgroundColor: BACKGROUND_COLOR, 
@@ -49,11 +57,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		alignItems: 'center',
 		alignSelf: 'stretch',
-		minHeight: DEVICE_HEIGHT / 2.5,
-		maxHeight: DEVICE_HEIGHT / 2.5,
 		backgroundColor: 'whitesmoke',
 		borderWidth: 1.0,
-		borderColor: 'black'
+		borderColor: 'black',
 	}, 
 	buttonsContainer: {
 		flex: 1,
@@ -61,33 +67,22 @@ const styles = StyleSheet.create({
 		width: DEVICE_WIDTH,
 		height: (DEVICE_HEIGHT / 2) / 2,
 	},
-	halfButtonsContainer: {
-		flex: 1,
-		flexDirection: 'row',
-		width: DEVICE_WIDTH / 2,
-		height: (DEVICE_HEIGHT / 2) / 2,
-	},
-	fourthButtonsContainer: {
+	buttonsContainers: {
 		flex: 1,
 		flexDirection: 'column',
 		alignItems: 'center',
-		width: DEVICE_WIDTH / 4,
-		height: (DEVICE_HEIGHT / 4) / 2,
-	},
-	fifthButtonsContainer: {
-		flex: 1,
-		flexDirection: 'column',
-		alignItems: 'center',
-		width: DEVICE_WIDTH / 5,
-		height: (DEVICE_HEIGHT / 4) / 2,
 	},
 	sliderContainer: {
 		flex: 1,
 		flexDirection: 'column',
 		alignItems: 'center',
 		width: DEVICE_WIDTH,
-		height: (DEVICE_HEIGHT / 4) / 2,
 	},
-})
+	thinContainer: {
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+},{ headerMode: 'none' })
 
 export default styles; 

@@ -12,7 +12,7 @@ class GradeScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text style={{fontSize: 20}}>Please select a Grade</Text>
+					<Text style={{fontSize: 20}}>Select a Grade</Text>
 				</View>
 				<ListView
 					enableEmptySections

@@ -13,7 +13,7 @@ class CountryScreen extends React.Component {
 			return(		
 				<View style={styles.mainContainer}>
 					<View style={styles.headerContainer}>
-						<Text style={{fontSize: 20}}>Please select a Country</Text>
+						<Text style={{fontSize: 20}}>Select a Country</Text>
 					</View>
 					<ListView
 						enableEmptySections
@@ -50,7 +50,7 @@ class CountryScreen extends React.Component {
 		this.askForPermissions();
 		db.transaction(tx => {
 			//tx.executeSql('DROP TABLE IF EXISTS lessons;');
-			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (cid varchar(30) NOT NULL, gid tinyint(4) NOT NULL, tid varchar(30) NOT NULL, lid varchar(30) NOT NULL, text varchar(500) NOT NULL, path varchar(260) NOT NULL, PRIMARY KEY (cid, gid, tid, lid));');
+			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (cid varchar(30) NOT NULL, gid tinyint(4) NOT NULL, tid varchar(50) NOT NULL, lid varchar(100) NOT NULL, text varchar(2500) NOT NULL, path varchar(260) NOT NULL, PRIMARY KEY (cid, gid, tid, lid));');
 		});
 	}
 

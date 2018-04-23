@@ -1,7 +1,7 @@
 //TODO
-//make text box half screen and adjust the rest of screen accordingly
-//see if its possible to have text follow audio
-//speed up and slow down rate of audio along with a default button.
+//nameing dates stack up while recording from within playing a saved recording.
+//do we want text in textbox when playing a recording? what if they pick a recording from a diff lesson?
+
 
 import React from 'react';
 import {
@@ -13,6 +13,10 @@ import {
   View,
   ScrollView,
   Platform,
+  LayoutAnimation, 
+  UIManager, 
+  TouchableOpacity,
+  Button,
 } from 'react-native';
 import { Audio, SQLite, FileSystem, Asset } from 'expo';
 import { NavigationActions } from 'react-navigation';
@@ -28,11 +32,16 @@ const ICON_DELETE_BUTTON = require('./assets/images/delete_button.png');
 const ICON_UP_RATE_BUTTON = require('./assets/images/rateUp_button.png');
 const ICON_DOWN_RATE_BUTTON = require('./assets/images/rateDown_button.png');
 const ICON_RESET_RATE_BUTTON = require('./assets/images/rateReset_button.png');
+const ICON_SAVE_BUTTON = require('./assets/images/save_button.png');
+const ICON_OPEN_BUTTON = require('./assets/images/open_button.png');
 
 const BACKGROUND_COLOR = '#87ceeb';
 const DISABLED_OPACITY = 0.5;
+const RATE_MAX = 2.0;
+const RATE_MIN = 0.5;
+const MAX_SAVES = 15;
 const db = SQLite.openDatabase('db.db');
-const resetAction = NavigationActions.reset({
+const resetActionCountry = NavigationActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: 'Country' })],
 });
@@ -44,6 +53,8 @@ export default class AudioPlayer extends React.Component{
 		this.audio = null;
 		this.recordingFinished = null;
 		this.recording = null;
+		//this.recordings = [];
+		this.tempRecording = null;
 		this.audioIsSeeking = false;
 		this.recordingIsSeeking = false;
 		this.audioShouldPlayAtEndOfSeek = false;
@@ -61,6 +72,13 @@ export default class AudioPlayer extends React.Component{
 			audioShouldPlay: false,
 			recordingShouldPlay: false,
 			rate: 1.0,
+			onLayoutPlayerHeight: 0,
+			onLayoutRecorderHeight: 0,			
+			modifiedRecorderHeight: 0,
+			modifiedPlayerHeight: 0,
+			expandedRecorder: false,
+			expandedPlayer: false,
+			recordings: [],
 		};
 		this.audioPlayPause = this.audioPlayPause.bind(this);
 		this.audioStop = this.audioStop.bind(this);
@@ -70,14 +88,18 @@ export default class AudioPlayer extends React.Component{
 		this.setRateUp = this.setRateUp.bind(this);
 		this.setRateDown = this.setRateDown.bind(this);
 		this.setRateDefault = this.setRateDefault.bind(this);
+		this.openRecordings = this.openRecordings.bind(this);
+		this.recordingSave = this.recordingSave.bind(this);
 		this.recordingSettings = JSON.parse(JSON.stringify(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY));
+		if( Platform.OS === 'android' )
+			UIManager.setLayoutAnimationEnabledExperimental( true )
 	}
 	
 	componentDidMount() {
 		this.mounted = true;
-		if(this.audio == null)
-			this.loadAudio();
+		this.loadAudio();
 		Expo.ScreenOrientation.allow(Expo.ScreenOrientation.Orientation.PORTRAIT_UP);
+		this.openRecordings();
 	}
 	
 	componentWillUnmount() {
@@ -94,7 +116,7 @@ export default class AudioPlayer extends React.Component{
 		if(this.recordingFinished != null){
 			this.recordingFinished.stopAsync();
 			this.recordingFinished.unloadAsync();
-			this.recordingFinished = null;
+			this.recordingFinished = null; 
 		}
 	}	
   
@@ -105,7 +127,7 @@ export default class AudioPlayer extends React.Component{
 			await this.audio.loadAsync({uri: this.props.navigation.state.params.path });
 			await this.audio.setIsLoopingAsync(true);			
 		} 
-		catch (e) { alert('Error Loading Audio: ' + e); }
+		catch (e) { alert(e); }
 		this.setState({ isLoading: false, });
 	}
 	
@@ -141,24 +163,48 @@ export default class AudioPlayer extends React.Component{
 	}
 	
 	audioDownload(){
-		db.transaction(tx => {
-			tx.executeSql('INSERT OR IGNORE INTO lessons (cid, gid, tid, lid, text, path) values (?, ?, ?, ?, ?, ?)', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.textSubs, FileSystem.documentDirectory + this.props.navigation.state.params.name]);
-		});
-		alert('Downloading File, Please wait. You will get an alert when download has finished.');
-		FileSystem.downloadAsync(this.props.navigation.state.params.path,
-			FileSystem.documentDirectory + this.props.navigation.state.params.name ).then(({ uri }) => {
-				alert('Finished Downloading To Directory:\n ' + uri);
-		}).catch(error => { alert("ERROR Downloading Audio: " + error); });
+		if(!this.props.navigation.state.params.fromRecording){
+			db.transaction(tx => {
+				tx.executeSql('INSERT OR IGNORE INTO lessons (cid, gid, tid, lid, text, path) values (?, ?, ?, ?, ?, ?)', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.textSubs, FileSystem.documentDirectory + this.props.navigation.state.params.name]);
+			});
+			alert('Downloading File, Please wait. You will get an alert when download has finished.');
+			FileSystem.downloadAsync(this.props.navigation.state.params.path,
+				FileSystem.documentDirectory + this.props.navigation.state.params.name ).then(({ uri }) => {
+					alert('Finished Downloading To Directory:\n ' + uri);
+			}).catch(error => { alert("ERROR Downloading Audio: " + error); });
+		}
+		else
+			alert("Cannot Download Saved Recording");
 	}
 	
-	audioDelete() {
-		this.audioStop();
-		db.transaction(tx => {
-			tx.executeSql('DELETE FROM lessons WHERE cid = ? AND gid = ? AND tid = ? AND lid = ? AND path = ?;', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.path]);
-		});
-		FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} );
-		this.props.navigation.dispatch(resetAction);
-		alert('Finished Deleting Audio File');
+	async audioDelete() {
+		if(this.audio != null){
+			this.audioStop();
+			if(!this.props.navigation.state.params.fromRecording){
+				
+				db.transaction(tx => {
+					tx.executeSql('DELETE FROM lessons WHERE cid = ? AND gid = ? AND tid = ? AND lid = ? AND path = ?;', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.path]);
+				});
+				FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} );
+				alert('Finished Deleting Audio File');
+				this.props.navigation.dispatch(resetActionCountry);
+			}
+			else{
+				FileSystem.deleteAsync( FileSystem.documentDirectory +'/recordings/' + this.props.navigation.state.params.name, {idempotent: true} );
+				alert('Finished Deleting Recording');
+				await this.openRecordings();
+				this.props.navigation.navigate('Recordings',
+												{country: this.props.navigation.state.params.country,
+												grade: this.props.navigation.state.params.grade,
+												topic: this.props.navigation.state.params.topic,
+												lid: this.props.navigation.state.params.lid,
+												textSubs: this.props.navigation.state.params.text,
+												path: this.props.navigation.state.params.path,
+												name: this.props.navigation.state.params.name,
+												connected: this.props.navigation.state.params.connected,
+												recordings: this.state.recordings});
+			}
+		}
 	}
 	
 	audioRemaining(){
@@ -247,8 +293,10 @@ export default class AudioPlayer extends React.Component{
   
 	async recordingStop() {
 		this.setState({ isLoading: true, });
-		try { await this.recording.stopAndUnloadAsync(); } 
-		catch (error) {}// Do nothing -- we are already unloaded.
+		try { await this.recording.stopAndUnloadAsync();
+			  this.tempRecording = this.recording;
+		} 
+		catch (error) {}// Do nothing -- we are already unloaded.	
 		await Audio.setAudioModeAsync({
 			allowsRecordingIOS: false,
 			interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
@@ -280,12 +328,43 @@ export default class AudioPlayer extends React.Component{
 			else
 				this.recordingFinished.playAsync();  
 		}
+		else
+			alert('recording is null');
 	};
 	
 	recordingFinishedStop = () => {
 		if (this.recordingFinished != null)
 			this.recordingFinished.stopAsync();
 	};
+	
+	async recordingSave(){
+		if(this.tempRecording != null){
+			try{
+				const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+'/recordings');
+				if(files.length < MAX_SAVES){
+					const recStatus = await this.tempRecording.getURI();
+					FileSystem.copyAsync({ 
+						from: recStatus, 
+						to: FileSystem.documentDirectory + '/recordings/' + this.props.navigation.state.params.name + "_" + new Date()
+					});
+					alert('Recording saved successfully!');
+					this.openRecordings();
+					this.tempRecording = null;
+				}
+				else
+					alert('You may only save '+MAX_SAVES+' recordings, please delete some recordings to save more.');
+			}catch(e){alert(e);}
+		}
+	}
+	
+	async openRecordings(){
+		try{ 
+			this.setState({
+				recordings: await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+'/recordings'),
+			});
+		}
+		catch(e){alert(e);}
+	}
   
     updateRecordingStatus = status => {
 		if(this.mounted){
@@ -366,23 +445,19 @@ export default class AudioPlayer extends React.Component{
 	setRateUp(){
 		if(Platform.Version < 23)
 			alert('Your version of android is not supported to change the rate.');
-		else if(this.state.rate < 5.0){
-			this.setState({rate: this.state.rate+0.2,});
-			this.setRate(this.state.rate, true);	
+		else{
+			this.setState({rate: this.state.rate+0.1});
+			this.setRate(this.state.rate, true);
 		}
-		else
-			alert('Can\'t set rate any higher.');
 	}
 	
 	setRateDown(){
 		if(Platform.Version < 23)
 			alert('Your version of android is not supported to change the rate.');
-		else if(this.state.rate > 0.0){
-			this.setState({rate: this.state.rate-0.2,});
+		else{		
+			this.setState({rate: this.state.rate-0.1});
 			this.setRate(this.state.rate, true);
 		}
-		else
-			alert('Can\'t set rate any lower.');
 	}
 	
 	setRateDefault(){
@@ -394,145 +469,217 @@ export default class AudioPlayer extends React.Component{
 		}
 	}
 	
-	render(){
-		var texts;
-		if(this.props.navigation.state.params.textSubs == 'undefined') 
-			texts = "No Text To Diaplay";
+	changePlayerLayout = () => {
+		LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
+		if( this.state.expandedPlayer === false )
+			this.setState({ modifiedPlayerHeight: this.state.onLayoutPlayerHeight, expandedPlayer: true });
 		else
+			this.setState({ modifiedPlayerHeight: 0, expandedPlayer: false });
+	}
+	changeRecorderLayout = () => {
+		LayoutAnimation.configureNext( LayoutAnimation.Presets.easeInEaseOut );
+		if( this.state.expandedRecorder === false )
+			this.setState({ modifiedRecorderHeight: this.state.onLayoutRecorderHeight, expandedRecorder: true });
+		else
+			this.setState({ modifiedRecorderHeight: 0, expandedRecorder: false });
+	}
+	getPlayerHeight( height ) {
+		this.setState({ onLayoutPlayerHeight: height });
+	}
+	getRecorderHeight( height ) {
+		this.setState({ onLayoutRecorderHeight: height });
+	}
+	
+	render(){
+		var texts = "No Text To Display";
+		if(this.props.navigation.state.params.textSubs != '' || this.props.navigation.state.params.textSubs == 'undefined') 
 			texts = this.props.navigation.state.params.textSubs;
 		return(
-			<View>
+			<View style={styles.mainContainer}>
 				<View style={styles.textContainer}>
 					<ScrollView contentContainerStyle={{flexGrow:1}}>
 						<Text style={styles.textBox}>{texts}</Text>
 					</ScrollView>
-				</View>
-				<View style={styles.playerContainer}>
-					<View style={styles.sliderContainer}>
-						<Slider
-							style={styles.playbackSlider}
-							value={this.audioSeekSliderPosition()}
-							onValueChange={this.audioSeekSliderValueChange}
-							onSlidingComplete={this.audioSeekSlidingComplete}
-						/>  
-						<Text>{this.audioRemaining()}</Text>
-					</View>
-					<View style={styles.buttonsContainer}>
-						<View style={styles.fifthButtonsContainer}>
-							<TouchableHighlight
-								underlayColor={BACKGROUND_COLOR}
-								style={styles.wrapper}
-								onPress={this.props.navigation.state.params.connected ? this.audioDownload : this.audioDelete}
-								disabled={this.state.isLoading}>
-								<Image style={styles.image} source={this.props.navigation.state.params.connected ? ICON_DOWNLOAD_BUTTON : ICON_DELETE_BUTTON} />
-							</TouchableHighlight>
-							<Text>{this.props.navigation.state.params.connected ? 'Download' : 'Delete'}</Text>
+				</View>				
+				<TouchableOpacity activeOpacity = { 0.8 } onPress = { this.changePlayerLayout } >
+                    <Text style = { styles.text }>Press Here To {this.state.expandedPlayer ? 'Hide ' : 'Show '}Player</Text>
+                </TouchableOpacity>
+                <View style = {{ height: this.state.modifiedPlayerHeight, overflow: 'hidden' }}>				
+					<View style={styles.playerContainer} onLayout = {( event ) => this.getPlayerHeight( event.nativeEvent.layout.height )}>
+						<View style={styles.sliderContainer}>
+							<Slider
+								style={styles.playbackSlider}
+								value={this.audioSeekSliderPosition()}
+								onValueChange={this.audioSeekSliderValueChange}
+								onSlidingComplete={this.audioSeekSlidingComplete}
+							/>  
+							<Text>{this.audioRemaining()}</Text>
 						</View>
-						<View style={styles.fifthButtonsContainer }>
-							<TouchableHighlight
-								underlayColor={BACKGROUND_COLOR}
-								style={styles.wrapper}
-								onPress={this.setRateUp}
-								disabled={this.state.isLoading}>
-								<Image style={styles.image} source={ICON_UP_RATE_BUTTON} />
-							</TouchableHighlight>
-								<TouchableHighlight
-								underlayColor={BACKGROUND_COLOR}
-								style={styles.wrapper}
-								onPress={this.setRateDown}
-								disabled={this.state.isLoading}>
-								<Image style={styles.image} source={ICON_DOWN_RATE_BUTTON} />
-							</TouchableHighlight>
-							<Text>{'Rate'}</Text>
-						</View>
-						<View style={styles.fifthButtonsContainer}>
-							<View style={styles.eighthButtonsContainer}>
+						<View style={styles.buttonsContainer}>
+							<View style={styles.buttonsContainers}>
 								<TouchableHighlight
 									underlayColor={BACKGROUND_COLOR}
 									style={styles.wrapper}
-									onPress={this.setRateDefault}
+									onPress={this.props.navigation.state.params.connected && !this.props.navigation.state.params.fromRecording ? this.audioDownload : this.audioDelete}
 									disabled={this.state.isLoading}>
-									<Image style={styles.image} source={ICON_RESET_RATE_BUTTON} />
+									<Image style={styles.image} source={this.props.navigation.state.params.connected && !this.props.navigation.state.params.fromRecording ? ICON_DOWNLOAD_BUTTON : ICON_DELETE_BUTTON} />
 								</TouchableHighlight>
-								<Text>{'Default'}</Text>
+								<Text>{this.props.navigation.state.params.connected && !this.props.navigation.state.params.fromRecording ? 'Download' : 'Delete'}</Text>
 							</View>
-						</View>
-						<View style={styles.fifthButtonsContainer}>
-							<TouchableHighlight
-								underlayColor={BACKGROUND_COLOR}
-								style={styles.wrapper}
-								onPress={this.audioPlayPause}
-								disabled={this.state.isLoading}>
-								<Image style={styles.image}
-									source={ this.state.isAudioPlaying ? ICON_PAUSE_BUTTON : ICON_PLAY_BUTTON }
-								/>
-							</TouchableHighlight>
-							<Text>{this.state.isAudioPlaying ? 'Pause' : 'Play'}</Text>
-						</View>
-						<View style={styles.fifthButtonsContainer}>
-							<TouchableHighlight
-								underlayColor={BACKGROUND_COLOR}
-								style={styles.wrapper}
-								onPress={this.audioStop}
-								disabled={this.state.isLoading}>
-								<Image style={styles.image} source={ICON_STOP_BUTTON}/>
-							</TouchableHighlight>
-							<Text>{'Stop'}</Text>
-						</View>
-					</View>
-				</View>
-				<View style={styles.playerContainer}>
-					<View style={styles.sliderContainer}>
-						<Slider
-							style={styles.playbackSlider}
-							value={this.recordingFinishedSeekSliderPosition()}
-							onValueChange={this.recordingSeekSliderValueChange}
-							onSlidingComplete={this.recordingFinishedSeekSlidingComplete}
-							disabled={!this.state.isPlaybackAllowed || this.state.isLoading}
-						/>
-						<Text style={{opacity: this.recordingFinished != null ? 1.0 : 0.0 }}>{this.recordingRemaining()}</Text>
-					</View>
-					<View style={styles.buttonsContainer}>
-						<View style={styles.halfButtonsContainer}>
-							<View style={styles.fourthButtonsContainer}>
+							<View style={styles.buttonsContainers}>
 								<TouchableHighlight
 									underlayColor={BACKGROUND_COLOR}
 									style={styles.wrapper}
-									onPress={this.recordingPressed}>
-									<Image style={styles.image} source={this.state.isRecording ? ICON_RECORDING : ICON_RECORD_BUTTON }/>
+									onPress={this.setRateUp}
+									disabled={this.state.isLoading || this.state.rate > RATE_MAX}>
+									<Image style={styles.image} source={ICON_UP_RATE_BUTTON} />
 								</TouchableHighlight>
-								<Text>{this.state.isRecording ? 'Stop' : 'Record'}</Text>
+									<TouchableHighlight
+									underlayColor={BACKGROUND_COLOR}
+									style={styles.wrapper}
+									onPress={this.setRateDown}
+									disabled={this.state.isLoading || this.state.rate < RATE_MIN}>
+									<Image style={styles.image} source={ICON_DOWN_RATE_BUTTON} />
+								</TouchableHighlight>
+								<Text>{'Rate: '+this.state.rate.toFixed(1)}</Text>
 							</View>
-							<View style={styles.fourthButtonsContainer}>
-								<Text style={{fontSize: 13, color: 'red'}}> {this.state.isRecording ? 'RECORDING:' : ''} </Text>
-								<Text style={{opacity: this.state.isRecording ? 1.0 : 0.0 }}>{this.getRecordingTimestamp()}</Text>
+							<View style={styles.buttonsContainers}>
+								<View style={styles.eighthButtonsContainer}>
+									<TouchableHighlight
+										underlayColor={BACKGROUND_COLOR}
+										style={styles.wrapper}
+										onPress={this.setRateDefault}
+										disabled={this.state.isLoading}>
+										<Image style={styles.image} source={ICON_RESET_RATE_BUTTON} />
+									</TouchableHighlight>
+									<Text>{'Reset'}</Text>
+								</View>
 							</View>
-						</View>
-						<View style={[styles.halfButtonsContainer, { opacity: !this.state.isPlaybackAllowed || this.state.isLoading ? DISABLED_OPACITY : 1.0, },]}>
-							<View style={styles.fourthButtonsContainer}>
+							<View style={styles.buttonsContainers}>
 								<TouchableHighlight
 									underlayColor={BACKGROUND_COLOR}
 									style={styles.wrapper}
-									onPress={this.recordingFinishedPlayPause}
-									disabled={!this.state.isPlaybackAllowed || this.state.isLoading}>
+									onPress={this.audioPlayPause}
+									disabled={this.state.isLoading}>
 									<Image style={styles.image}
-										source={ this.state.isRecordingPlaying ? ICON_PAUSE_BUTTON : ICON_PLAY_BUTTON }
+										source={ this.state.isAudioPlaying ? ICON_PAUSE_BUTTON : ICON_PLAY_BUTTON }
 									/>
 								</TouchableHighlight>
-								<Text>{this.state.isRecordingPlaying ? 'Pause' : 'Play'}</Text>
+								<Text>{this.state.isAudioPlaying ? 'Pause' : 'Play'}</Text>
 							</View>
-							<View style={styles.fourthButtonsContainer}>
+							<View style={styles.buttonsContainers}>
 								<TouchableHighlight
 									underlayColor={BACKGROUND_COLOR}
 									style={styles.wrapper}
-									onPress={this.recordingFinishedStop}
-									disabled={!this.state.isPlaybackAllowed || this.state.isLoading}>
+									onPress={this.audioStop}
+									disabled={this.state.isLoading}>
 									<Image style={styles.image} source={ICON_STOP_BUTTON}/>
 								</TouchableHighlight>
 								<Text>{'Stop'}</Text>
 							</View>
 						</View>
 					</View>
+				</View>
+				<TouchableOpacity activeOpacity = { 0.8 } onPress = { this.changeRecorderLayout } >
+                    <Text style = { styles.text }>Press Here To {this.state.expandedRecorder ? 'Hide ' : 'Show '}Recorder</Text>
+                </TouchableOpacity>				
+                <View style = {{ height: this.state.modifiedRecorderHeight, overflow: 'hidden' }}>				
+					<View style={styles.playerContainer} onLayout = {( event ) => this.getRecorderHeight( event.nativeEvent.layout.height )}>
+						<View style={styles.sliderContainer}>
+							<Slider
+								style={styles.playbackSlider}
+								value={this.recordingFinishedSeekSliderPosition()}
+								onValueChange={this.recordingSeekSliderValueChange}
+								onSlidingComplete={this.recordingFinishedSeekSlidingComplete}
+								disabled={!this.state.isPlaybackAllowed || this.state.isLoading}
+							/>
+							<View style={styles.thinContainer}>
+								<Text style={{fontSize: 13, color: 'red'}}> {this.state.isRecording ? 'RECORDING: '+this.getRecordingTimestamp() : ''} </Text>
+								<Text style={{opacity: this.recordingFinished != null ? 1.0 : 0.0 }}>{this.recordingRemaining()}</Text>
+							</View>	
+						</View>
+						<View style={styles.buttonsContainer}>
+								<View style={styles.buttonsContainers}>
+									<TouchableHighlight
+										underlayColor={BACKGROUND_COLOR}
+										style={styles.wrapper}
+										onPress={this.recordingPressed}>
+										<Image style={styles.image} source={ICON_RECORD_BUTTON }/>
+									</TouchableHighlight>
+									<Text>{this.state.isRecording ? 'Stop' : 'Record'}</Text>
+								</View>
+								<View style={[styles.buttonsContainers, { opacity: !this.state.isPlaybackAllowed || this.state.isLoading ? DISABLED_OPACITY : 1.0, },]}>
+									<TouchableHighlight
+										underlayColor={BACKGROUND_COLOR}
+										style={styles.wrapper}
+										onPress={this.recordingSave}
+										disabled={!this.state.isPlaybackAllowed || this.state.isLoading || this.tempRecording == null }>
+										<Image style={styles.image} source={ICON_SAVE_BUTTON}/>
+									</TouchableHighlight>
+									<Text>{'Save'}</Text>
+								</View>
+								<View style={[styles.buttonsContainers, { opacity: this.state.recordings.length == 0 ? DISABLED_OPACITY : 1.0, }]}>
+									<TouchableHighlight
+										underlayColor={BACKGROUND_COLOR}
+										style={styles.wrapper}
+										onPress={() => {
+											resetActionPlayer = NavigationActions.reset({
+												index: 0,
+												actions: [
+													NavigationActions.navigate({ routeName: 'Recordings', 
+														params:{
+															country: this.props.navigation.state.params.country,
+															grade: this.props.navigation.state.params.grade,
+															topic: this.props.navigation.state.params.topic,
+															lid: this.props.navigation.state.params.lid,
+															textSubs: this.props.navigation.state.params.textSubs,
+															path: this.props.navigation.state.params.path,
+															name: this.props.navigation.state.params.name,
+															connected: this.props.navigation.state.params.connected,
+															recordings: this.state.recordings
+														}
+													}),
+												],
+											}), 
+											this.props.navigation.dispatch(resetActionPlayer);
+										}}
+										disabled={this.state.recordings.length == 0}>
+										<Image style={styles.image} source={ICON_OPEN_BUTTON }/>
+									</TouchableHighlight>
+									<Text>{'Open'}</Text>
+								</View>								
+								<View style={[styles.buttonsContainers, { opacity: !this.state.isPlaybackAllowed || this.state.isLoading ? DISABLED_OPACITY : 1.0, },]}>
+									<TouchableHighlight
+										underlayColor={BACKGROUND_COLOR}
+										style={styles.wrapper}
+										onPress={this.recordingFinishedPlayPause}
+										disabled={!this.state.isPlaybackAllowed || this.state.isLoading}>
+										<Image style={styles.image}
+											source={ this.state.isRecordingPlaying ? ICON_PAUSE_BUTTON : ICON_PLAY_BUTTON }
+										/>
+									</TouchableHighlight>
+									<Text>{this.state.isRecordingPlaying ? 'Pause' : 'Play'}</Text>
+								</View>
+								<View style={[styles.buttonsContainers, { opacity: !this.state.isPlaybackAllowed || this.state.isLoading ? DISABLED_OPACITY : 1.0, },]}>
+									<TouchableHighlight
+										underlayColor={BACKGROUND_COLOR}
+										style={styles.wrapper}
+										onPress={this.recordingFinishedStop}
+										disabled={!this.state.isPlaybackAllowed || this.state.isLoading}>
+										<Image style={styles.image} source={ICON_STOP_BUTTON}/>
+									</TouchableHighlight>
+									<Text>{'Stop'}</Text>
+								</View>
+						</View>
+					</View>
+                </View>	
+				<View>	
+					{this.props.navigation.state.params.fromRecording &&  
+						<Button
+							onPress={() => {this.props.navigation.dispatch(resetActionCountry)}}
+							title = {"Press here to select a new lesson"}
+						/> 		
+					}
 				</View>
 			</View>
 		)

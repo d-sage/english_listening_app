@@ -12,7 +12,7 @@ class TopicScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text style={{fontSize: 20}}>Please select a Topic</Text>
+					<Text style={{fontSize: 20}}>Select a Topic</Text>
 				</View>
 				<ListView
 					enableEmptySections

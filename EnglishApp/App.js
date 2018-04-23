@@ -4,7 +4,9 @@ import GradeScreen from "./GradeScreen.js";
 import TopicScreen from "./TopicScreen.js";
 import LessonScreen from "./LessonScreen.js";
 import PlayerScreen from "./PlayerScreen.js";
+import RecordingsScreen from "./RecordingsScreen.js";
 import MenuIcon from "./MenuIcon.js";
+import { FileSystem } from 'expo';
 import { StackNavigator } from 'react-navigation';
 import { MenuProvider } from 'react-native-popup-menu';
 	
@@ -40,18 +42,32 @@ const RootNavigator = StackNavigator({
 	Player: {
     	screen: PlayerScreen,
     	navigationOptions: {
+			//header: false,
     		headerTitle: 'Player',
+			headerRight: <MenuIcon />
+    	},
+    },
+	Recordings: {
+    	screen: RecordingsScreen,
+    	navigationOptions: {
+    		headerTitle: 'Recordings',
 			headerRight: <MenuIcon />
     	},
     },
 });
 
 export default class App extends React.Component {
-  render() {
-    return (
-      <MenuProvider>
-        <RootNavigator />
-      </MenuProvider>
-    );
-  }
+	
+	async componentWillMount(){
+		try{ await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory+'recordings'); }
+		catch(e){}//do nothing, directory already exists.
+	}
+	
+	render() {
+		return (
+			<MenuProvider>
+				<RootNavigator />
+			</MenuProvider>
+		);
+	}
 }

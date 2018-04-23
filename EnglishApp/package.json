@@ -1,5 +1,5 @@
 {
-  "name": "EnglishApp",
+  "name": "EnglishListeningAppExpo",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -22,8 +22,7 @@
     "expo": "^25.0.0",
     "react": "16.2.0",
     "react-native": "0.52.0",
-    "react-native-audio-player": "0.0.2",
-    "react-native-audio-toolkit": "^1.0.6",
-    "react-navigation": "^1.0.0-beta.30"
+    "react-native-popup-menu": "^0.12.5",
+    "react-navigation": "^1.0.3"
   }
 }
