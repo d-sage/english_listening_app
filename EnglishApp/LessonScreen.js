@@ -23,7 +23,8 @@ class LessonScreen extends React.Component {
 							<Button
 								onPress={() => {
 									if(rowData.ext == "pdf")
-										Linking.openURL('http://drive.google.com/viewerng/viewer?embeded=true&url=' + rowData.path);
+										Linking.openURL(rowData.path);
+										//Linking.openURL('http://drive.google.com/viewerng/viewer?embeded=true&url=' + rowData.path);
 									else if(rowData.ext == "mp3"){
 										alert(rowData.ext);
 										this.props.navigation.navigate('Player',
