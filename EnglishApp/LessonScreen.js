@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, ListView } from 'react-native';
+import { View, Text, Button, ListView, Linking } from 'react-native';
 import styles from "./Styles.js";
 import Expo, { SQLite } from 'expo';
 
@@ -21,16 +21,26 @@ class LessonScreen extends React.Component {
 					renderRow={(rowData) =>
 						<View style={styles.buttonContainer}>
 							<Button
-								onPress={() => this.props.navigation.navigate('Player',
-									{country: this.props.navigation.state.params.country,
-									 grade: this.props.navigation.state.params.grade,
-									 topic: this.props.navigation.state.params.topic,
-									 lid: rowData.lid,
-									 textSubs: rowData.text+"",
-									 path: rowData.path,
-									 name: rowData.filename+"",
-									 connected: this.props.navigation.state.params.connected,
-									 fromRecoring: false,})}
+								onPress={() => {
+									if(rowData.ext == "pdf")
+										Linking.openURL('http://drive.google.com/viewerng/viewer?embeded=true&url=' + rowData.path);
+									else if(rowData.ext == "mp3"){
+										alert(rowData.ext);
+										this.props.navigation.navigate('Player',
+											{country: this.props.navigation.state.params.country,
+											 grade: this.props.navigation.state.params.grade,
+											 topic: this.props.navigation.state.params.topic,
+											 lid: rowData.lid,
+											 textSubs: rowData.text+"",
+											 path: rowData.path,
+											 name: rowData.filename+"",
+											 connected: this.props.navigation.state.params.connected,
+											 fromRecoring: false,}
+										);
+									}
+									else
+										alert("File type not supported");
+								}}
 								title = {rowData.lid+""}
 							/>
 						</View>
