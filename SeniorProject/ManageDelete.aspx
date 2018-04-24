@@ -68,6 +68,7 @@
             <br />
             <asp:Label ID="lblinfo" runat="server" Text="How would you like to change the database:" ></asp:Label>
             <asp:Button ID="btndeletelink" runat="server" Text="Go To Add Page" OnClick="Btnaddlink_Click" />
+            <asp:Button ID="Button1" runat="server" Text="PDFViewer" OnClick="Button1_Click" style="margin-left: 20px" />
             <br />
         </div>
 

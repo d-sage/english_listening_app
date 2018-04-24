@@ -208,4 +208,10 @@ public partial class _Default : System.Web.UI.Page
         }//end catch
     }//end method
 
+
+    protected void btnpdf_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("PDFViewer.aspx");
+    }//end method
+
 }//end class

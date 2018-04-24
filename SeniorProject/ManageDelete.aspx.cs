@@ -355,9 +355,6 @@ public partial class ManageDelete : System.Web.UI.Page
         }
 
         connection.Close();
-
-        //bllessons.DataSource = listlesson;
-        //bllessons.DataBind();
     }
 
     #endregion Update Lessons
@@ -2021,4 +2018,9 @@ public partial class ManageDelete : System.Web.UI.Page
 
     #endregion Helpers
 
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("PDFViewer.aspx");
+    }//end method
 }//end class

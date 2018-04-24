@@ -1417,4 +1417,9 @@ public partial class Manage : System.Web.UI.Page
 
 
 
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("PDFViewer.aspx");
+    }//end method
 }//end class
