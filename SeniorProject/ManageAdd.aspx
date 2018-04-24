@@ -71,7 +71,9 @@
         <asp:Label ID="lbllessonAdd" runat="server" Text="Add a Lesson:" style="z-index: 1; left: 50px; top: 350px; position: absolute"></asp:Label>
         <asp:DropDownList ID="dlLesson" runat="server" style="z-index: 1; left: 150px; top: 350px; position: absolute; width: 250px;"></asp:DropDownList>
         <asp:TextBox ID="txtLessonName" runat="server" MaxLength="100" style="z-index: 1; left: 410px; top: 350px; position: absolute; width: 190px;" ></asp:TextBox>
-        <asp:FileUpload ID="fileMP3" runat="server" accept="audio/mpeg" ErrorMessage="Only mp3 files is allowed!" ValidationExpression ="^(.+(\.mp3|\.MP3))$" style="z-index: 1; left: 810px; top: 350px; position: absolute; right: 895px;"/>
+        <asp:FileUpload ID="fileUpload" runat="server" accept="audio/mpeg,application/pdf" style="z-index: 1; left: 810px; top: 350px; position: absolute; right: 895px;"/>
+        
+
         
         <!-- Submit buttons -->
         <asp:Button ID="addCountry" runat="server" Text="Add Country" style="z-index: 1; left: 350px; top: 130px; position: absolute" OnClick="AddCountry_Click" />

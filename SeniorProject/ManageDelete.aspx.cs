@@ -488,7 +488,7 @@ public partial class ManageDelete : System.Web.UI.Page
         
         if (!Session["oldCid"].Equals(""))
         {
-            tblog.Text += "Country: in editing mode, cannot delete";
+            tblog.Text += Environment.NewLine + "Country: in editing mode, cannot delete";
             return;
         }
 
@@ -535,7 +535,7 @@ public partial class ManageDelete : System.Web.UI.Page
                 }
                 else
                 {
-                    tblog.Text += "~Country: content associateed with Country, cannot remove";
+                    tblog.Text += Environment.NewLine + "~Country: content associateed with Country, cannot remove";
                     good = false;
                 }
             }//end cmd
@@ -833,7 +833,7 @@ public partial class ManageDelete : System.Web.UI.Page
     {
         if (!Session["oldTid"].Equals(""))
         {
-            tblog.Text += "Topic: in editing mode, cannot delete";
+            tblog.Text += Environment.NewLine + "Topic: in editing mode, cannot delete";
             return;
         }
         
@@ -880,7 +880,7 @@ public partial class ManageDelete : System.Web.UI.Page
                 }
                 else
                 {
-                    tblog.Text += "~Topic: content associated with Topic, cannot remove";
+                    tblog.Text += Environment.NewLine + "~Topic: content associated with Topic, cannot remove";
                     good = false;
                 }
             }//end cmd
@@ -1097,7 +1097,7 @@ public partial class ManageDelete : System.Web.UI.Page
                 }
                 else
                 {
-                    tblog.Text += "~Country_grade: content associateed with Country_Grade, cannot remove";
+                    tblog.Text += Environment.NewLine + "~Country_grade: content associateed with Country_Grade, cannot remove";
                     good = false;
                 }
             }//end cmd
@@ -1316,13 +1316,13 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         else
         {
-            tblog.Text += "~Country_Grade_Topic: topic removal failed, contact admin";
+            tblog.Text += Environment.NewLine + "~Country_Grade_Topic: topic removal failed, contact admin";
             good = false;
         }
 
         if(good)
         {
-            tblog.Text += "~Country_Grade_Topic: Successfully Deleted";
+            tblog.Text += Environment.NewLine + "~Country_Grade_Topic: Successfully Deleted";
         }
         
     }
@@ -1646,7 +1646,7 @@ public partial class ManageDelete : System.Web.UI.Page
         
         if (!Session["oldLid"].Equals(""))
         {
-            tblog.Text += "Lesson: in editing mode, cannot delete";
+            tblog.Text += Environment.NewLine + "Lesson: in editing mode, cannot delete";
             return;
         }
         
@@ -1765,6 +1765,7 @@ public partial class ManageDelete : System.Web.UI.Page
     {
 
         string filename = "";
+        string ext = "";
         int pathCount = 1;
 
         bool good = true;
@@ -1776,7 +1777,7 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             connection.Open();
 
-            String sql = "SELECT COUNT(cid) as count, filename FROM lessons WHERE path = (" +
+            String sql = "SELECT COUNT(cid) as count, filename, ext FROM lessons WHERE path = (" +
                                     "SELECT path FROM lessons WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid) AND lid = (@lid));";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
@@ -1795,6 +1796,8 @@ public partial class ManageDelete : System.Web.UI.Page
                     pathCount = Convert.ToInt32(rdr[0]);
 
                     filename = (string)rdr[1];
+
+                    ext = (string)rdr[2];
                 }
 
             }//end rdr
@@ -1827,8 +1830,8 @@ public partial class ManageDelete : System.Web.UI.Page
 
         connection.Close();
         
-        string physicalAudioPath = Server.MapPath(".//Audio//");
-        string physicalFilePath = physicalAudioPath + filename;
+        string physicalFolderPath = ext == "mp3" ? Server.MapPath(".//Audio//") : Server.MapPath(".//PDF//");
+        string physicalFilePath = physicalFolderPath + filename;
 
         if (pathCount == 1)
         {
@@ -1843,18 +1846,18 @@ public partial class ManageDelete : System.Web.UI.Page
                     catch (Exception ex)
                     {
                         good = false;
-                        tblog.Text += "~Lesson: file removal error, contact admin";
+                        tblog.Text += Environment.NewLine + "~Lesson: file removal error, contact admin";
                     }
                 }
                 else
                 {
-                    tblog.Text += "~Lesson: file did not exist, contact admin";
+                    tblog.Text += Environment.NewLine + "~Lesson: file did not exist, contact admin";
                 }
             }
             catch (Exception e)
             {
                 good = false;
-                tblog.Text += "~Error: contact admin";
+                tblog.Text += Environment.NewLine + "~Error: contact admin";
             }
         }
 
@@ -2012,7 +2015,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }//end try
         catch (Exception e)
         {
-            tblog.Text += "Email failed to send! " + e.ToString();
+            tblog.Text += Environment.NewLine + "Email failed to send! " + e.ToString();
         }//end catch
     }//end method
 

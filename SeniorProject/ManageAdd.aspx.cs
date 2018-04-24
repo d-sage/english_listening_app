@@ -34,7 +34,11 @@ public partial class Manage : System.Web.UI.Page
     private const string DROPLIST_COUNTRY_GRADE_TEXT = "country grade...";
     private const string DROPLIST_COUNTRY_GRADE_TOPIC_TEXT = "country grade topic...";
 
-    //ClientScript.RegisterStartupScript(this.GetType(), "Success", "alert('Lesson: Successfully Added');", true);
+    /*
+        ClientScript.RegisterStartupScript(this.GetType(), "Success", "alert('Lesson: Successfully Added');", true);
+        <asp:RegularExpressionValidator id="regpdf" Display="None" ErrorMessage="please upload only pdf or mp3 files" ValidationGroup="Validation" ControlToValidate="fileUpload" ValidationExpression="^.*\.(pdf|PDF|mp3|MP3)$" runat="server" />
+        <asp:ValidationSummary ID="validationSummary" runat="server" ShowMessageBox="true" ShowSummary="false" ValidationGroup="Validation"/>
+    */
 
     #region Page_Load
 
@@ -499,7 +503,7 @@ public partial class Manage : System.Web.UI.Page
     private bool Regex_FilenameCheck(string topic)
     {
         //alphanumeric and [_]
-        String FilenameRegex = @"^([a-zA-Z0-9_]{1,47})((\.mp3)|(\.MP3))$";
+        String FilenameRegex = @"^([a-zA-Z0-9_]{1,47})\.(mp3|MP3|pdf|PDF)$";
 
         if (!Regex.IsMatch(topic, FilenameRegex))
         {
@@ -1110,6 +1114,9 @@ public partial class Manage : System.Web.UI.Page
      */
     protected void AddLesson_Click(object sender, EventArgs e)
     {
+
+        string ext = "";
+
         #region TextBox checks and File Checks
         if (dlLesson.SelectedValue.Length == 0 || txtLessonName.Text.Length == 0)
         {
@@ -1117,19 +1124,27 @@ public partial class Manage : System.Web.UI.Page
             return;
         }
 
-        if (!fileMP3.HasFile)
+        if (!fileUpload.HasFile)
         {
             tblog.Text += Environment.NewLine + "~Lesson: no file uploaded";
             return;
         }
 
-        if(fileMP3.PostedFile.ContentType != "audio/mp3")
+        if(fileUpload.PostedFile.ContentType == "audio/mp3")
         {
-            tblog.Text += Environment.NewLine + "~Lesson: file was not an mp3";
+            ext = "mp3";
+        }
+        else if(fileUpload.PostedFile.ContentType == "application/pdf")
+        {
+            ext = "pdf";
+        }
+        else
+        {
+            tblog.Text += Environment.NewLine + "~Lesson: file was not an mp3 or pdf";
             return;
         }
 
-        if (fileMP3.PostedFile.ContentLength > FILE_SIZE_MAX)
+        if (fileUpload.PostedFile.ContentLength > FILE_SIZE_MAX)
         {
             tblog.Text += Environment.NewLine + "~Lesson: file too large (>15MB (15728640 bytes))";
             return;
@@ -1142,13 +1157,13 @@ public partial class Manage : System.Web.UI.Page
         string grade = countrygradetopicSplit[1];
         string topic = countrygradetopicSplit[2];
         string lid = txtLessonName.Text;
-        string lessonText = tbtext.Text.Length == 0 ? "*no words for this lesson*" : tbtext.Text;
-        string filename = fileMP3.FileName;
+        string lessonText = tbtext.Text.Length == 0 ? "*no text for this lesson*" : tbtext.Text;
+        string filename = fileUpload.FileName;
 
         #region Filename Regex and LID Regex
         if (!Regex_FilenameCheck(filename))
         {
-            tblog.Text += Environment.NewLine + "~Lesson: Filename can only contain: alphanumeric characters and dashes. Max length = up to 50 characters with '.mp3 or .MP3' extension.";
+            tblog.Text += Environment.NewLine + "~Lesson: Filename can only contain: alphanumeric characters and dashes. Max length = up to 50 characters with '.mp3 or .pdf' extension.";
             return;
         }
 
@@ -1164,11 +1179,11 @@ public partial class Manage : System.Web.UI.Page
         bool existed = false;
 
         #region Path Work
-        string physicalAudioPath = Server.MapPath(".//Audio//");
-        string physicalFilePath = physicalAudioPath + filename;
+        string physicalFolderPath = ext == "mp3" ? Server.MapPath(".//Audio//") : Server.MapPath(".//PDF//");
+        string physicalFilePath = physicalFolderPath + filename;
 
         string virtualCurrentPath = HttpContext.Current.Request.Url.AbsoluteUri;
-        string virtualAudioPath = virtualCurrentPath.Substring(0, virtualCurrentPath.LastIndexOf('/')) + "/Audio/";
+        string virtualAudioPath = virtualCurrentPath.Substring(0, virtualCurrentPath.LastIndexOf('/')) + (ext == "mp3" ? "/Audio/" : "/PDF/");
         string virtualFilePath = virtualAudioPath + filename;
         #endregion Path Work
 
@@ -1176,7 +1191,7 @@ public partial class Manage : System.Web.UI.Page
         {
             try
             {
-                fileMP3.SaveAs(physicalFilePath);
+                fileUpload.SaveAs(physicalFilePath);
                 canAddToDB = true;
             }
             catch (Exception ex)
@@ -1207,7 +1222,7 @@ public partial class Manage : System.Web.UI.Page
 
                 connection.Open();
 
-                String sql = "INSERT INTO lessons(cid, gid, tid, lid, text, path, filename) VALUES(@cid,@gid,@tid,@lid,@text,@path,@fn)";
+                String sql = "INSERT INTO lessons(cid, gid, tid, lid, text, path, filename, ext) VALUES(@cid,@gid,@tid,@lid,@text,@path,@fn,@ext)";
 
                 using (MySqlCommand cmd = new MySqlCommand(sql, connection))
                 {
@@ -1218,6 +1233,7 @@ public partial class Manage : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@text", lessonText);
                     cmd.Parameters.AddWithValue("@path", virtualFilePath);
                     cmd.Parameters.AddWithValue("@fn", filename);
+                    cmd.Parameters.AddWithValue("@ext", ext);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -1365,7 +1381,7 @@ public partial class Manage : System.Web.UI.Page
         }//end try
         catch (Exception e)
         {
-            tblog.Text += "Email failed to send! " + e.ToString();
+            tblog.Text += Environment.NewLine + "Email failed to send! " + e.ToString();
         }//end catch
     }//end method
 
