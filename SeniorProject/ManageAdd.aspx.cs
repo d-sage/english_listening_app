@@ -159,7 +159,7 @@ public partial class Manage : System.Web.UI.Page
         catch(ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             return;
         }
 
@@ -214,12 +214,12 @@ public partial class Manage : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch(Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -257,12 +257,12 @@ public partial class Manage : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch(Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -300,12 +300,12 @@ public partial class Manage : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch (Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -348,12 +348,12 @@ public partial class Manage : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch (Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -394,12 +394,12 @@ public partial class Manage : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch (Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -441,12 +441,12 @@ public partial class Manage : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch (Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -631,7 +631,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
 
@@ -642,7 +642,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             return;
         }
         catch(Exception ex)
@@ -651,7 +651,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -713,7 +713,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
 
@@ -724,7 +724,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             return;
         }
         catch (Exception ex)
@@ -733,7 +733,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -816,7 +816,7 @@ public partial class Manage : System.Web.UI.Page
         catch (MySqlException mse)
         {
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
 
@@ -824,13 +824,13 @@ public partial class Manage : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             return;
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -883,7 +883,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
 
@@ -894,7 +894,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             return;
         }
         catch (Exception ex)
@@ -903,7 +903,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -994,7 +994,7 @@ public partial class Manage : System.Web.UI.Page
         catch (MySqlException mse)
         {
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
 
@@ -1002,13 +1002,13 @@ public partial class Manage : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             return;
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -1067,7 +1067,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
 
@@ -1078,7 +1078,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             return;
         }
         catch (Exception ex)
@@ -1087,7 +1087,7 @@ public partial class Manage : System.Web.UI.Page
             good = false;
 
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -1198,7 +1198,7 @@ public partial class Manage : System.Web.UI.Page
             {
                 canAddToDB = false;
                 //TODO: email
-                tblog.Text += Environment.NewLine + "~Error: could not save/upload file | contact admin";
+                tblog.Text += Environment.NewLine + "~Error: could not save/upload file | contact help";
                 return;
             }
         }
@@ -1251,7 +1251,7 @@ public partial class Manage : System.Web.UI.Page
                 good = false;
 
                 string text = MySqlExceptionNumberHandler(mse.Number);
-                tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+                tblog.Text += Environment.NewLine + text;
 
                 //TODO: email
 
@@ -1262,7 +1262,7 @@ public partial class Manage : System.Web.UI.Page
                 good = false;
 
                 //TODO: email
-                tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+                tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
                 return;
             }
             catch (Exception ex)
@@ -1271,7 +1271,7 @@ public partial class Manage : System.Web.UI.Page
                 good = false;
 
                 //TODO: email
-                tblog.Text += Environment.NewLine + "~Error: contact admin";
+                tblog.Text += Environment.NewLine + "~Error: contact help";
             }
 
             connection.Close();
@@ -1286,10 +1286,10 @@ public partial class Manage : System.Web.UI.Page
             }
             catch (Exception ex)
             {
-                tblog.Text += Environment.NewLine + "~Error: deleting file complication | contact admin";
+                tblog.Text += Environment.NewLine + "~Error: deleting file complication | contact help";
                 //TODO: email
             }
-            tblog.Text += Environment.NewLine + "~Lesson: database insertion failed | contact admin";
+            tblog.Text += Environment.NewLine + "~Lesson: database insertion failed | contact help";
             //TODO: email
             return;
         }
@@ -1347,15 +1347,15 @@ public partial class Manage : System.Web.UI.Page
         switch (exceptionNum)
         {
             case 0:
-                return "Cannot connect to server.  Contact administrator";
+                return "~Error: Cannot connect to server | Contact help";
             case 1042:
-                return "Cannot resolve server name";
+                return "~Error: Cannot resolve server name  | Contact help";
             case 1045:
-                return "Invalid username/password, please try again";
+                return "~Error: Invalid username/password | Contact help";
             case 1062:
-                return "Duplicate Entry";
+                return "~Duplicate Entry (certain fields cannot be the same)";
             default:
-                return "number: " + exceptionNum;
+                return "~Error: number: " + exceptionNum + " | Contact help";
         }//end switch
     }
 
@@ -1410,12 +1410,12 @@ public partial class Manage : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch (Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
