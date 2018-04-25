@@ -59,7 +59,7 @@ public partial class PDFViewer : System.Web.UI.Page
         {
             connection.Open();
 
-            String sql = "SELECT cid,gid,tid,lid,filename FROM lessons  ORDER BY cid,gid,lid ASC";
+            String sql = "SELECT cid,gid,tid,lid,filename,path FROM lessons  ORDER BY cid,gid,tid,lid ASC";
 
             MySqlCommand cmd = new MySqlCommand(sql, connection);
 
@@ -81,13 +81,18 @@ public partial class PDFViewer : System.Web.UI.Page
 
     #endregion Update Lessons
 
-    #region Lesson DataBound
+    #region Lesson DataBound (obsolete)
     protected void Lesson_DataBound(object sender, GridViewRowEventArgs e)
     {
+
+        //nothing
+
+        /*
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             e.Row.Cells[4].Attributes.Add("style", "width:600px;word-break:break-all;word-wrap:break-word;");
         }
+        */
     }
     #endregion Lesson DataBound
 
