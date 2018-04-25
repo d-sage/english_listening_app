@@ -42,7 +42,6 @@ const RootNavigator = StackNavigator({
 	Player: {
     	screen: PlayerScreen,
     	navigationOptions: {
-			//header: false,
     		headerTitle: 'Player',
 			headerRight: <MenuIcon />
     	},
@@ -59,7 +58,9 @@ const RootNavigator = StackNavigator({
 export default class App extends React.Component {
 	
 	async componentWillMount(){
-		try{ await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory+'recordings'); }
+		try{ await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory+'recordings');
+			//await FileSystem.deleteAsync(FileSystem.documentDirectory+'recordings')
+		}
 		catch(e){}//do nothing, directory already exists.
 	}
 	

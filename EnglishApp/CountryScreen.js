@@ -50,7 +50,7 @@ class CountryScreen extends React.Component {
 		this.askForPermissions();
 		db.transaction(tx => {
 			//tx.executeSql('DROP TABLE IF EXISTS lessons;');
-			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (cid varchar(30) NOT NULL, gid tinyint(4) NOT NULL, tid varchar(50) NOT NULL, lid varchar(100) NOT NULL, text varchar(2500) NOT NULL, path varchar(260) NOT NULL, PRIMARY KEY (cid, gid, tid, lid));');
+			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (cid varchar(30) NOT NULL, gid tinyint(4) NOT NULL, tid varchar(50) NOT NULL, lid varchar(100) NOT NULL, text varchar(2500) NOT NULL, path varchar(260) NOT NULL, ext varchar(5) NOT NULL, PRIMARY KEY (cid, gid, tid, lid));');
 		});
 	}
 

@@ -53,7 +53,6 @@ export default class AudioPlayer extends React.Component{
 		this.audio = null;
 		this.recordingFinished = null;
 		this.recording = null;
-		//this.recordings = [];
 		this.tempRecording = null;
 		this.audioIsSeeking = false;
 		this.recordingIsSeeking = false;
@@ -165,7 +164,7 @@ export default class AudioPlayer extends React.Component{
 	audioDownload(){
 		if(!this.props.navigation.state.params.fromRecording){
 			db.transaction(tx => {
-				tx.executeSql('INSERT OR IGNORE INTO lessons (cid, gid, tid, lid, text, path) values (?, ?, ?, ?, ?, ?)', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.textSubs, FileSystem.documentDirectory + this.props.navigation.state.params.name]);
+				tx.executeSql('INSERT OR IGNORE INTO lessons (cid, gid, tid, lid, text, path, ext) values (?, ?, ?, ?, ?, ?, ?)', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.textSubs, FileSystem.documentDirectory + this.props.navigation.state.params.name, this.props.navigation.state.params.ext]);
 			});
 			alert('Downloading File, Please wait. You will get an alert when download has finished.');
 			FileSystem.downloadAsync(this.props.navigation.state.params.path,
@@ -342,10 +341,11 @@ export default class AudioPlayer extends React.Component{
 			try{
 				const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+'/recordings');
 				if(files.length < MAX_SAVES){
+					const date = new Date();
 					const recStatus = await this.tempRecording.getURI();
 					FileSystem.copyAsync({ 
 						from: recStatus, 
-						to: FileSystem.documentDirectory + '/recordings/' + this.props.navigation.state.params.name + "_" + new Date()
+						to: FileSystem.documentDirectory + '/recordings/' + date.getMonth()+ "-" + date.getDay()+ "-" + date.getFullYear()+ "_" + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds() + '_' + this.props.navigation.state.params.name
 					});
 					alert('Recording saved successfully!');
 					this.openRecordings();

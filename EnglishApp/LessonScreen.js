@@ -26,7 +26,6 @@ class LessonScreen extends React.Component {
 										Linking.openURL(rowData.path);
 										//Linking.openURL('http://drive.google.com/viewerng/viewer?embeded=true&url=' + rowData.path);
 									else if(rowData.ext == "mp3"){
-										alert(rowData.ext);
 										this.props.navigation.navigate('Player',
 											{country: this.props.navigation.state.params.country,
 											 grade: this.props.navigation.state.params.grade,
@@ -36,7 +35,8 @@ class LessonScreen extends React.Component {
 											 path: rowData.path,
 											 name: rowData.filename+"",
 											 connected: this.props.navigation.state.params.connected,
-											 fromRecoring: false,}
+											 fromRecoring: false,
+											 ext: rowData.ext+""}
 										);
 									}
 									else
@@ -79,7 +79,7 @@ class LessonScreen extends React.Component {
 
 	fetchOfflineData(){
 		db.transaction(tx => {
-			tx.executeSql('SELECT DISTINCT cid,gid,tid,lid,text,path FROM lessons WHERE cid = ? AND gid = ? AND tid = ?;', [this.props.navigation.state.params.country,this.props.navigation.state.params.grade,this.props.navigation.state.params.topic], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
+			tx.executeSql('SELECT DISTINCT cid,gid,tid,lid,text,path,ext FROM lessons WHERE cid = ? AND gid = ? AND tid = ?;', [this.props.navigation.state.params.country,this.props.navigation.state.params.grade,this.props.navigation.state.params.topic], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
 		});
 	}
 }
