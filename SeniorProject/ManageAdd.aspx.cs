@@ -12,6 +12,11 @@ using System.Data;
 
 public partial class Manage : System.Web.UI.Page
 {
+    /*
+     * 
+     * TODO
+     * 
+     */
     private int num;
     private String stringhelper;
     private int inthelper;
@@ -19,8 +24,13 @@ public partial class Manage : System.Web.UI.Page
     private List<string> listgrade = new List<string>();
     private List<string> listlesson = new List<string>();
     private List<string> listtopic = new List<string>();
-
-    //Constants
+    
+    /*
+     * 
+     * Constants used throughout the ManageAdd page for constraints
+     * related to the fields in the database
+     * 
+     */
     private const int DB_COUNTRY_LENGTH_MAX = 30;
     private const int DB_TOPIC_LENGTH_MAX = 50;
     private const int DB_LID_LENGTH_MAX = 100;
@@ -28,6 +38,12 @@ public partial class Manage : System.Web.UI.Page
     private const int FILE_NAME_LENGTH_MAX = 50;
     private const int FILE_SIZE_MAX = 15728640;
 
+    /*
+     * 
+     * Constants used for inserting text in to dropboxes so that these
+     * constants can be reused and intent revealing
+     * 
+     */
     private const string DROPLIST_COUNTRY_TEXT = "country...";
     private const string DROPLIST_TOPIC_TEXT = "topic...";
     private const string DROPLIST_GRADE_TEXT = "grade...";
@@ -35,13 +51,18 @@ public partial class Manage : System.Web.UI.Page
     private const string DROPLIST_COUNTRY_GRADE_TOPIC_TEXT = "country grade topic...";
 
     /*
+     * TODO
         ClientScript.RegisterStartupScript(this.GetType(), "Success", "alert('Lesson: Successfully Added');", true);
         <asp:RegularExpressionValidator id="regpdf" Display="None" ErrorMessage="please upload only pdf or mp3 files" ValidationGroup="Validation" ControlToValidate="fileUpload" ValidationExpression="^.*\.(pdf|PDF|mp3|MP3)$" runat="server" />
         <asp:ValidationSummary ID="validationSummary" runat="server" ShowMessageBox="true" ShowSummary="false" ValidationGroup="Validation"/>
     */
 
     #region Page_Load
-
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void Page_Load(object sender, EventArgs e)
     {
         bool run = GetSession();
@@ -79,30 +100,14 @@ public partial class Manage : System.Web.UI.Page
     #endregion Page_Load
 
     #region GetConnectionString
-
+    /*
+     * 
+     * Method that contains the variables to construct the connection
+     * string required to access the database.
+     * 
+     */
     private string GetConnectionString()
     {
-
-        /*
-         string text = "";
-            string server = "localhost";  //162.241.244.134
-            string database = "jordape8_EnglishApp";
-            string uid = "jordape8_admin";
-            string password = "Admin123";
-            string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
-
-        /*
-        string server = "localhost";
-        string database = "daricsag_ela";
-        string uid = "daricsag_ela";
-        string password = "english";
-        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
-
-        
         string server = "mysql5018.site4now.net";
         string database = "db_a38d8d_lambe";
         string uid = "a38d8d_lambe";
@@ -110,14 +115,19 @@ public partial class Manage : System.Web.UI.Page
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
         
-
         return connectionString;
     }
 
     #endregion GetConnectionString
 
     #region Get SQL Connection
-
+    /*
+     * 
+     * Method that attempts to get a database connection object
+     * from the connection string and return it for database
+     * access
+     * 
+     */
     private MySqlConnection GetSqlConnection()
     {
         string connectionString = GetConnectionString();
@@ -141,12 +151,16 @@ public partial class Manage : System.Web.UI.Page
     #region UpdateData
 
     #region Update All Data
-
+    /*
+     * 
+     * Method that puts the ManageAdd page back to a 'blank slate' state
+     * in which droplists are disabled and inserted with default text, and
+     * all data from the database is re-initialized
+     * 
+     */
     private void UpdateAllData()
     {
-
-        BlanksOnAllDropLists_WithText();
-
+        
         DisableBoxes();
 
         String text = "";
@@ -180,7 +194,13 @@ public partial class Manage : System.Web.UI.Page
     #endregion Update All Data
 
     #region Update Countries
-
+    /*
+     * 
+     * Method for updating data related to 'countries'. Reverting 'country'
+     * droplist back to original state and re-populating it with the current
+     * 'country data' from the database.
+     * 
+     */
     private void UpdateCountries(MySqlConnection connection)
     {
 
@@ -231,7 +251,11 @@ public partial class Manage : System.Web.UI.Page
     #endregion Update Countries
 
     #region Update Grades
-
+    /*
+     * 
+     * TODO
+     * 
+     */
     private void UpdateGrades(MySqlConnection connection)
     {
 
@@ -274,7 +298,11 @@ public partial class Manage : System.Web.UI.Page
     #endregion Update Grades
 
     #region Update Topics
-
+    /*
+     * 
+     * TODO
+     * 
+     */
     private void UpdateTopics(MySqlConnection connection)
     {
 
@@ -317,7 +345,13 @@ public partial class Manage : System.Web.UI.Page
     #endregion Update Topics
 
     #region Update Country_Grade
-
+    /*
+     * 
+     * Method for updating data related to 'country grade'. Reverting
+     * 'country grade' droplist back to original state and re-populating
+     * it with the current 'country grade' data from the database.
+     * 
+     */
     private void UpdateCountryGrade(MySqlConnection connection)
     {
 
@@ -363,7 +397,14 @@ public partial class Manage : System.Web.UI.Page
     #endregion Update Country_Grade
 
     #region Update Country_Grade_Topic
-
+    /*
+     * 
+     * Method for updating data related to 'country grade topic'.
+     * Reverting 'country grade topic' droplist back to original
+     * state and re-populating it with the current 'country grade topic'
+     * data from the database.
+     * 
+     */
     private void UpdateCountryGradeTopic(MySqlConnection connection)
     {
 
@@ -409,7 +450,11 @@ public partial class Manage : System.Web.UI.Page
     #endregion Update Country_Grade_Topic
 
     #region Update Lessons
-
+    /*
+     * 
+     * TODO
+     * 
+     */
     private void UpdateLessons(MySqlConnection connection)
     {
         GridLessons(connection);
@@ -460,10 +505,15 @@ public partial class Manage : System.Web.UI.Page
     #endregion UpdateData
 
     #region Regex
-
+    /*
+     * 
+     * Regex method for checking the validity of characters and
+     * length associated with a 'topic'.
+     * They can contain: alphanumeric, [,-:], and spaces
+     * 
+     */
     private bool Regex_TopicCheck(string topic)
     {
-        //alphanumeric and [,-:]
         String TopicRegex = @"^([a-zA-Z0-9,\-:]{1}[ ]?){1,49}[a-zA-Z0-9]{1}$";
 
         if (!Regex.IsMatch(topic, TopicRegex))
@@ -474,9 +524,15 @@ public partial class Manage : System.Web.UI.Page
         return true;
     }
 
+    /*
+     * 
+     * Regex method for checking the validity of characters and
+     * length associated with a 'country'.
+     * They can contain: alphabetic, [-], and spaces
+     * 
+     */
     private bool Regex_CountryCheck(string topic)
     {
-        //alphabetic and [-]
         String CountryRegex = @"^([a-zA-Z\-]{1}[ ]?){1,29}[a-zA-Z]{1}$";
 
         if (!Regex.IsMatch(topic, CountryRegex))
@@ -487,9 +543,15 @@ public partial class Manage : System.Web.UI.Page
         return true;
     }
 
+    /*
+     * 
+     * Regex method for checking the validity of characters and
+     * length associated with a 'lid' (lesson title).
+     * They can contain: alphanumeric, [,-:], and spaces
+     * 
+     */
     private bool Regex_LidCheck(string topic)
     {
-        //alphanumeric and [,-:]
         String LidRegex = @"^([a-zA-Z0-9,\-:]{1}[ ]?){1,99}[a-zA-Z0-9]{1}$";
 
         if (!Regex.IsMatch(topic, LidRegex))
@@ -500,6 +562,14 @@ public partial class Manage : System.Web.UI.Page
         return true;
     }
 
+    /*
+     * 
+     * Regex method for checking the validity of characters and
+     * length associated with a 'filename'.
+     * They can contain: alphanumeric, [_], and end in .mp3 or .pdf
+     * variations
+     * 
+     */
     private bool Regex_FilenameCheck(string topic)
     {
         //alphanumeric and [_]
@@ -517,6 +587,12 @@ public partial class Manage : System.Web.UI.Page
 
     #region Disable Boxes
 
+    /*
+     * 
+     * Method for disabling all neccessary droplists
+     * on the page for default state
+     * 
+     */
     private void DisableBoxes()
     {
 
@@ -528,6 +604,11 @@ public partial class Manage : System.Web.UI.Page
 
     }
 
+    /*
+     * 
+     * Method for disabling a specified droplist
+     * 
+     */
     private void DisableBox(DropDownList ddl)
     {
         ddl.Enabled = false;
@@ -536,7 +617,12 @@ public partial class Manage : System.Web.UI.Page
     #endregion Disable Boxes
 
     #region DropLists Methods
-
+    /*
+     * 
+     * Method for clearing a specified droplist, setting specified
+     * text to it, and focusing on index '0'
+     * 
+     */
     private void BlanksOnDropList_WithText(DropDownList ddl, string text)
     {
         ddl.Items.Clear();
@@ -544,6 +630,11 @@ public partial class Manage : System.Web.UI.Page
         ddl.SelectedIndex = 0;
     }
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     private void BlanksOnDropList(DropDownList ddl)
     {
         ddl.Items.Clear();
@@ -551,6 +642,11 @@ public partial class Manage : System.Web.UI.Page
         ddl.SelectedIndex = 0;
     }
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     private void BlanksOnAllDropLists_WithText()
     {
         //initiate dropdownlists to have a blank
@@ -585,7 +681,16 @@ public partial class Manage : System.Web.UI.Page
     #region Add Methods
 
     #region AddCountry_Click
-
+    /*
+     * 
+     * Event associated with clicking the 'add country' button.
+     * It checks for the field being filled and a regex check.
+     * Then attempts to insert the country in to the database.
+     * If successful, then the country data will update.
+     * If failure occurs, log messages will be produced and
+     * an email will be sent.
+     * 
+     */
     protected void AddCountry_Click(object sender, EventArgs e)
     {
 
@@ -667,7 +772,16 @@ public partial class Manage : System.Web.UI.Page
     #endregion AddCountry_Click
 
     #region AddTopic_Click
-
+    /*
+     * 
+     * Event associated with clicking the 'add topic' button.
+     * It checks for the field being filled and a regex check.
+     * Then attempts to insert the topic in to the database.
+     * If successful, then the country data will update.
+     * If failure occurs, log messages will be produced and
+     * an email will be sent.
+     * 
+     */
     protected void AddTopic_Click(object sender, EventArgs e)
     {
 
@@ -751,7 +865,19 @@ public partial class Manage : System.Web.UI.Page
     #region Add to CountryGrade
 
     #region CountryGrade_country_TextChange
-
+    /*
+     * 
+     * Event associated with selecting an item from the 'country' droplist.
+     * It puts the grade droplist in to a default state to ensure it is at
+     * a known state always (in case of bad selection on the country droplist).
+     * It checks for the field being filled.
+     * Then attempts to check that there are grades that can still be associated
+     * with that given country.
+     * If okay, then the grades will populate the grade droplist
+     * If failure occurs, log messages will be produced and
+     * an email may be sent.
+     * 
+     */
     protected void CountryGrade_country_IndexChange(object sender, EventArgs e)
     {
 
@@ -842,7 +968,16 @@ public partial class Manage : System.Web.UI.Page
     #endregion CountryGrade_country_TextChange
 
     #region AddCountryGrade_Click
-
+    /*
+     * 
+     * Event associated with clicking the 'add country grade' button.
+     * It checks for the fields being filled.
+     * Then attempts to insert the country grade in to the database.
+     * If successful, then the country grade data will update.
+     * If failure occurs, log messages will be produced and
+     * an email will be sent.
+     * 
+     */
     protected void AddCountryGrade_Click(object sender, EventArgs e)
     {
         if (dlCGcountry.SelectedValue.Length == 0 || dlCGgrade.SelectedValue.Length == 0)
@@ -925,7 +1060,19 @@ public partial class Manage : System.Web.UI.Page
     #region Add to CountryGradeTopic
 
     #region CountryGradeTopic_countrygrade_TextChange
-
+    /*
+     * 
+     * Event associated with selecting an item from the 'country grade' droplist.
+     * It puts the topic droplist in to a default state to ensure it is at
+     * a known state always (in case of bad selection on the country grade droplist).
+     * It checks for the field being filled.
+     * Then attempts to check that there are topics that can still be associated
+     * with that given country grade.
+     * If okay, then the topics will populate the topic droplist
+     * If failure occurs, log messages will be produced and
+     * an email may be sent.
+     * 
+     */
     protected void CountryGradeTopic_countrygrade_IndexChange(object sender, EventArgs e)
     {
 
@@ -1020,7 +1167,16 @@ public partial class Manage : System.Web.UI.Page
     #endregion CountryGradeTopic_countrygrade_TextChange
 
     #region AddCountryGradeTopic_Click
-
+    /*
+     * 
+     * Event associated with clicking the 'add country grade topic' button.
+     * It checks for the fields being filled.
+     * Then attempts to insert the country grade topic in to the database.
+     * If successful, then the country grade topic data will update.
+     * If failure occurs, log messages will be produced and
+     * an email will be sent.
+     * 
+     */
     protected void AddCountryGradeTopic_Click(object sender, EventArgs e)
     {
         if (dlCGTcountrygrade.SelectedValue.Length == 0 || dlCGTtopic.SelectedValue.Length == 0)
@@ -1107,11 +1263,21 @@ public partial class Manage : System.Web.UI.Page
     #endregion Add to CountryGradeTopic
 
     #region AddLesson_Click
-
     /*
-     * credit: http://asp.net-tutorials.com/controls/file-upload-control/
-     * credit: https://stackoverflow.com/questions/1762157/how-to-delete-a-file-using-asp-net
-     */
+    * credit: http://asp.net-tutorials.com/controls/file-upload-control/
+    * credit: https://stackoverflow.com/questions/1762157/how-to-delete-a-file-using-asp-net
+    * 
+    * Event associated with clicking the 'add lesson' button.
+    * It checks for the fields being filled, a file is uploaded, the
+    * uploaded file is of correct form (type and size).
+    * It does a Regex check on the filename and the lid.
+    * Then attempts to get path data (physical and virtual) for the database and file upload.
+    * Then attempts to save the file on the server.
+    * If successful, then will attempt to insert the lesson data in to the database.
+    * If failure occurs anywhere, database/server state is reverted back to the original state
+    * and log messages will be produced and an email will be sent.
+    * 
+    */
     protected void AddLesson_Click(object sender, EventArgs e)
     {
 
@@ -1187,6 +1353,8 @@ public partial class Manage : System.Web.UI.Page
         string virtualFilePath = virtualAudioPath + filename;
         #endregion Path Work
 
+        //check for file exists
+        //if not, then attempt to save it
         if (!System.IO.File.Exists(physicalFilePath))
         {
             try
@@ -1278,6 +1446,8 @@ public partial class Manage : System.Web.UI.Page
             
         }
         
+        //if the insert failed and the file did not exist originally
+        //then remove the file that was uploaded
         if (!successfulInsert && !existed)
         {
             try
@@ -1310,7 +1480,12 @@ public partial class Manage : System.Web.UI.Page
     #region Helpers
 
     #region Clear Log
-
+    /*
+     * 
+     * Event assocatied with clicking the 'clear log' button
+     * to revert the log box back to a clean slate
+     * 
+     */
     protected void ClearLog_Click(object sender, EventArgs e)
     {
         tblog.Text = "";
@@ -1319,7 +1494,11 @@ public partial class Manage : System.Web.UI.Page
     #endregion Clear Log
 
     #region GetSession
-
+    /*
+     * 
+     * TODO
+     * 
+     */
     private bool GetSession()
     {
         if((Session["confirm"]) == null)
@@ -1336,14 +1515,14 @@ public partial class Manage : System.Web.UI.Page
     #endregion GetSession
 
     #region MySqlExceptionHandler
-
+    /*
+     * 
+     * Method used for determining what the sql error number corresponds to.
+     * It will return the text associated with that error
+     * 
+     */
     private string MySqlExceptionNumberHandler(int exceptionNum)
     {
-        //When handling errors, you can your application's response based 
-        //on the error number.
-        //The two most common error numbers when connecting are as follows:
-        //0: Cannot connect to server.
-        //1045: Invalid user name and/or password.
         switch (exceptionNum)
         {
             case 0:
@@ -1353,19 +1532,29 @@ public partial class Manage : System.Web.UI.Page
             case 1045:
                 return "~Error: Invalid username/password | Contact help";
             case 1062:
-                return "~Duplicate Entry (certain fields cannot be the same)";
+                return "~Duplicate Entry (certain fields cannot be the same), please try again";
             default:
                 return "~Error: number: " + exceptionNum + " | Contact help";
         }//end switch
     }
 
     #endregion MySqlExceptionHandler
-    
+
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void Btndeletelink_Click(object sender, EventArgs e)
     {
         Response.Redirect("ManageDelete.aspx");
     }//end method
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void EmailError(String strmess)
     {
         try
@@ -1389,6 +1578,11 @@ public partial class Manage : System.Web.UI.Page
 
     #region LessonDisplay
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     private void GridLessons(MySqlConnection connection)
     {
         try
@@ -1420,22 +1614,26 @@ public partial class Manage : System.Web.UI.Page
 
         connection.Close();
     }
-
+    
     protected void Lesson_DataBound(object sender, GridViewRowEventArgs e)
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            e.Row.Cells[4].Attributes.Add("style", "width:770px;word-break:break-all;word-wrap:break-word;");
+            //Taken out: word-break:break-all;word-wrap:break-word;
+            e.Row.Cells[4].Attributes.Add("style", "width:770px;");
         }
     }
 
     #endregion LessonDisplay
 
-
-
-
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void Button1_Click(object sender, EventArgs e)
     {
         Response.Redirect("PDFViewer.aspx");
     }//end method
+
 }//end class

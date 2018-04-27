@@ -1506,7 +1506,8 @@ public partial class ManageDelete : System.Web.UI.Page
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            e.Row.Cells[4].Attributes.Add("style", "width:600px;word-break:break-all;word-wrap:break-word;");
+            //Taken out: word-break:break-all;word-wrap:break-word;
+            e.Row.Cells[4].Attributes.Add("style", "width:600px;");
         }
     }
     #endregion Lesson DataBound
@@ -1970,7 +1971,7 @@ public partial class ManageDelete : System.Web.UI.Page
             case 1045:
                 return "~Error: Invalid username/password | Contact help";
             case 1062:
-                return "~Duplicate Entry (certain fields cannot be the same)";
+                return "~Duplicate Entry (certain fields cannot be the same), please try again";
             default:
                 return "~Error: number: " + exceptionNum + " | Contact help";
         }//end switch
