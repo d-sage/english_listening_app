@@ -50,21 +50,27 @@ class CountryScreen extends React.Component {
 		this.askForPermissions();
 		db.transaction(tx => {
 			//tx.executeSql('DROP TABLE IF EXISTS lessons;');
-			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (cid varchar(30) NOT NULL, gid tinyint(4) NOT NULL, tid varchar(50) NOT NULL, lid varchar(100) NOT NULL, text varchar(2500) NOT NULL, path varchar(260) NOT NULL, ext varchar(5) NOT NULL, PRIMARY KEY (cid, gid, tid, lid));');
+			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (cid varchar(30) NOT NULL, gid tinyint(4) NOT NULL, tid varchar(50) NOT NULL, lid varchar(100) NOT NULL, filename varchar(100) NOT NULL, text varchar(2500) NOT NULL, path varchar(260) NOT NULL, ext varchar(5) NOT NULL, PRIMARY KEY (cid, gid, tid, lid));');
 		});
-	}
-
-	componentWillMount() {
-		if (Platform.OS === 'ios'){
-             NetInfo.isConnected.addEventListener('connectionChange', isConnected => {
-                    this.setState({connected: isConnected}, () => this.getData());
-             }); 
-        }
-        else{
-			NetInfo.isConnected.fetch().then(isConnected => {
-				this.setState({connected: isConnected}, () => this.getData());
-			});
+		if(Platform.OS == 'ios'){		
+			NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectionChange);
 		}
+		else if(Platform.OS == 'android'){
+			NetInfo.isConnected.fetch().done(
+				(isConnected) => { this.getData(isConnected); }
+			);
+		}
+		else
+			alert('Only Android and IOS are supported');
+	}
+	
+	componentWillUnmount() {
+		if(Platform.OS == 'ios')
+			NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectionChange);
+	}
+	
+	handleConnectionChange = (isConnected) => {
+		this.getData(isConnected);
 	}
 	
 	askForPermissions = async () => {
@@ -74,8 +80,9 @@ class CountryScreen extends React.Component {
 		});
 	};
 
-	getData(){
-		if(this.state.connected)
+	getData(isConnected){
+		this.setState({ connected: isConnected });
+		if(isConnected)
 			this.fetchOnlineData();
 		else
 			this.fetchOfflineData();

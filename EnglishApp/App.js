@@ -58,8 +58,9 @@ const RootNavigator = StackNavigator({
 export default class App extends React.Component {
 	
 	async componentWillMount(){
-		try{ await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory+'recordings');
+		try{ 
 			//await FileSystem.deleteAsync(FileSystem.documentDirectory+'recordings')
+			await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory+'recordings');
 		}
 		catch(e){}//do nothing, directory already exists.
 	}

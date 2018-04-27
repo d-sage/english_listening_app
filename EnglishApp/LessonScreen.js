@@ -24,7 +24,6 @@ class LessonScreen extends React.Component {
 								onPress={() => {
 									if(rowData.ext == "pdf")
 										Linking.openURL(rowData.path);
-										//Linking.openURL('http://drive.google.com/viewerng/viewer?embeded=true&url=' + rowData.path);
 									else if(rowData.ext == "mp3"){
 										this.props.navigation.navigate('Player',
 											{country: this.props.navigation.state.params.country,
@@ -33,7 +32,7 @@ class LessonScreen extends React.Component {
 											 lid: rowData.lid,
 											 textSubs: rowData.text+"",
 											 path: rowData.path,
-											 name: rowData.filename+"",
+											 name: rowData.filename.replace(' ','_'),
 											 connected: this.props.navigation.state.params.connected,
 											 fromRecoring: false,
 											 ext: rowData.ext+""}
@@ -79,7 +78,7 @@ class LessonScreen extends React.Component {
 
 	fetchOfflineData(){
 		db.transaction(tx => {
-			tx.executeSql('SELECT DISTINCT cid,gid,tid,lid,text,path,ext FROM lessons WHERE cid = ? AND gid = ? AND tid = ?;', [this.props.navigation.state.params.country,this.props.navigation.state.params.grade,this.props.navigation.state.params.topic], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
+			tx.executeSql('SELECT DISTINCT cid,gid,tid,lid,filename,text,path,ext FROM lessons WHERE cid = ? AND gid = ? AND tid = ?;', [this.props.navigation.state.params.country,this.props.navigation.state.params.grade,this.props.navigation.state.params.topic], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
 		});
 	}
 }

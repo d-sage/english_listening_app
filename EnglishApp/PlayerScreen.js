@@ -1,6 +1,5 @@
 //TODO
-//nameing dates stack up while recording from within playing a saved recording.
-//do we want text in textbox when playing a recording? what if they pick a recording from a diff lesson?
+//figure out why deleteAsync throws error every time in .catch but still deletes.
 
 
 import React from 'react';
@@ -164,7 +163,7 @@ export default class AudioPlayer extends React.Component{
 	audioDownload(){
 		if(!this.props.navigation.state.params.fromRecording){
 			db.transaction(tx => {
-				tx.executeSql('INSERT OR IGNORE INTO lessons (cid, gid, tid, lid, text, path, ext) values (?, ?, ?, ?, ?, ?, ?)', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.textSubs, FileSystem.documentDirectory + this.props.navigation.state.params.name, this.props.navigation.state.params.ext]);
+				tx.executeSql('INSERT OR IGNORE INTO lessons (cid, gid, tid, lid, filename, text, path, ext) values (?, ?, ?, ?, ?, ?, ?, ?)', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.name, this.props.navigation.state.params.textSubs, FileSystem.documentDirectory + this.props.navigation.state.params.name, this.props.navigation.state.params.ext]);
 			});
 			alert('Downloading File, Please wait. You will get an alert when download has finished.');
 			FileSystem.downloadAsync(this.props.navigation.state.params.path,
@@ -179,29 +178,49 @@ export default class AudioPlayer extends React.Component{
 	async audioDelete() {
 		if(this.audio != null){
 			this.audioStop();
-			if(!this.props.navigation.state.params.fromRecording){
-				
+			if(!this.props.navigation.state.params.fromRecording){			
 				db.transaction(tx => {
 					tx.executeSql('DELETE FROM lessons WHERE cid = ? AND gid = ? AND tid = ? AND lid = ? AND path = ?;', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.path]);
 				});
-				FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} );
-				alert('Finished Deleting Audio File');
+				FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} ).then(({ uri }) => {
+					alert('Finished Deleting Audio File');
+				}).catch(error => { 
+					alert('Finished Deleting Audio File: '+ error);
+				});
 				this.props.navigation.dispatch(resetActionCountry);
 			}
 			else{
-				FileSystem.deleteAsync( FileSystem.documentDirectory +'/recordings/' + this.props.navigation.state.params.name, {idempotent: true} );
-				alert('Finished Deleting Recording');
+				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} ).then(({ uri }) => {
+					alert('Finished Deleting Recording');})
+				.catch(error => { 
+					alert("ERROR Deleting Audio: " + error); 
+				});
 				await this.openRecordings();
-				this.props.navigation.navigate('Recordings',
-												{country: this.props.navigation.state.params.country,
-												grade: this.props.navigation.state.params.grade,
-												topic: this.props.navigation.state.params.topic,
-												lid: this.props.navigation.state.params.lid,
-												textSubs: this.props.navigation.state.params.text,
-												path: this.props.navigation.state.params.path,
-												name: this.props.navigation.state.params.name,
-												connected: this.props.navigation.state.params.connected,
-												recordings: this.state.recordings});
+				if(this.state.recordings.length == 0){
+					alert('No recordings to load, Please select a new Lesson');
+					this.props.navigation.dispatch(resetActionCountry); 
+				}
+				else{
+					resetActionPlayer = NavigationActions.reset({
+											index: 0,
+											actions: [
+												NavigationActions.navigate({ routeName: 'Recordings', 
+													params:{
+														country: this.props.navigation.state.params.country,
+														grade: this.props.navigation.state.params.grade,
+														topic: this.props.navigation.state.params.topic,
+														lid: this.props.navigation.state.params.lid,
+														textSubs: this.props.navigation.state.params.textSubs,
+														path: this.props.navigation.state.params.path,
+														name: this.props.navigation.state.params.name,
+														connected: this.props.navigation.state.params.connected,
+														recordings: this.state.recordings
+													}
+												}),
+											],
+										}), 
+					this.props.navigation.dispatch(resetActionPlayer);
+				}
 			}
 		}
 	}
@@ -292,8 +311,9 @@ export default class AudioPlayer extends React.Component{
   
 	async recordingStop() {
 		this.setState({ isLoading: true, });
-		try { await this.recording.stopAndUnloadAsync();
-			  this.tempRecording = this.recording;
+		try { 
+			await this.recording.stopAndUnloadAsync();
+			this.tempRecording = this.recording;
 		} 
 		catch (error) {}// Do nothing -- we are already unloaded.	
 		await Audio.setAudioModeAsync({
@@ -339,13 +359,13 @@ export default class AudioPlayer extends React.Component{
 	async recordingSave(){
 		if(this.tempRecording != null){
 			try{
-				const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+'/recordings');
+				const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+'recordings');
 				if(files.length < MAX_SAVES){
 					const date = new Date();
 					const recStatus = await this.tempRecording.getURI();
 					FileSystem.copyAsync({ 
 						from: recStatus, 
-						to: FileSystem.documentDirectory + '/recordings/' + date.getMonth()+ "-" + date.getDay()+ "-" + date.getFullYear()+ "_" + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds() + '_' + this.props.navigation.state.params.name
+						to: FileSystem.documentDirectory + 'recordings/' + date.getMonth()+ "-" + date.getDay()+ "-" + date.getFullYear()+ "_" + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds() + '_' + this.props.navigation.state.params.name
 					});
 					alert('Recording saved successfully!');
 					this.openRecordings();
@@ -443,7 +463,7 @@ export default class AudioPlayer extends React.Component{
 	};
 	
 	setRateUp(){
-		if(Platform.Version < 23)
+		if(Platform.OS == 'android' && Platform.Version < 23)
 			alert('Your version of android is not supported to change the rate.');
 		else{
 			this.setState({rate: this.state.rate+0.1});
@@ -452,7 +472,7 @@ export default class AudioPlayer extends React.Component{
 	}
 	
 	setRateDown(){
-		if(Platform.Version < 23)
+		if(Platform.OS == 'android' && Platform.Version < 23)
 			alert('Your version of android is not supported to change the rate.');
 		else{		
 			this.setState({rate: this.state.rate-0.1});
@@ -461,7 +481,7 @@ export default class AudioPlayer extends React.Component{
 	}
 	
 	setRateDefault(){
-		if(Platform.Version < 23)
+		if(Platform.OS == 'android' && Platform.Version < 23)
 			alert('Your version of android is not supported to change the rate.');
 		else{
 			this.setState({rate: 1.0,});

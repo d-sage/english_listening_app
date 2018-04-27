@@ -69,10 +69,6 @@ class RecordingsScreen extends React.Component {
 	}
 	
 	componentDidMount() {
-		if(this.props.navigation.state.params.recordings.length == 0){
-			alert('No recordings to load, Please select a new Lesson');
-			this.props.navigation.dispatch(resetActionCountry); 	
-		}
 		this.setState({ dataSource: ds.cloneWithRows(this.props.navigation.state.params.recordings)})
 	}
 }
