@@ -130,7 +130,7 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             EmailError(text);
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             return;
         }
 
@@ -174,12 +174,12 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch (Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -237,12 +237,12 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch (Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -273,12 +273,12 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch (Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -310,12 +310,12 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch (Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -346,12 +346,12 @@ public partial class ManageDelete : System.Web.UI.Page
         {
             //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
         }
         catch (Exception e)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
 
         connection.Close();
@@ -380,12 +380,12 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
     }
 
@@ -424,7 +424,7 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (MySqlException mse)
         {
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
             good = false;
@@ -432,13 +432,13 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             good = false;
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
             good = false;
         }
 
@@ -470,12 +470,12 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
     }
 
@@ -544,7 +544,7 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (MySqlException mse)
         {
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
             good = false;
@@ -552,13 +552,13 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             good = false;
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
             good = false;
         }
 
@@ -600,7 +600,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         else
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country: unrecognized command, contact admin');", true);
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country: unrecognized command, contact help');", true);
             return;
         }
 
@@ -726,12 +726,12 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
     }
 
@@ -770,7 +770,7 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (MySqlException mse)
         {
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
             good = false;
@@ -778,13 +778,13 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             good = false;
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
             good = false;
         }
 
@@ -816,12 +816,12 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
     }
 
@@ -889,7 +889,7 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (MySqlException mse)
         {
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
             good = false;
@@ -897,13 +897,13 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             good = false;
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
             good = false;
         }
 
@@ -944,7 +944,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         else
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Topic: unrecognized command, contact admin');", true);
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Topic: unrecognized command, contact help');", true);
             return;
         }
 
@@ -1106,7 +1106,7 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (MySqlException mse)
         {
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
             good = false;
@@ -1114,13 +1114,13 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             good = false;
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
             good = false;
         }
 
@@ -1158,7 +1158,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         else
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade: unrecognized command, contact admin');", true);
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade: unrecognized command, contact help');", true);
             return;
         }
 
@@ -1293,7 +1293,7 @@ public partial class ManageDelete : System.Web.UI.Page
             catch (MySqlException mse)
             {
                 string text = MySqlExceptionNumberHandler(mse.Number);
-                tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+                tblog.Text += Environment.NewLine + text;
 
                 //TODO: email
                 good = false;
@@ -1301,13 +1301,13 @@ public partial class ManageDelete : System.Web.UI.Page
             catch (ArgumentException ae)
             {
                 //TODO: email
-                tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+                tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
                 good = false;
             }
             catch (Exception ex)
             {
                 //TODO: email
-                tblog.Text += Environment.NewLine + "~Error: contact admin";
+                tblog.Text += Environment.NewLine + "~Error: contact help";
                 good = false;
             }
 
@@ -1316,7 +1316,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         else
         {
-            tblog.Text += Environment.NewLine + "~Country_Grade_Topic: topic removal failed, contact admin";
+            tblog.Text += Environment.NewLine + "~Country_Grade_Topic: topic removal failed, contact help";
             good = false;
         }
 
@@ -1364,7 +1364,7 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (MySqlException mse)
         {
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
             connection.Close();
@@ -1373,14 +1373,14 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             connection.Close();
             return false; ;
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
             connection.Close();
             return false;
         }
@@ -1418,7 +1418,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         else
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade_Topic: unrecognized command, contact admin');", true);
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade_Topic: unrecognized command, contact help');", true);
             return;
         }
 
@@ -1486,7 +1486,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         else
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade_Topic: topic removal failed, contact admin');", true);
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade_Topic: topic removal failed, contact help');", true);
             good = false;
         }
 
@@ -1506,7 +1506,8 @@ public partial class ManageDelete : System.Web.UI.Page
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            e.Row.Cells[4].Attributes.Add("style", "width:600px;word-break:break-all;word-wrap:break-word;");
+            //Taken out: word-break:break-all;word-wrap:break-word;
+            e.Row.Cells[4].Attributes.Add("style", "width:600px;");
         }
     }
     #endregion Lesson DataBound
@@ -1527,12 +1528,12 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
     }
 
@@ -1585,7 +1586,7 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (MySqlException mse)
         {
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
             good = false;
@@ -1593,13 +1594,13 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             good = false;
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
             good = false;
         }
 
@@ -1628,12 +1629,12 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
         }
     }
 
@@ -1667,13 +1668,13 @@ public partial class ManageDelete : System.Web.UI.Page
             catch (ArgumentException ae)
             {
                 //TODO: email
-                tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+                tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
                 good = false;
             }
             catch (Exception ex)
             {
                 //TODO: email
-                tblog.Text += Environment.NewLine + "~Error: contact admin";
+                tblog.Text += Environment.NewLine + "~Error: contact help";
                 good = false;
             }
         }
@@ -1725,7 +1726,7 @@ public partial class ManageDelete : System.Web.UI.Page
             catch (MySqlException mse)
             {
                 string text = MySqlExceptionNumberHandler(mse.Number);
-                tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+                tblog.Text += Environment.NewLine + text;
 
                 //TODO: email
                 connection.Close();
@@ -1734,14 +1735,14 @@ public partial class ManageDelete : System.Web.UI.Page
             catch (ArgumentException ae)
             {
                 //TODO: email
-                tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+                tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
                 connection.Close();
                 return false; ;
             }
             catch (Exception ex)
             {
                 //TODO: email
-                tblog.Text += Environment.NewLine + "~Error: contact admin";
+                tblog.Text += Environment.NewLine + "~Error: contact help";
                 connection.Close();
                 return false;
             }
@@ -1751,7 +1752,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         else
         {
-            tblog.Text += Environment.NewLine + "~Lesson: file removal failed, contact admin";
+            tblog.Text += Environment.NewLine + "~Lesson: file removal failed, contact help";
             return false;
         }
 
@@ -1807,7 +1808,7 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (MySqlException mse)
         {
             string text = MySqlExceptionNumberHandler(mse.Number);
-            tblog.Text += Environment.NewLine + "~Error: " + text + " | contact admin";
+            tblog.Text += Environment.NewLine + text;
 
             //TODO: email
             connection.Close();
@@ -1816,14 +1817,14 @@ public partial class ManageDelete : System.Web.UI.Page
         catch (ArgumentException ae)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact admin";
+            tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             connection.Close();
             return false; ;
         }
         catch (Exception ex)
         {
             //TODO: email
-            tblog.Text += Environment.NewLine + "~Error: contact admin";
+            tblog.Text += Environment.NewLine + "~Error: contact help";
             connection.Close();
             return false;
         }
@@ -1846,18 +1847,18 @@ public partial class ManageDelete : System.Web.UI.Page
                     catch (Exception ex)
                     {
                         good = false;
-                        tblog.Text += Environment.NewLine + "~Lesson: file removal error, contact admin";
+                        tblog.Text += Environment.NewLine + "~Lesson: file removal error, contact help";
                     }
                 }
                 else
                 {
-                    tblog.Text += Environment.NewLine + "~Lesson: file did not exist, contact admin";
+                    tblog.Text += Environment.NewLine + "~Lesson: file did not exist, contact help";
                 }
             }
             catch (Exception e)
             {
                 good = false;
-                tblog.Text += Environment.NewLine + "~Error: contact admin";
+                tblog.Text += Environment.NewLine + "~Error: contact help";
             }
         }
 
@@ -1891,7 +1892,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         else
         {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Lesson: unrecognized command, contact admin');", true);
+            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Lesson: unrecognized command, contact help');", true);
             return;
         }
 
@@ -1964,15 +1965,15 @@ public partial class ManageDelete : System.Web.UI.Page
         switch (exceptionNum)
         {
             case 0:
-                return "Cannot connect to server.  Contact administrator";
+                return "~Error: Cannot connect to server | Contact help";
             case 1042:
-                return "Cannot resolve server name";
+                return "~Error: Cannot resolve server name  | Contact help";
             case 1045:
-                return "Invalid username/password, please try again";
+                return "~Error: Invalid username/password | Contact help";
             case 1062:
-                return "Duplicate Entry";
+                return "~Duplicate Entry (certain fields cannot be the same), please try again";
             default:
-                return "number: " + exceptionNum;
+                return "~Error: number: " + exceptionNum + " | Contact help";
         }//end switch
     }
 

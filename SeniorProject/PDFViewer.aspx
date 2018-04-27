@@ -1,4 +1,6 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="PDFViewer.aspx.cs" Inherits="PDFViewer" %>
+﻿<!-- Credit: https://www.codeproject.com/Questions/143724/how-to-add-Hyperlink-in-gridview-in-ASP-NET -->
+
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="PDFViewer.aspx.cs" Inherits="PDFViewer" %>
 
 <!DOCTYPE html>
 
@@ -21,7 +23,6 @@
            width: 100%;
            background-color: aqua;
         }
-
         .scrolling-table-container 
         {
             display: inline-block;
@@ -56,11 +57,15 @@
             <!-- Table for Lesson Delete / Edit -->
             <asp:GridView ID="gridLesson" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowDataBound="Lesson_DataBound">
                 <Columns>
-                    <asp:BoundField HeaderText="Country" DataField="cid" ReadOnly="true"/>
-                    <asp:BoundField HeaderText="Grade" DataField="gid" ReadOnly="true"/>
-                    <asp:BoundField HeaderText="Topic" DataField="tid" ReadOnly="true"/>
+                    <asp:BoundField HeaderText="Country" DataField="cid"/>
+                    <asp:BoundField HeaderText="Grade" DataField="gid"/>
+                    <asp:BoundField HeaderText="Topic" DataField="tid"/>
                     <asp:BoundField HeaderText="Title" DataField="lid"/>
-                    <asp:BoundField HeaderText="Filename" DataField="filename" ReadOnly="true"/>
+                    <asp:TemplateField HeaderText="File Link">
+			            <ItemTemplate>
+				            <asp:HyperLink ID="fileLink" runat="server" NavigateUrl='<%# Bind("path") %>' Text='<%# Bind("filename") %>'></asp:HyperLink>
+			            </ItemTemplate>
+		            </asp:TemplateField>
 	            </Columns>
             </asp:GridView>
         </div>
