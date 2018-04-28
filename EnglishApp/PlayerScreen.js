@@ -628,7 +628,7 @@ export default class AudioPlayer extends React.Component{
 									</TouchableHighlight>
 									<Text>{this.state.isRecording ? 'Stop' : 'Record'}</Text>
 								</View>
-								<View style={[styles.buttonsContainers, { opacity: !this.state.isPlaybackAllowed || this.state.isLoading ? DISABLED_OPACITY : 1.0, },]}>
+								<View style={[styles.buttonsContainers, { opacity: !this.state.isPlaybackAllowed || this.state.isLoading || this.tempRecording == null ? DISABLED_OPACITY : 1.0, },]}>
 									<TouchableHighlight
 										underlayColor={BACKGROUND_COLOR}
 										style={styles.wrapper}
