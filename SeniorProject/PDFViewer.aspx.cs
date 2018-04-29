@@ -9,13 +9,27 @@ using System.Web.UI.WebControls;
 
 public partial class PDFViewer : System.Web.UI.Page
 {
+
+    #region Page Load
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void Page_Load(object sender, EventArgs e)
     {
         UpdateAllData();
     }//end method
 
-
+    #endregion Page Load
+    
     #region GetConnectionString
+    /*
+     * 
+     * Method that contains the variables to construct the connection
+     * string required to access the database.
+     * 
+     */
     private string GetConnectionString()
     {
         string server = "mysql5018.site4now.net";
@@ -31,7 +45,13 @@ public partial class PDFViewer : System.Web.UI.Page
     #endregion GetConnectionString
 
     #region Get SQL Connection
-
+    /*
+     * 
+     * Method that attempts to get a database connection object
+     * from the connection string and return it for database
+     * access
+     * 
+     */
     private MySqlConnection GetSqlConnection()
     {
         string connectionString = GetConnectionString();
@@ -52,7 +72,11 @@ public partial class PDFViewer : System.Web.UI.Page
     #endregion Get SQL Connection
 
     #region Update Lessons
-
+    /*
+     * 
+     * TODO
+     * 
+     */
     private void UpdateLessonsPDFMP3(MySqlConnection connection)
     {
         try
@@ -81,22 +105,12 @@ public partial class PDFViewer : System.Web.UI.Page
 
     #endregion Update Lessons
 
-    #region Lesson DataBound (obsolete)
-    protected void Lesson_DataBound(object sender, GridViewRowEventArgs e)
-    {
-
-        //nothing
-
-        /*
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            e.Row.Cells[4].Attributes.Add("style", "width:600px;word-break:break-all;word-wrap:break-word;");
-        }
-        */
-    }
-    #endregion Lesson DataBound
-
     #region Update All Data
+    /*
+     * 
+     * TODO
+     * 
+     */
     private void UpdateAllData()
     {
 
@@ -121,9 +135,17 @@ public partial class PDFViewer : System.Web.UI.Page
 
     #endregion Update All Data
 
+    #region Button Click Events
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void btnpdf_Click(object sender, EventArgs e)
     {
         Response.Redirect("Login.aspx");
     }//end method
+
+    #endregion Button Click Events
 
 }//end class

@@ -74,7 +74,7 @@
 
         <div class="inlineBlockDiv">
             <!-- Table for Country Delete / Edit -->
-            <asp:GridView ID="gridCountry" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Country_RowCommand" 
+            <asp:GridView ID="gridCountry" runat="server" AutoGenerateColumns="False" AutoPostBack="True"
                 OnRowEditing="Country_OnRowEditing" OnRowCancelingEdit="Country_OnRowCancelingEdit" OnRowUpdating="Country_OnRowUpdating" OnRowDeleting="Country_OnRowDeleting" >
                 <Columns>
                     <asp:BoundField HeaderText="Country" DataField="cid" ReadOnly="false"/>
@@ -90,7 +90,7 @@
 
         <div class="inlineBlockDiv">
             <!-- Table for Topic Delete / Edit -->
-            <asp:GridView ID="gridTopic" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="Topic_RowCommand"
+            <asp:GridView ID="gridTopic" runat="server" AutoGenerateColumns="False" AutoPostBack="True"
                 OnRowEditing="Topic_OnRowEditing" OnRowCancelingEdit="Topic_OnRowCancelingEdit" OnRowUpdating="Topic_OnRowUpdating" OnRowDeleting="Topic_OnRowDeleting">
                 <Columns>
                     <asp:BoundField HeaderText="Topic" DataField="tid" ReadOnly="false"/>
@@ -106,7 +106,7 @@
 
         <div class="inlineBlockDiv">
             <!-- Table for Country_Grade Delete -->
-            <asp:GridView ID="gridCountryGrade" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGrade_RowCommand"
+            <asp:GridView ID="gridCountryGrade" runat="server" AutoGenerateColumns="False" AutoPostBack="True"
                  OnRowDeleting="CountryGrade_OnRowDeleting">
                 <Columns>
                     <asp:BoundField HeaderText="Country" DataField="cid"/>
@@ -122,7 +122,7 @@
 
         <div class="inlineBlockDiv">
             <!-- Table for Country_Grade_Topic Delete -->
-            <asp:GridView ID="gridCountryGradeTopic" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowCommand="CountryGradeTopic_RowCommand"
+            <asp:GridView ID="gridCountryGradeTopic" runat="server" AutoGenerateColumns="False" AutoPostBack="True"
                 OnRowDeleting="CountryGradeTopic_OnRowDeleting" Width="480px">
                 <Columns>
                     <asp:BoundField HeaderText="Country" DataField="cid"/>
@@ -139,7 +139,7 @@
 
         <div class="scrolling-table-container">
             <!-- Table for Lesson Delete / Edit -->
-            <asp:GridView ID="gridLesson" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowDataBound="Lesson_DataBound" OnRowCommand="Lesson_RowCommand"
+            <asp:GridView ID="gridLesson" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowDataBound="Lesson_DataBound"
                 OnRowEditing="Lesson_OnRowEditing" OnRowCancelingEdit="Lesson_OnRowCancelingEdit" OnRowUpdating="Lesson_OnRowUpdating" OnRowDeleting="Lesson_OnRowDeleting">
                 <Columns>
                     <asp:BoundField HeaderText="Country" DataField="cid" ReadOnly="true"/>

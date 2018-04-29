@@ -14,41 +14,32 @@ using System.Net;
 public partial class _Default : System.Web.UI.Page
 {
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     private RNGCryptoServiceProvider Rand = new RNGCryptoServiceProvider();
     private String dbUsername;
     private String dbSalt;
     private String dbPass;
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void Page_Load(object sender, EventArgs e)
     {
 
+        //TODO
         Session["oldCid"] = "";
         Session["oldTid"] = "";
         Session["oldLid"] = "";
         Session["oldText"] = "";
 
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
-
-        //This is for the credentials
-        /*
-        string text = "";
-        string server = "162.241.244.134";
-        string database = "jordape8_EnglishApp";
-        string uid = "jordape8_Default";
-        string password = "Default1!";
-        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
-
-        /*
-        string server = "localhost";
-        string database = "daricsag_ela";
-        string uid = "daricsag_ela";
-        string password = "english";
-        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
-
+        
         string text = "";
         string server = "mysql5018.site4now.net";
         string database = "db_a38d8d_lambe";
@@ -107,6 +98,11 @@ public partial class _Default : System.Web.UI.Page
 
     }//end method
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void Submit_Click(object sender, EventArgs e)
     {
         errormsg.Text = "";
@@ -148,6 +144,11 @@ public partial class _Default : System.Web.UI.Page
 
     }//end method
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     static byte[] GenerateSalt()
     {
         byte[] salt = new byte[32];
@@ -155,6 +156,11 @@ public partial class _Default : System.Web.UI.Page
         return salt;
     }//end method
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     static byte[] GenerateSaltedHash(String password)//, String salt)
     {      
         // Convert the plain string pwd into bytes
@@ -165,13 +171,23 @@ public partial class _Default : System.Web.UI.Page
         return algorithm.ComputeHash(passwordbytes);
     }//end method
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     public static bool ComparePasswords(String str, String str2)//byte[] array1, byte[] array2)
     {
         if (!str.Equals(str2))
             return false;
         return true;
     }//end method  
- 
+
+    /*
+     * 
+     * TODO
+     * 
+     */
     private int RandomInteger(int min, int max)
     {
         uint scale = uint.MaxValue;
@@ -189,6 +205,11 @@ public partial class _Default : System.Web.UI.Page
         return (int)(min + (max - min) * (scale / (double)uint.MaxValue));
     }//end method
 
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void EmailError(String strmess)
     {
         try
@@ -208,7 +229,11 @@ public partial class _Default : System.Web.UI.Page
         }//end catch
     }//end method
 
-
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void btnpdf_Click(object sender, EventArgs e)
     {
         Response.Redirect("PDFViewer.aspx");

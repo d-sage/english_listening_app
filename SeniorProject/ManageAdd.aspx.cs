@@ -1540,42 +1540,6 @@ public partial class Manage : System.Web.UI.Page
 
     #endregion MySqlExceptionHandler
 
-    /*
-     * 
-     * TODO
-     * 
-     */
-    protected void Btndeletelink_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("ManageDelete.aspx");
-    }//end method
-
-    /*
-     * 
-     * TODO
-     * 
-     */
-    protected void EmailError(String strmess)
-    {
-        try
-        {
-            String mypwd = "";
-            var client = new SmtpClient("smtp.gmail.com", 587)
-            {
-                Credentials = new NetworkCredential("yourEmail@gmail.com", mypwd),
-                EnableSsl = true
-            };
-            MailMessage message = new MailMessage("yourEmail@gmail.com", "EmailToSendTo", "Error Occurred" , strmess);
-            client.Send(message);
-        }//end try
-        catch (Exception e)
-        {
-            tblog.Text += Environment.NewLine + "Email failed to send! " + e.ToString();
-        }//end catch
-    }//end method
-
-    #endregion Helpers
-
     #region LessonDisplay
 
     /*
@@ -1614,7 +1578,7 @@ public partial class Manage : System.Web.UI.Page
 
         connection.Close();
     }
-    
+
     protected void Lesson_DataBound(object sender, GridViewRowEventArgs e)
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
@@ -1626,6 +1590,47 @@ public partial class Manage : System.Web.UI.Page
 
     #endregion LessonDisplay
 
+    #region Email Method
+    /*
+     * 
+     * TODO
+     * 
+     */
+    protected void EmailError(String strmess)
+    {
+        try
+        {
+            String mypwd = "";
+            var client = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential("yourEmail@gmail.com", mypwd),
+                EnableSsl = true
+            };
+            MailMessage message = new MailMessage("yourEmail@gmail.com", "EmailToSendTo", "Error Occurred" , strmess);
+            client.Send(message);
+        }//end try
+        catch (Exception e)
+        {
+            tblog.Text += Environment.NewLine + "Email failed to send! " + e.ToString();
+        }//end catch
+    }//end method
+
+    #endregion Email Method
+
+    #endregion Helpers
+
+    #region Button Click Events
+    /*
+     * 
+     * TODO
+     * 
+     */
+    protected void Btndeletelink_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("ManageDelete.aspx");
+    }//end method
+
+
     /*
      * 
      * TODO
@@ -1635,5 +1640,7 @@ public partial class Manage : System.Web.UI.Page
     {
         Response.Redirect("PDFViewer.aspx");
     }//end method
+
+    #endregion Button Click Events
 
 }//end class

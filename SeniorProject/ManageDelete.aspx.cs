@@ -14,6 +14,11 @@ using System.Web.UI.WebControls;
 
 public partial class ManageDelete : System.Web.UI.Page
 {
+    /*
+     * 
+     * TODO
+     * 
+     */
     private String stringhelper;
     private List<string> listcountry = new List<string>();
     private List<string> listgrade = new List<string>();
@@ -22,7 +27,11 @@ public partial class ManageDelete : System.Web.UI.Page
 
 
     #region Page_Load
-
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void Page_Load(object sender, EventArgs e)
     {
         bool run = GetSession();
@@ -37,7 +46,6 @@ public partial class ManageDelete : System.Web.UI.Page
             {
                 UpdateAllData();
                 //TODO
-                //temp?
                 Session["oldCid"] = "";
                 Session["oldTid"] = "";
                 Session["oldLid"] = "";
@@ -54,29 +62,14 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Page_Load
 
     #region GetConnectionString
-
+    /*
+     * 
+     * Method that contains the variables to construct the connection
+     * string required to access the database.
+     * 
+     */
     private string GetConnectionString()
     {
-
-        /*
-         string text = "";
-            string server = "162.241.244.134";  //162.241.244.134
-            string database = "jordape8_EnglishApp";
-            string uid = "jordape8_admin";
-            string password = "Admin123";
-            string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
-
-        /*
-        string server = "localhost";
-        string database = "daricsag_ela";
-        string uid = "daricsag_ela";
-        string password = "english";
-        string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        */
-
         
         string server = "mysql5018.site4now.net";
         string database = "db_a38d8d_lambe";
@@ -92,7 +85,13 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion GetConnectionString
 
     #region Get SQL Connection
-
+    /*
+     * 
+     * Method that attempts to get a database connection object
+     * from the connection string and return it for database
+     * access
+     * 
+     */
     private MySqlConnection GetSqlConnection()
     {
         string connectionString = GetConnectionString();
@@ -115,7 +114,12 @@ public partial class ManageDelete : System.Web.UI.Page
     #region UpdateData
 
     #region Update All Data
-
+    /*
+     * 
+     * Method that puts the ManageDelete page back to a 'blank slate' state
+     * in which all data from the database is re-initialized
+     * 
+     */
     private void UpdateAllData()
     {
 
@@ -135,9 +139,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
 
         UpdateCountries(connection);
-
-        //UpdateGrades(connection);
-
+        
         UpdateTopics(connection);
 
         UpdateCountryGrade(connection);
@@ -151,7 +153,12 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Update All Data
 
     #region Update Countries
-
+    /*
+     * 
+     * Method for updating data related to 'countries'. Re-populating the country table
+     * with the current 'country data' from the database.
+     * 
+     */
     private void UpdateCountries(MySqlConnection connection)
     {
 
@@ -188,34 +195,13 @@ public partial class ManageDelete : System.Web.UI.Page
 
     #endregion Update Countries
 
-    #region Update Grades
-
-    /*private void UpdateGrades(MySqlConnection connection)
-    {
-        connection.Open();
-        //TODO
-        //BlanksOnDropList(dlCGcountry);
-
-        String sql = "SELECT * FROM grades";
-
-        MySqlCommand cmd = new MySqlCommand(sql, connection);
-        MySqlDataReader rdr = cmd.ExecuteReader();
-        while (rdr.Read())
-        {
-            stringhelper = rdr[0].ToString();
-            listgrade.Add(stringhelper);
-        }//end while
-        rdr.Close();
-        connection.Close();
-
-        blgrades.DataSource = listgrade;
-        blgrades.DataBind();
-    }*/
-
-    #endregion Update Grades
-
     #region Update Topics
-
+    /*
+     * 
+     * Method for updating data related to 'topics'. Re-populating the topic table
+     * with the current 'topic data' from the database.
+     * 
+     */
     private void UpdateTopics(MySqlConnection connection)
     {
         try
@@ -251,7 +237,12 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Update Topics
 
     #region Update Country_Grade
-
+    /*
+     * 
+     * Method for updating data related to 'country grade'. Re-populating the country grade table
+     * with the current 'country grade data' from the database.
+     * 
+     */
     private void UpdateCountryGrade(MySqlConnection connection)
     {
         try
@@ -287,7 +278,12 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Update Country_Grade
 
     #region Update Country_Grade_Topic
-
+    /*
+     * 
+     * Method for updating data related to 'country grade topic'. Re-populating the country grade topic table
+     * with the current 'country grade topic data' from the database.
+     * 
+     */
     private void UpdateCountryGradeTopic(MySqlConnection connection)
     {
         try
@@ -324,7 +320,12 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Update Country_Grade_Topic
 
     #region Update Lessons
-
+    /*
+     * 
+     * Method for updating data related to 'lessons'. Re-populating the lesson table
+     * with the current 'lesson data' from the database.
+     * 
+     */
     private void UpdateLessons(MySqlConnection connection)
     {
         try
@@ -366,7 +367,13 @@ public partial class ManageDelete : System.Web.UI.Page
     #region Country
 
     #region Country RowEditing
-
+    /*
+     * 
+     * Method for when the 'edit' button is clicked on a 'country' row. It sets the row
+     * up for editing in an editing state. Also stores the variables that can be edited
+     * so if edit is confirmed it can be used for the database edit string.
+     * 
+     */
     protected void Country_OnRowEditing(object sender, GridViewEditEventArgs e)
     {
         Session["oldCid"] = gridCountry.Rows[e.NewEditIndex].Cells[0].Text;
@@ -392,7 +399,13 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Country RowEditing
 
     #region Country RowUpdating
-
+    /*
+     * 
+     * Method used for when the 'update' button is clicked on a 'country' row in the edit state.
+     * Uses the stored variables taken when the row was put in to an edit state and attempts
+     * to edit the data of the row being edited.
+     * 
+     */
     protected void Country_OnRowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         GridViewRow row = gridCountry.Rows[e.RowIndex];
@@ -457,7 +470,12 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Country RowUpdating
     
     #region Country RowCancelEdit
-
+    /*
+     * 
+     * Method used for when the 'cancel' button is clicked on a 'country' row. Takes the row out
+     * of an editing state.
+     * 
+     */
     protected void Country_OnRowCancelingEdit(object sender, EventArgs e)
     {
         Session["oldCid"] = "";
@@ -482,7 +500,15 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Country RowCancelEdit
 
     #region Country RowDelete
-
+    /*
+     * 
+     * Method used for when the 'delete' button is clicked on a 'country' row.
+     * It checks to make sure that there are no rows in edit mode.
+     * Then checks to see if there is any data associated with the given 'country'.
+     * If there is not, then the 'country' can be removed.
+     * If there is, then it cannot be removed.
+     * 
+     */
     protected void Country_OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         
@@ -572,148 +598,19 @@ public partial class ManageDelete : System.Web.UI.Page
     }
 
     #endregion Country RowDelete
-
-
-    #region obsolete code
-    #region Country Command (obsolete)
-
-    /*
-     *  Cannot delete a country if there is any data that is associated with this given country
-     *  Then will update country data
-     */
-    protected void Country_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-        //ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country: NOT IMPLEMENTED, switched to different approach');", true);
-
-        return;
-        int rowIndex = int.Parse(e.CommandArgument.ToString());
-
-        bool canChange = false;
-
-        if(e.CommandName.Equals("e"))
-        {
-            canChange = CountryEdit(rowIndex);
-        }
-        else if(e.CommandName.Equals("d"))
-        {
-            canChange = CountryDelete(rowIndex);
-        }
-        else
-        {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country: unrecognized command, contact help');", true);
-            return;
-        }
-
-        
-        if (canChange)
-        {
-            UpdateCountries(GetSqlConnection());
-        }
-
-    }
-
-    #endregion Country Command (obsolete)
-
-    #region Country Delete (obsolete)
-
-    private bool CountryDelete(int rowIndex)
-    {
-
-        GridViewRow row = gridCountry.Rows[rowIndex];
-        string countryToDelete = row.Cells[0].Text;
-
-        string text = "";
-        bool canRemove = false;
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
-
-        try
-        {
-            connection.Open();
-
-            String sql = "SELECT COUNT(cid) as count FROM country_grade_relationship WHERE cid = (@cid)";
-
-            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
-            {
-
-                cmd.Parameters.AddWithValue("@cid", countryToDelete);
-
-                using (MySqlDataReader rdr = cmd.ExecuteReader())
-                {
-
-                    //if count is zero (0) then can remove
-                    if (rdr.Read())
-                        canRemove = Convert.ToInt32(rdr[0]) == 0 ? true : false;
-
-                }//end rdr
-
-                if (canRemove)
-                {
-                    sql = "DELETE FROM countries WHERE cid = (@cid)";
-
-                    cmd.CommandText = sql;
-
-                    cmd.ExecuteNonQuery();
-
-                }
-                else
-                {
-                    ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country: content associateed with Country, cannot remove');", true);
-                }
-            }//end cmd
-
-        }//end try
-        catch (MySqlException ex)
-        {
-
-            canRemove = false;
-
-            text += MySqlExceptionNumberHandler(ex.Number);
-
-            text += " bad";
-
-        }//end catch
-
-        connection.Close();
-
-        errormsgDB.Text = text;
-
-        return canRemove;
-
-    }
-
-    #endregion Country Delete (obsolete)
-
-    #region Country Edit (obsolete)
-
-    private bool CountryEdit(int rowIndex)
-    {
-
-        GridViewRow row = gridCountry.Rows[rowIndex];
-        string countryToDelete = row.Cells[0].Text;
-
-        //gridCountry.EditIndex = rowIndex;
-
-        //TODO
-
-
-
-
-        //ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('NOT IMPLEMENTED');", true);
-
-        return false;
-    }
-
-    #endregion Country Edit (obsolete)
-    #endregion obsolete code
-
+    
     #endregion Country
 
     #region Topic
-    
-    #region Topic RowEditing
 
+    #region Topic RowEditing
+    /*
+     * 
+     * Method for when the 'edit' button is clicked on a 'topic' row. It sets the row
+     * up for editing in an editing state. Also stores the variables that can be edited
+     * so if edit is confirmed it can be used for the database edit string.
+     * 
+     */
     protected void Topic_OnRowEditing(object sender, GridViewEditEventArgs e)
     {
         Session["oldTid"] = gridTopic.Rows[e.NewEditIndex].Cells[0].Text;
@@ -738,7 +635,13 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Topic RowEditing
 
     #region Topic RowUpdating
-
+    /*
+     * 
+     * Method used for when the 'update' button is clicked on a 'topic' row in the edit state.
+     * Uses the stored variables taken when the row was put in to an edit state and attempts
+     * to edit the data of the row being edited.
+     * 
+     */
     protected void Topic_OnRowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         GridViewRow row = gridTopic.Rows[e.RowIndex];
@@ -803,7 +706,12 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Topic RowUpdating
 
     #region Topic RowCancelEdit
-
+    /*
+     * 
+     * Method used for when the 'cancel' button is clicked on a 'topic' row. Takes the row out
+     * of an editing state.
+     * 
+     */
     protected void Topic_OnRowCancelingEdit(object sender, EventArgs e)
     {
         Session["oldTid"] = "";
@@ -828,7 +736,15 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Topic RowCancelEdit
 
     #region Topic RowDelete
-
+    /*
+     * 
+     * Method used for when the 'delete' button is clicked on a 'topic' row.
+     * It checks to make sure that there are no rows in edit mode.
+     * Then checks to see if there is any data associated with the given 'topic'.
+     * If there is not, then the 'topic' can be removed.
+     * If there is, then it cannot be removed.
+     * 
+     */
     protected void Topic_OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         if (!Session["oldTid"].Equals(""))
@@ -918,137 +834,19 @@ public partial class ManageDelete : System.Web.UI.Page
 
     #endregion Topic RowDelete
 
-
-    #region (obsolete)
-    #region Topic Command (obsolete)
-
-    /*
-     *  Cannot delete a topic if there is any data that is associated with this given topic
-     *  Then will update topic data
-     */
-    protected void Topic_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-        return;
-
-        int rowIndex = int.Parse(e.CommandArgument.ToString());
-
-        bool canChange = false;
-
-        if (e.CommandName.Equals("e"))
-        {
-            canChange = TopicEdit(rowIndex);
-        }
-        else if (e.CommandName.Equals("d"))
-        {
-            canChange = TopicDelete(rowIndex);
-        }
-        else
-        {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Topic: unrecognized command, contact help');", true);
-            return;
-        }
-
-
-        if (canChange)
-        {
-            UpdateTopics(GetSqlConnection());
-        }
-
-    }
-
-    #endregion Topic Command
-
-    #region Topic Delete (obsolete)
-
-    private bool TopicDelete(int rowIndex)
-    {
-
-        GridViewRow row = gridTopic.Rows[rowIndex];
-        string topicToDelete = row.Cells[0].Text;
-
-        string text = "";
-        bool canRemove = false;
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
-
-        try
-        {
-            connection.Open();
-
-            String sql = "SELECT COUNT(tid) as count FROM country_grade_topic_relation WHERE tid = (@tid)";
-
-            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
-            {
-
-                cmd.Parameters.AddWithValue("@tid", topicToDelete);
-
-                using (MySqlDataReader rdr = cmd.ExecuteReader())
-                {
-
-                    //if count is zero (0) then can remove
-                    if (rdr.Read())
-                        canRemove = Convert.ToInt32(rdr[0]) == 0 ? true : false;
-
-                }//end rdr
-
-                if (canRemove)
-                {
-                    sql = "DELETE FROM topics WHERE tid = (@tid)";
-
-                    cmd.CommandText = sql;
-
-                    cmd.ExecuteNonQuery();
-
-                }
-                else
-                {
-                    ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Topic: content associateed with Topic, cannot remove');", true);
-                }
-            }//end cmd
-
-        }//end try
-        catch (MySqlException ex)
-        {
-            canRemove = false;
-
-            text += MySqlExceptionNumberHandler(ex.Number);
-
-            text += " bad";
-
-        }//end catch
-
-        connection.Close();
-
-        errormsgDB.Text = text;
-
-        return canRemove;
-
-    }
-
-    #endregion Topic Delete
-
-    #region Topic Edit (obsolete)
-
-    private bool TopicEdit(int rowIndex)
-    {
-        //TODO
-
-        ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('NOT IMPLEMENTED');", true);
-
-        return false;
-
-    }
-
-    #endregion Topic Edit
-    #endregion (obsolete)
-
     #endregion Topic
-    
-    #region Country_Grade
-    
-    #region Country_Grade RowDelete
 
+    #region Country_Grade
+
+    #region Country_Grade RowDelete
+    /*
+     * 
+     * Method used for when the 'delete' button is clicked on a 'country grade' row.
+     * It checks to see if there is any data associated with the given 'country grade'.
+     * If there is not, then the 'country grade' can be removed.
+     * If there is, then it cannot be removed.
+     * 
+     */
     protected void CountryGrade_OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
 
@@ -1135,122 +933,21 @@ public partial class ManageDelete : System.Web.UI.Page
 
     #endregion Country_Grade RowDelete
 
-
-    #region (obsolete)
-    #region Country_Grade Command (obsolete)
-
-    /*
-     *  Cannot delete a country_grade if there is any data that is associated with this given country_grade
-     *  Then will update country_grade data
-     */
-    protected void CountryGrade_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-
-        return;
-
-        int rowIndex = int.Parse(e.CommandArgument.ToString());
-
-        bool canChange = false;
-
-        if (e.CommandName.Equals("d"))
-        {
-            canChange = Country_GradeDelete(rowIndex);
-        }
-        else
-        {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade: unrecognized command, contact help');", true);
-            return;
-        }
-
-
-        if (canChange)
-        {
-            UpdateCountryGrade(GetSqlConnection());
-        }
-
-    }
-
-    #endregion Country_Grade Command
-
-    #region Country_Grade Delete (obsolete)
-
-    private bool Country_GradeDelete(int rowIndex)
-    {
-
-        GridViewRow row = gridCountryGrade.Rows[rowIndex];
-        string countryToDelete = row.Cells[0].Text;
-        string gradeToDelete = row.Cells[1].Text;
-
-        string text = "";
-        bool canRemove = false;
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
-
-        try
-        {
-            connection.Open();
-
-            String sql = "SELECT COUNT(cid) as count FROM country_grade_topic_relation WHERE cid = (@cid) AND gid = (@gid)";
-
-            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
-            {
-
-                cmd.Parameters.AddWithValue("@cid", countryToDelete);
-                cmd.Parameters.AddWithValue("@gid", gradeToDelete);
-
-                using (MySqlDataReader rdr = cmd.ExecuteReader())
-                {
-
-                    //if count is zero (0) then can remove
-                    if (rdr.Read())
-                        canRemove = Convert.ToInt32(rdr[0]) == 0 ? true : false;
-
-                }//end rdr
-
-                if (canRemove)
-                {
-                    sql = "DELETE FROM country_grade_relationship WHERE cid = (@cid) AND gid = (@gid)";
-
-                    cmd.CommandText = sql;
-
-                    cmd.ExecuteNonQuery();
-
-                }
-                else
-                {
-                    ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_grade: content associateed with Country_Grade, cannot remove');", true);
-                }
-            }//end cmd
-
-        }//end try
-        catch (MySqlException ex)
-        {
-            canRemove = false;
-
-            text += MySqlExceptionNumberHandler(ex.Number);
-
-            text += " bad";
-
-        }//end catch
-
-        connection.Close();
-
-        errormsgDB.Text = text;
-
-        return canRemove;
-
-    }
-
-    #endregion Country_Grade Delete
-    #endregion (obsolete)
-
     #endregion Country_Grade
 
     #region Country_Grade_Topic
 
     #region Country_Grade_Topic RowDelete
-
+    /*
+     * 
+     * Method used for when the 'delete' button is clicked on a 'country grade topic' row.
+     * It delegates to a helper method called 'RemoveTopic' to do work with removing data
+     * associated with the chosen 'country grade topic'.
+     * See 'RemoveTopic' method
+     * If that succeeds, then the record for the 'country grade topic' can be removed from
+     * the database.
+     * 
+     */
     protected void CountryGradeTopic_OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         
@@ -1316,6 +1013,7 @@ public partial class ManageDelete : System.Web.UI.Page
         }
         else
         {
+            //TODO: email
             tblog.Text += Environment.NewLine + "~Country_Grade_Topic: topic removal failed, contact help";
             good = false;
         }
@@ -1330,6 +1028,15 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Country_Grade_Topic RowDelete
 
     #region Country_Grade_Topic RemoveTopic
+    /*
+     * 
+     * Method used as a helper to remove data associated with a 'country grade topic'.
+     * Gets a list of all 'lid' assocaited with the given 'country grade topic'.
+     * Then delegates to another helper method 'LessonDelete' that does work to
+     * remove any data associated with a lesson.
+     * See 'LessonDelete' method.
+     * 
+     */
     private bool RemoveTopic(string country, string grade, string topic)
     {
 
@@ -1397,111 +1104,20 @@ public partial class ManageDelete : System.Web.UI.Page
 
         return true;
     }
+
     #endregion Country_Grade_Topic RemoveTopic
-
-
-    #region (obsolete)
-    #region Country_Grade_Topic Command (obsolete)
-
-    protected void CountryGradeTopic_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-
-        return;
-
-        int rowIndex = int.Parse(e.CommandArgument.ToString());
-
-        bool canChange = false;
-
-        if (e.CommandName.Equals("d"))
-        {
-            canChange = Country_Grade_TopicDelete(rowIndex);
-        }
-        else
-        {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade_Topic: unrecognized command, contact help');", true);
-            return;
-        }
-
-
-        if (canChange)
-        {
-            UpdateCountryGradeTopic(GetSqlConnection());
-            UpdateLessons(GetSqlConnection());
-        }
-
-    }
-
-    #endregion Country_Grade_Topic Command
-
-    #region Country_Grade_Topic Delete (obsolete)
-
-    private bool Country_Grade_TopicDelete(int rowIndex)
-    {
-        
-        string text = "";
-        bool good = true;
-        string connectionString = GetConnectionString();
-
-        MySqlConnection connection = new MySqlConnection(connectionString);
-
-        GridViewRow row = gridCountryGradeTopic.Rows[rowIndex];
-        string country = row.Cells[0].Text;
-        string grade = row.Cells[1].Text;
-        string topic = row.Cells[2].Text;
-
-        if(true)//RemoveTopic(country, grade, topic))
-        {
-            try
-            {
-                connection.Open();
-
-                String sql = "DELETE FROM country_grade_topic_relation WHERE cid = (@cid) AND gid = (@gid) AND tid = (@tid)";
-
-                using (MySqlCommand cmd = new MySqlCommand(sql, connection))
-                {
-
-                    cmd.Parameters.AddWithValue("@cid", country);
-                    cmd.Parameters.AddWithValue("@gid", grade);
-                    cmd.Parameters.AddWithValue("@tid", topic);
-                    
-                    cmd.ExecuteNonQuery();
-
-                }//end cmd
-
-            }//end try
-            catch (MySqlException ex)
-            {
-                good = false;
-
-                text += MySqlExceptionNumberHandler(ex.Number);
-
-                text += " bad";
-
-            }//end catch
-
-            connection.Close();
-
-            errormsgDB.Text = text;
-            
-        }
-        else
-        {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Country_Grade_Topic: topic removal failed, contact help');", true);
-            good = false;
-        }
-
-        return good;
-        
-    }
     
-    #endregion Country_Grade_Topic Delete
-    #endregion (obsolete)
-
     #endregion Country_Grade_Topic
 
     #region Lesson
 
     #region Lesson DataBound
+    /*
+     * 
+     * Method used for when the databound event fires on the lesson table so that
+     * some custom styles can be added to the table.
+     * 
+     */
     protected void Lesson_DataBound(object sender, GridViewRowEventArgs e)
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
@@ -1510,10 +1126,17 @@ public partial class ManageDelete : System.Web.UI.Page
             e.Row.Cells[4].Attributes.Add("style", "width:600px;");
         }
     }
+
     #endregion Lesson DataBound
 
     #region Lesson RowEditing
-
+    /*
+     * 
+     * Method for when the 'edit' button is clicked on a 'lesson' row. It sets the row
+     * up for editing in an editing state. Also stores the variables that can be edited
+     * so if edit is confirmed it can be used for the database edit string.
+     * 
+     */
     protected void Lesson_OnRowEditing(object sender, GridViewEditEventArgs e)
     {
         Session["oldLid"] = gridLesson.Rows[e.NewEditIndex].Cells[3].Text;
@@ -1540,7 +1163,13 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Lesson RowEditing
 
     #region Lesson RowUpdating
-
+    /*
+     * 
+     * Method used for when the 'update' button is clicked on a 'lesson' row in the edit state.
+     * Uses the stored variables taken when the row was put in to an edit state and attempts
+     * to edit the data of the row being edited.
+     * 
+     */
     protected void Lesson_OnRowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         GridViewRow row = gridLesson.Rows[e.RowIndex];
@@ -1616,7 +1245,12 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Lesson RowUpdating
 
     #region Lesson RowCancelEdit
-
+    /*
+     * 
+     * Method used for when the 'cancel' button is clicked on a 'lesson' row. Takes the row out
+     * of an editing state.
+     * 
+     */
     protected void Lesson_OnRowCancelingEdit(object sender, EventArgs e)
     {
         Session["oldLid"] = "";
@@ -1641,7 +1275,15 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Lesson RowCancelEdit
 
     #region Lesson RowDelete
-
+    /*
+     * 
+     * Method used for when the 'delete' button is clicked on a 'lesson' row.
+     * It delegates to a helper method called 'LessonDelete' to do work with removing data
+     * associated with the chosen 'lesson'.
+     * See 'LessonDelete' method
+     * If that succeeds, then the 'lesson' data is updated.
+     * 
+     */
     protected void Lesson_OnRowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         
@@ -1694,7 +1336,16 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Lesson RowDelete
 
     #region LessonDelete()
-
+    /*
+     * 
+     * Method used for removing data associated with a given 'lesson'.
+     * This involves delegating to a helper method 'RemoveFile' that deals with
+     * removing the file assocaied with the given 'lesson'.
+     * See 'RemoveFile' method.
+     * If that succeeds, then the actual record for the given 'lesson' can be removed.
+     * If failure occurs, then help will need to be contacted.
+     * 
+     */
     private bool LessonDelete(string country, string grade, string topic, string lid)
     {
         
@@ -1762,6 +1413,16 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion LessonDelete()
 
     #region Lesson RemoveFile
+    /*
+     * 
+     * Method used for removing a file that is associated with the given 'lesson'.
+     * It checks to see if there is more than one path associated with the file
+     * that is associated with the given 'lesson'.
+     * If there is only 1 path (itself) then it will attempt to remove the file.
+     * If there is more than 1 path (another lesson uses it), then it will not remove the file.
+     * 
+     * 
+     */
     private bool RemoveFile(string country, string grade, string topic, string lid)
     {
 
@@ -1831,13 +1492,15 @@ public partial class ManageDelete : System.Web.UI.Page
 
         connection.Close();
         
-        string physicalFolderPath = ext == "mp3" ? Server.MapPath(".//Audio//") : Server.MapPath(".//PDF//");
-        string physicalFilePath = physicalFolderPath + filename;
-
+        //if there is only one path count (the given lesson itseld)
+        //then remove the file
         if (pathCount == 1)
         {
             try
             {
+                string physicalFolderPath = ext == "mp3" ? Server.MapPath(".//Audio//") : Server.MapPath(".//PDF//");
+                string physicalFilePath = physicalFolderPath + filename;
+
                 if (System.IO.File.Exists(physicalFilePath))
                 {
                     try
@@ -1852,6 +1515,7 @@ public partial class ManageDelete : System.Web.UI.Page
                 }
                 else
                 {
+                    good = false;
                     tblog.Text += Environment.NewLine + "~Lesson: file did not exist, contact help";
                 }
             }
@@ -1864,80 +1528,9 @@ public partial class ManageDelete : System.Web.UI.Page
 
         return good;
     }
+
     #endregion Lesson RemoveFile
-
-
-    #region (obsolete)
-    #region Lesson Command (obsolete)
-
-    /*
-     *  Cannot delete a lesson
-     */
-    protected void Lesson_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-
-        return;
-
-        int rowIndex = int.Parse(e.CommandArgument.ToString());
-
-        bool canChange = false;
-
-        if (e.CommandName.Equals("e"))
-        {
-            canChange = LessonEdit(rowIndex);
-        }
-        else if (e.CommandName.Equals("d"))
-        {
-            canChange = LessonDelete(rowIndex);
-        }
-        else
-        {
-            ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('Lesson: unrecognized command, contact help');", true);
-            return;
-        }
-
-
-        if (canChange)
-        {
-            UpdateLessons(GetSqlConnection());
-        }
-
-    }
-
-    #endregion Lesson Command
-
-    #region Lesson Delete (obsolete)
-
-    private bool LessonDelete(int rowIndex)
-    {
-        return false;
-        GridViewRow row = gridLesson.Rows[rowIndex];
-        string country = row.Cells[0].Text;
-        string grade = row.Cells[1].Text;
-        string topic = row.Cells[2].Text;
-        string lid = row.Cells[3].Text;
-
-        return LessonDelete(country, grade, topic, lid);
-        
-    }
     
-    #endregion Lesson Delete
-
-    #region Lesson Edit (obsolete)
-
-    private bool LessonEdit(int rowIndex)
-    {
-        //TODO
-
-        ClientScript.RegisterStartupScript(this.GetType(), "Invalid Request", "alert('NOT IMPLEMENTED');", true);
-
-        return false;
-
-    }
-
-    #endregion Lesson Edit
-    #endregion (obsolete)
-
     #endregion Lesson
 
     #endregion Table Events
@@ -1945,7 +1538,12 @@ public partial class ManageDelete : System.Web.UI.Page
     #region Helpers
 
     #region Clear Log
-
+    /*
+     * 
+     * Event assocatied with clicking the 'clear log' button
+     * to revert the log box back to a clean slate
+     * 
+     */
     protected void ClearLog_Click(object sender, EventArgs e)
     {
         tblog.Text = "";
@@ -1954,7 +1552,12 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion Clear Log
 
     #region MySqlExceptionHandler
-
+    /*
+     * 
+     * Method used for determining what the sql error number corresponds to.
+     * It will return the text associated with that error
+     * 
+     */
     private string MySqlExceptionNumberHandler(int exceptionNum)
     {
         //When handling errors, you can your application's response based 
@@ -1980,7 +1583,11 @@ public partial class ManageDelete : System.Web.UI.Page
     #endregion MySqlExceptionHandler
 
     #region GetSession()
-
+    /*
+     * 
+     * TODO
+     * 
+     */
     private bool GetSession()
     {
         if((Session["confirm"]) == null)
@@ -1996,11 +1603,12 @@ public partial class ManageDelete : System.Web.UI.Page
 
     #endregion GetSession()
 
-    protected void Btnaddlink_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("ManageAdd.aspx");
-    }//end method
-
+    #region Email Method
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void EmailError(String strmess)
     {
         try
@@ -2020,11 +1628,33 @@ public partial class ManageDelete : System.Web.UI.Page
         }//end catch
     }//end method
 
+    #endregion Email Method
+
     #endregion Helpers
 
+    #region Button Click Events
 
+    /*
+     * 
+     * TODO
+     * 
+     */
+    protected void Btnaddlink_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("ManageAdd.aspx");
+    }//end method
+
+
+    /*
+     * 
+     * TODO
+     * 
+     */
     protected void Button1_Click(object sender, EventArgs e)
     {
         Response.Redirect("PDFViewer.aspx");
     }//end method
+
+    #endregion Button Click Events
+
 }//end class

@@ -55,7 +55,7 @@
     
         <div class="scrolling-table-container">
             <!-- Table for Lesson Delete / Edit -->
-            <asp:GridView ID="gridLesson" runat="server" AutoGenerateColumns="False" AutoPostBack="True" OnRowDataBound="Lesson_DataBound">
+            <asp:GridView ID="gridLesson" runat="server" AutoGenerateColumns="False" AutoPostBack="True">
                 <Columns>
                     <asp:BoundField HeaderText="Country" DataField="cid"/>
                     <asp:BoundField HeaderText="Grade" DataField="gid"/>
