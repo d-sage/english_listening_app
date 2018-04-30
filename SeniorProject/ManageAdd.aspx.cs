@@ -108,10 +108,10 @@ public partial class Manage : System.Web.UI.Page
      */
     private string GetConnectionString()
     {
-        string server = "mysql5018.site4now.net";
+        string server = "mysql5018.si";
         string database = "db_a38d8d_lambe";
         string uid = "a38d8d_lambe";
-        string password = "Lambejor000";
+        string password = "Lambejor00";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
         
@@ -172,7 +172,7 @@ public partial class Manage : System.Web.UI.Page
         }
         catch(ArgumentException ae)
         {
-            //TODO: email
+            EmailError(ae.ToString());
             tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             return;
         }
@@ -1516,8 +1516,10 @@ public partial class Manage : System.Web.UI.Page
      */
     private string MySqlExceptionNumberHandler(int exceptionNum)
     {
+        EmailError("It worked");
         switch (exceptionNum)
         {
+
             case 0:
                 return "~Error: Cannot connect to server | Contact help";
             case 1042:
@@ -1593,13 +1595,13 @@ public partial class Manage : System.Web.UI.Page
     {
         try
         {
-            String mypwd = "";
+            String mypwd = "Nicaragua2017";
             var client = new SmtpClient("smtp.gmail.com", 587)
             {
-                Credentials = new NetworkCredential("yourEmail@gmail.com", mypwd),
+                Credentials = new NetworkCredential("reachingforenglish@gmail.com", mypwd),
                 EnableSsl = true
             };
-            MailMessage message = new MailMessage("yourEmail@gmail.com", "EmailToSendTo", "Error Occurred" , strmess);
+            MailMessage message = new MailMessage("reachingforenglish@gmail.com", "reachingforenglish@gmail.com", "Error Occurred" , strmess);
             client.Send(message);
         }//end try
         catch (Exception e)
