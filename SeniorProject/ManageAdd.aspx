@@ -40,7 +40,7 @@
         <div>
             <asp:Label ID="SiteName" runat="server" Text="English Listening APP" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
             <asp:Button ID="btndeletelink" runat="server" Text="Go To Delete/Edit Page" style="z-index: 1; left: 297px; top: 82px; position: absolute; right: 452px;" OnClick="Btndeletelink_Click" />
-            <asp:Button ID="Button1" runat="server" Text="PDFViewer" style="z-index: 1; left: 475px; top: 82px; position: absolute; right: 382px;" OnClick="Button1_Click"/>
+            <asp:Button ID="btnPdf" runat="server" Text="PDFViewer" style="z-index: 1; left: 475px; top: 82px; position: absolute; right: 382px;" OnClick="BtnPdf_Click"/>
         </div>
 
         <!-- Info for opening web page -->

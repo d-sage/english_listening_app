@@ -143,7 +143,16 @@ public partial class PDFViewer : System.Web.UI.Page
      */
     protected void btnpdf_Click(object sender, EventArgs e)
     {
+        if ((Session["confirm"]) == null)
+            Response.Redirect("Login.aspx");
+        else
+        {
+            bool matching = (bool)Session["confirm"];
+            if (matching)
+                Response.Redirect("ManageAdd.aspx");
+        }//end else
         Response.Redirect("Login.aspx");
+
     }//end method
 
     #endregion Button Click Events

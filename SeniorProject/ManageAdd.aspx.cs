@@ -60,8 +60,8 @@ public partial class Manage : System.Web.UI.Page
     #region Page_Load
     /*
      * 
-     * TODO
-     * 
+     * This will check the load in session to see if they passed the login 
+     * This also checks for a page refresh and then redirects them back to the page instead of reload it
      */
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -253,7 +253,7 @@ public partial class Manage : System.Web.UI.Page
     #region Update Grades
     /*
      * 
-     * TODO
+     * Loads in the new grades everytime a page load is called
      * 
      */
     private void UpdateGrades(MySqlConnection connection)
@@ -291,8 +291,6 @@ public partial class Manage : System.Web.UI.Page
 
         connection.Close();
 
-        blgrades.DataSource = listgrade;
-        blgrades.DataBind();
     }
 
     #endregion Update Grades
@@ -300,7 +298,7 @@ public partial class Manage : System.Web.UI.Page
     #region Update Topics
     /*
      * 
-     * TODO
+     * Loads in the new topics everytime a page load is called
      * 
      */
     private void UpdateTopics(MySqlConnection connection)
@@ -337,9 +335,6 @@ public partial class Manage : System.Web.UI.Page
         }
 
         connection.Close();
-
-        bltopics.DataSource = listtopic;
-        bltopics.DataBind();
     }
 
     #endregion Update Topics
@@ -452,7 +447,7 @@ public partial class Manage : System.Web.UI.Page
     #region Update Lessons
     /*
      * 
-     * TODO
+     * Loads in the new lessons everytime a page load is called
      * 
      */
     private void UpdateLessons(MySqlConnection connection)
@@ -496,8 +491,6 @@ public partial class Manage : System.Web.UI.Page
 
         connection.Close();
 
-        bllessons.DataSource = listlesson;
-        bllessons.DataBind();
     }
 
     #endregion Update Lessons
@@ -1496,8 +1489,8 @@ public partial class Manage : System.Web.UI.Page
     #region GetSession
     /*
      * 
-     * TODO
-     * 
+     * This checks the session to see if the login was passed
+     * if it was we will load the page if not then takes them back to the login page
      */
     private bool GetSession()
     {
@@ -1593,8 +1586,8 @@ public partial class Manage : System.Web.UI.Page
     #region Email Method
     /*
      * 
-     * TODO
-     * 
+     * This will create an email everytime an error occurs with connection to the database
+     * It will send the email and the error message to the email specified 
      */
     protected void EmailError(String strmess)
     {
@@ -1622,7 +1615,7 @@ public partial class Manage : System.Web.UI.Page
     #region Button Click Events
     /*
      * 
-     * TODO
+     * Redirects them to the delete page if clicked
      * 
      */
     protected void Btndeletelink_Click(object sender, EventArgs e)
@@ -1633,10 +1626,10 @@ public partial class Manage : System.Web.UI.Page
 
     /*
      * 
-     * TODO
+     * Redirects them to the PDF Viewer page if clicked
      * 
      */
-    protected void Button1_Click(object sender, EventArgs e)
+    protected void BtnPdf_Click(object sender, EventArgs e)
     {
         Response.Redirect("PDFViewer.aspx");
     }//end method
