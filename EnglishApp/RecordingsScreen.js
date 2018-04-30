@@ -55,7 +55,7 @@ class RecordingsScreen extends React.Component {
 							topic: this.props.navigation.state.params.topic,
 							lid: this.props.navigation.state.params.lid,
 							textSubs: 'No Text Saved With Recordings',
-							path: FileSystem.documentDirectory + '/recordings/' + rowData,
+							path: FileSystem.documentDirectory + 'recordings/' + rowData,
 							name: rowData,
 							connected: this.props.navigation.state.params.connected,
 							fromRecording: true, 
