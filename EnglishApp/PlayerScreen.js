@@ -178,30 +178,22 @@ export default class AudioPlayer extends React.Component{
 	async audioDelete() {
 		if(this.audio != null){
 			this.audioStop();
-			if(!this.props.navigation.state.params.fromRecording){			
+			if(!this.props.navigation.state.params.fromRecording){				
 				db.transaction(tx => {
 					tx.executeSql('DELETE FROM lessons WHERE cid = ? AND gid = ? AND tid = ? AND lid = ? AND path = ?;', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.path]);
 				});
-				FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} ).then(({ uri }) => {
-					alert('Finished Deleting Audio File');
-				}).catch(error => { 
-					alert('Finished Deleting Audio File: '+ error);
-				});
-				this.props.navigation.dispatch(resetActionCountry);
+				FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} )
+				.then(this.props.navigation.dispatch(resetActionCountry));
 			}
-			else{
-				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} ).then(({ uri }) => {
-					alert('Finished Deleting Recording');})
-				.catch(error => { 
-					alert("ERROR Deleting Audio: " + error); 
-				});
-				await this.openRecordings();
+			else{	
+				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} )
+				.then(await this.openRecordings());
 				if(this.state.recordings.length == 0){
 					alert('No recordings to load, Please select a new Lesson');
 					this.props.navigation.dispatch(resetActionCountry); 
 				}
 				else{
-					resetActionPlayer = NavigationActions.reset({
+					resetActionPlayer = NavigationActions.reset({ 
 											index: 0,
 											actions: [
 												NavigationActions.navigate({ routeName: 'Recordings', 
@@ -363,7 +355,7 @@ export default class AudioPlayer extends React.Component{
 				if(files.length < MAX_SAVES){
 					const date = new Date();
 					const recStatus = await this.tempRecording.getURI();
-					FileSystem.copyAsync({ 
+					FileSystem.moveAsync({ 
 						from: recStatus, 
 						to: FileSystem.documentDirectory + 'recordings/' + date.getMonth()+ "-" + date.getDay()+ "-" + date.getFullYear()+ "_" + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds() + '_' + this.props.navigation.state.params.name
 					});

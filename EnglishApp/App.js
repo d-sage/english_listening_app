@@ -55,7 +55,7 @@ const RootNavigator = StackNavigator({
     },
 });
 
-export default class App extends React.Component {
+export default class App extends React.Component { 
 	
 	async componentWillMount(){
 		try{ 
