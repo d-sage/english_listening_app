@@ -178,22 +178,30 @@ export default class AudioPlayer extends React.Component{
 	async audioDelete() {
 		if(this.audio != null){
 			this.audioStop();
-			if(!this.props.navigation.state.params.fromRecording){				
+			if(!this.props.navigation.state.params.fromRecording){			
 				db.transaction(tx => {
 					tx.executeSql('DELETE FROM lessons WHERE cid = ? AND gid = ? AND tid = ? AND lid = ? AND path = ?;', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.path]);
 				});
-				FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} )
-				.then(this.props.navigation.dispatch(resetActionCountry));
+				FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} ).then(({ uri }) => {
+					alert('Finished Deleting Audio File');
+				}).catch(error => { 
+					//alert('ERROR Deleting Audio File: '+ error);
+				});
+				this.props.navigation.dispatch(resetActionCountry);
 			}
-			else{	
-				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} )
-				.then(await this.openRecordings());
+			else{
+				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} ).then(({ uri }) => {
+					alert('Finished Deleting Recording');})
+				.catch(error => { 
+					//alert("ERROR Deleting Audio: " + error); 
+				});
+				await this.openRecordings();
 				if(this.state.recordings.length == 0){
 					alert('No recordings to load, Please select a new Lesson');
 					this.props.navigation.dispatch(resetActionCountry); 
 				}
 				else{
-					resetActionPlayer = NavigationActions.reset({ 
+					resetActionPlayer = NavigationActions.reset({
 											index: 0,
 											actions: [
 												NavigationActions.navigate({ routeName: 'Recordings', 
@@ -514,7 +522,7 @@ export default class AudioPlayer extends React.Component{
 					</ScrollView>
 				</View>				
 				<TouchableOpacity activeOpacity = { 0.8 } onPress = { this.changePlayerLayout } >
-                    <Text style = { styles.text }>Press Here To {this.state.expandedPlayer ? 'Hide ' : 'Show '}Player</Text>
+                    <Text style = { styles.text }>{this.state.expandedPlayer ? 'Hide ' : ''}Player</Text>
                 </TouchableOpacity>
                 <View style = {{ height: this.state.modifiedPlayerHeight, overflow: 'hidden' }}>				
 					<View style={styles.playerContainer} onLayout = {( event ) => this.getPlayerHeight( event.nativeEvent.layout.height )}>
@@ -593,7 +601,7 @@ export default class AudioPlayer extends React.Component{
 					</View>
 				</View>
 				<TouchableOpacity activeOpacity = { 0.8 } onPress = { this.changeRecorderLayout } >
-                    <Text style = { styles.text }>Press Here To {this.state.expandedRecorder ? 'Hide ' : 'Show '}Recorder</Text>
+                    <Text style = { styles.text }>{this.state.expandedRecorder ? 'Hide ' : ''}Recorder</Text>
                 </TouchableOpacity>				
                 <View style = {{ height: this.state.modifiedRecorderHeight, overflow: 'hidden' }}>				
 					<View style={styles.playerContainer} onLayout = {( event ) => this.getRecorderHeight( event.nativeEvent.layout.height )}>

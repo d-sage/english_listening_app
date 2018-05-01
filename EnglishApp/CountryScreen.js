@@ -81,7 +81,7 @@ class CountryScreen extends React.Component {
 	};
 
 	getData(isConnected){
-		this.setState({ connected: isConnected }); 
+		this.setState({ connected: isConnected });
 		if(isConnected)
 			this.fetchOnlineData();
 		else
@@ -94,7 +94,7 @@ class CountryScreen extends React.Component {
 		.then((responseJson) => {
 			if(responseJson){
 				this.setState({
-					dataSource: ds.cloneWithRows(responseJson), 
+					dataSource: ds.cloneWithRows(responseJson),
 				});
 			}
 		}).done();
