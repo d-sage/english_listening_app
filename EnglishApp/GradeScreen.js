@@ -24,7 +24,8 @@ class GradeScreen extends React.Component {
 								onPress={() => this.props.navigation.navigate('Topic',
 									{country: this.props.navigation.state.params.country,
 									 grade: rowData.gid,
-									 connected: this.props.navigation.state.params.connected})}
+									 connected: this.props.navigation.state.params.connected,
+									 countryKey: this.props.navigation.state.key})}
 								title = {rowData.gid+""}
 							/>
 						</View>

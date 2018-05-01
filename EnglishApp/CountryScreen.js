@@ -24,7 +24,7 @@ class CountryScreen extends React.Component {
 								<Button
 									onPress={() => this.props.navigation.navigate('Grade',
 										{country: rowData.cid,
-										 connected: this.state.connected})}
+										 connected: this.state.connected })}
 									title = {rowData.cid+""}
 								/>
 							</View>

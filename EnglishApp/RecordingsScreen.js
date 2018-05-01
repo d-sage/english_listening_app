@@ -5,10 +5,6 @@ import Expo, { SQLite, FileSystem } from 'expo';
 import { NavigationActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
-const resetActionCountry = NavigationActions.reset({
-  index: 0,
-  actions: [NavigationActions.navigate({ routeName: 'Country' })],
-});
 
 class RecordingsScreen extends React.Component {
 

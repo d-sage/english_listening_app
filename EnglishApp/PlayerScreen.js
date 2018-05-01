@@ -43,7 +43,7 @@ const db = SQLite.openDatabase('db.db');
 const resetActionCountry = NavigationActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: 'Country' })],
-});
+}); 
 
 export default class AudioPlayer extends React.Component{
 	constructor(props){
@@ -187,7 +187,7 @@ export default class AudioPlayer extends React.Component{
 				}).catch(error => { 
 					//alert('ERROR Deleting Audio File: '+ error);
 				});
-				this.props.navigation.dispatch(resetActionCountry);
+				this.props.navigation.goBack(this.props.navigation.state.params.countryKey);
 			}
 			else{
 				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} ).then(({ uri }) => {
@@ -464,7 +464,7 @@ export default class AudioPlayer extends React.Component{
 	
 	setRateUp(){
 		if(Platform.OS == 'android' && Platform.Version < 23)
-			alert('Your version of android is not supported to change the rate.');
+			alert('Your operating system is not supported to change the rate.');
 		else{
 			this.setState({rate: this.state.rate+0.1});
 			this.setRate(this.state.rate, true);
@@ -473,7 +473,7 @@ export default class AudioPlayer extends React.Component{
 	
 	setRateDown(){
 		if(Platform.OS == 'android' && Platform.Version < 23)
-			alert('Your version of android is not supported to change the rate.');
+			alert('Your operating system is not supported to change the rate.');
 		else{		
 			this.setState({rate: this.state.rate-0.1});
 			this.setRate(this.state.rate, true);
@@ -482,7 +482,7 @@ export default class AudioPlayer extends React.Component{
 	
 	setRateDefault(){
 		if(Platform.OS == 'android' && Platform.Version < 23)
-			alert('Your version of android is not supported to change the rate.');
+			alert('Your operating system is not supported to change the rate.');
 		else{
 			this.setState({rate: 1.0,});
 			this.setRate(1.0, true);
