@@ -49,13 +49,7 @@ public partial class Manage : System.Web.UI.Page
     private const string DROPLIST_GRADE_TEXT = "grade...";
     private const string DROPLIST_COUNTRY_GRADE_TEXT = "country grade...";
     private const string DROPLIST_COUNTRY_GRADE_TOPIC_TEXT = "country grade topic...";
-
-    /*
-     * TODO
-        ClientScript.RegisterStartupScript(this.GetType(), "Success", "alert('Lesson: Successfully Added');", true);
-        <asp:RegularExpressionValidator id="regpdf" Display="None" ErrorMessage="please upload only pdf or mp3 files" ValidationGroup="Validation" ControlToValidate="fileUpload" ValidationExpression="^.*\.(pdf|PDF|mp3|MP3)$" runat="server" />
-        <asp:ValidationSummary ID="validationSummary" runat="server" ShowMessageBox="true" ShowSummary="false" ValidationGroup="Validation"/>
-    */
+    
 
     #region Page_Load
     /*
@@ -88,6 +82,7 @@ public partial class Manage : System.Web.UI.Page
             }
             if (!Page.IsPostBack)
             {
+                Session["ee"] = "";
                 UpdateAllData();
             }
             
@@ -108,13 +103,13 @@ public partial class Manage : System.Web.UI.Page
      */
     private string GetConnectionString()
     {
-        string server = "mysql5018.si";
+        string server = "mysql5018.site4now.net";
         string database = "db_a38d8d_lambe";
         string uid = "a38d8d_lambe";
-        string password = "Lambejor00";
+        string password = "Lambejor000";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-        
+
         return connectionString;
     }
 
@@ -139,7 +134,7 @@ public partial class Manage : System.Web.UI.Page
         }
         catch(Exception e)
         {
-            EmailError(e.ToString());
+            Session["ee"] = Environment.NewLine + "~" + e.Message;
             throw new ArgumentException();
         }
 
@@ -160,7 +155,8 @@ public partial class Manage : System.Web.UI.Page
      */
     private void UpdateAllData()
     {
-        
+
+        BlanksOnAllDropLists_WithText();
         DisableBoxes();
 
         String text = "";
@@ -172,22 +168,28 @@ public partial class Manage : System.Web.UI.Page
         }
         catch(ArgumentException ae)
         {
-            EmailError(ae.ToString());
+            Session["ee"] = Environment.NewLine + "~" + "SQL Connection Failed";
             tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
             return;
         }
 
-        UpdateCountries(connection);
+        if (!UpdateCountries(connection))
+            return;
 
-        UpdateGrades(connection);
+        if (!UpdateGrades(connection))
+            return;
 
-        UpdateTopics(connection);
+        if (!UpdateTopics(connection))
+            return;
 
-        UpdateCountryGrade(connection);
+        if (!UpdateCountryGrade(connection))
+            return;
 
-        UpdateCountryGradeTopic(connection);
+        if (!UpdateCountryGradeTopic(connection))
+            return;
 
-        UpdateLessons(connection);
+        if (!UpdateLessons(connection))
+            return;
         
     }
 
@@ -201,8 +203,10 @@ public partial class Manage : System.Web.UI.Page
      * 'country data' from the database.
      * 
      */
-    private void UpdateCountries(MySqlConnection connection)
+    private bool UpdateCountries(MySqlConnection connection)
     {
+
+        bool good = true;
 
         BlanksOnDropList_WithText(dlCGcountry, DROPLIST_COUNTRY_TEXT);
 
@@ -232,20 +236,24 @@ public partial class Manage : System.Web.UI.Page
         }
         catch(MySqlException mse)
         {
-            //TODO: email
+            good = false;
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch(Exception e)
         {
-            //TODO: email
+            good = false;
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + e.Message;
         }
 
         connection.Close();
 
         blcountry.DataSource = listcountry;
         blcountry.DataBind();
+
+        return good;
     }
 
     #endregion Update Countries
@@ -256,8 +264,10 @@ public partial class Manage : System.Web.UI.Page
      * Loads in the new grades everytime a page load is called
      * 
      */
-    private void UpdateGrades(MySqlConnection connection)
+    private bool UpdateGrades(MySqlConnection connection)
     {
+
+        bool good = true;
 
         try
         {
@@ -279,18 +289,21 @@ public partial class Manage : System.Web.UI.Page
         }
         catch(MySqlException mse)
         {
-            //TODO: email
+            good = false;
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch(Exception e)
         {
-            //TODO: email
+            good = false;
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + e.Message;
         }
 
         connection.Close();
 
+        return good;
     }
 
     #endregion Update Grades
@@ -301,8 +314,10 @@ public partial class Manage : System.Web.UI.Page
      * Loads in the new topics everytime a page load is called
      * 
      */
-    private void UpdateTopics(MySqlConnection connection)
+    private bool UpdateTopics(MySqlConnection connection)
     {
+
+        bool good = true;
 
         try
         {
@@ -324,17 +339,21 @@ public partial class Manage : System.Web.UI.Page
         }
         catch (MySqlException mse)
         {
-            //TODO: email
+            good = false;
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (Exception e)
         {
-            //TODO: email
+            good = false;
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + e.Message;
         }
 
         connection.Close();
+
+        return good;
     }
 
     #endregion Update Topics
@@ -347,8 +366,10 @@ public partial class Manage : System.Web.UI.Page
      * it with the current 'country grade' data from the database.
      * 
      */
-    private void UpdateCountryGrade(MySqlConnection connection)
+    private bool UpdateCountryGrade(MySqlConnection connection)
     {
+
+        bool good = true;
 
         BlanksOnDropList_WithText(dlCGTcountrygrade, DROPLIST_COUNTRY_GRADE_TEXT);
 
@@ -375,18 +396,21 @@ public partial class Manage : System.Web.UI.Page
         }
         catch (MySqlException mse)
         {
-            //TODO: email
+            good = false;
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (Exception e)
         {
-            //TODO: email
+            good = false;
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + e.Message;
         }
 
         connection.Close();
 
+        return good;
     }
 
     #endregion Update Country_Grade
@@ -400,8 +424,10 @@ public partial class Manage : System.Web.UI.Page
      * data from the database.
      * 
      */
-    private void UpdateCountryGradeTopic(MySqlConnection connection)
+    private bool UpdateCountryGradeTopic(MySqlConnection connection)
     {
+
+        bool good = true;
 
         BlanksOnDropList_WithText(dlLesson, DROPLIST_COUNTRY_GRADE_TOPIC_TEXT);
 
@@ -428,18 +454,21 @@ public partial class Manage : System.Web.UI.Page
         }
         catch (MySqlException mse)
         {
-            //TODO: email
+            good = false;
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (Exception e)
         {
-            //TODO: email
+            good = false;
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + e.Message;
         }
 
         connection.Close();
 
+        return good;
     }
 
     #endregion Update Country_Grade_Topic
@@ -450,9 +479,13 @@ public partial class Manage : System.Web.UI.Page
      * Loads in the new lessons everytime a page load is called
      * 
      */
-    private void UpdateLessons(MySqlConnection connection)
+    private bool UpdateLessons(MySqlConnection connection)
     {
+
+        bool good = true;
+
         GridLessons(connection);
+
         try
         {
             connection.Open();
@@ -479,18 +512,21 @@ public partial class Manage : System.Web.UI.Page
         }
         catch (MySqlException mse)
         {
-            //TODO: email
+            good = false;
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (Exception e)
         {
-            //TODO: email
+            good = false;
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + e.Message;
         }
 
         connection.Close();
 
+        return good;
     }
 
     #endregion Update Lessons
@@ -625,7 +661,8 @@ public partial class Manage : System.Web.UI.Page
 
     /*
      * 
-     * TODO
+     * Method for clearing a specified droplist, setting the text
+     * to an empty string, and focusing on index '0'
      * 
      */
     private void BlanksOnDropList(DropDownList ddl)
@@ -637,7 +674,8 @@ public partial class Manage : System.Web.UI.Page
 
     /*
      * 
-     * TODO
+     * Method for clearing all droplists on the ManageAdd page and setting
+     * them all to default state with default text, and focusing on index '0'
      * 
      */
     private void BlanksOnAllDropLists_WithText()
@@ -725,31 +763,23 @@ public partial class Manage : System.Web.UI.Page
         }//end try
         catch (MySqlException mse)
         {
-
             good = false;
-
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
-
-            //TODO: email
-
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (ArgumentException ae)
         {
-
             good = false;
-
-            //TODO: email
             tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
+            Session["ee"] = Environment.NewLine + "~" + "SQL Connection Failed";
             return;
         }
         catch(Exception ex)
         {
-
             good = false;
-
-            //TODO: email
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + ex.Message;
         }
 
         connection.Close();
@@ -816,31 +846,23 @@ public partial class Manage : System.Web.UI.Page
         }//end try
         catch (MySqlException mse)
         {
-
             good = false;
-
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
-
-            //TODO: email
-
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (ArgumentException ae)
         {
-
             good = false;
-
-            //TODO: email
             tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
+            Session["ee"] = Environment.NewLine + "~" + "SQL Connection Failed";
             return;
         }
         catch (Exception ex)
         {
-
             good = false;
-
-            //TODO: email
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + ex.Message;
         }
 
         connection.Close();
@@ -873,7 +895,7 @@ public partial class Manage : System.Web.UI.Page
      */
     protected void CountryGrade_country_IndexChange(object sender, EventArgs e)
     {
-
+        
         BlanksOnDropList_WithText(dlCGgrade, DROPLIST_GRADE_TEXT);
         DisableBox(dlCGgrade);
 
@@ -934,22 +956,23 @@ public partial class Manage : System.Web.UI.Page
         }//end try
         catch (MySqlException mse)
         {
+            canContinue = false;
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
-
-            //TODO: email
-
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (ArgumentException ae)
         {
-            //TODO: email
+            canContinue = false;
             tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
+            Session["ee"] = Environment.NewLine + "~" + "SQL Connection Failed";
             return;
         }
         catch (Exception ex)
         {
-            //TODO: email
+            canContinue = false;
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + ex.Message;
         }
 
         connection.Close();
@@ -1007,31 +1030,23 @@ public partial class Manage : System.Web.UI.Page
         }//end try
         catch (MySqlException mse)
         {
-
             good = false;
-
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
-
-            //TODO: email
-
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (ArgumentException ae)
         {
-
             good = false;
-
-            //TODO: email
             tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
+            Session["ee"] = Environment.NewLine + "~" + "SQL Connection Failed";
             return;
         }
         catch (Exception ex)
         {
-
             good = false;
-
-            //TODO: email
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + ex.Message;
         }
 
         connection.Close();
@@ -1133,22 +1148,23 @@ public partial class Manage : System.Web.UI.Page
         }//end try
         catch (MySqlException mse)
         {
+            canContinue = false;
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
-
-            //TODO: email
-
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (ArgumentException ae)
         {
-            //TODO: email
+            canContinue = false;
             tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
+            Session["ee"] = Environment.NewLine + "~" + "SQL Connection Failed";
             return;
         }
         catch (Exception ex)
         {
-            //TODO: email
+            canContinue = false;
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + ex.Message;
         }
 
         connection.Close();
@@ -1212,31 +1228,23 @@ public partial class Manage : System.Web.UI.Page
         }//end try
         catch (MySqlException mse)
         {
-
             good = false;
-
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
-
-            //TODO: email
-
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (ArgumentException ae)
         {
-
             good = false;
-
-            //TODO: email
             tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
+            Session["ee"] = Environment.NewLine + "~" + "SQL Connection Failed";
             return;
         }
         catch (Exception ex)
         {
-
             good = false;
-
-            //TODO: email
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + ex.Message;
         }
 
         connection.Close();
@@ -1358,8 +1366,8 @@ public partial class Manage : System.Web.UI.Page
             catch (Exception ex)
             {
                 canAddToDB = false;
-                //TODO: email
                 tblog.Text += Environment.NewLine + "~Error: could not save/upload file | contact help";
+                Session["ee"] = Environment.NewLine + "~" + "Could not save file" + Environment.NewLine + "~" + ex.Message;
                 return;
             }
         }
@@ -1408,31 +1416,23 @@ public partial class Manage : System.Web.UI.Page
             }//end try
             catch (MySqlException mse)
             {
-
                 good = false;
-
                 string text = MySqlExceptionNumberHandler(mse.Number);
                 tblog.Text += Environment.NewLine + text;
-
-                //TODO: email
-
+                Session["ee"] = Environment.NewLine + "~" + mse.Message;
             }
             catch (ArgumentException ae)
             {
-
                 good = false;
-
-                //TODO: email
                 tblog.Text += Environment.NewLine + "~Error: could not connect to database | contact help";
+                Session["ee"] = Environment.NewLine + "~" + "SQL Connecction Failed";
                 return;
             }
             catch (Exception ex)
             {
-
                 good = false;
-
-                //TODO: email
                 tblog.Text += Environment.NewLine + "~Error: contact help";
+                Session["ee"] = Environment.NewLine + "~" + ex.Message;
             }
 
             connection.Close();
@@ -1450,10 +1450,10 @@ public partial class Manage : System.Web.UI.Page
             catch (Exception ex)
             {
                 tblog.Text += Environment.NewLine + "~Error: deleting file complication | contact help";
-                //TODO: email
+                Session["ee"] = Environment.NewLine + "~" + "deleting file complication" + Environment.NewLine + "~" + ex.Message;
             }
             tblog.Text += Environment.NewLine + "~Lesson: database insertion failed | contact help";
-            //TODO: email
+            Session["ee"] = Environment.NewLine + "~" + "Lesson DataBase Insertion Failed";
             return;
         }
 
@@ -1516,10 +1516,8 @@ public partial class Manage : System.Web.UI.Page
      */
     private string MySqlExceptionNumberHandler(int exceptionNum)
     {
-        EmailError("It worked");
         switch (exceptionNum)
         {
-
             case 0:
                 return "~Error: Cannot connect to server | Contact help";
             case 1042:
@@ -1539,7 +1537,8 @@ public partial class Manage : System.Web.UI.Page
 
     /*
      * 
-     * TODO
+     * Method for displaying the current 'Lesson' data in the database
+     * for the admin to easiy view the contents
      * 
      */
     private void GridLessons(MySqlConnection connection)
@@ -1561,14 +1560,14 @@ public partial class Manage : System.Web.UI.Page
         }
         catch (MySqlException mse)
         {
-            //TODO: email
             string text = MySqlExceptionNumberHandler(mse.Number);
             tblog.Text += Environment.NewLine + text;
+            Session["ee"] = Environment.NewLine + "~" + mse.Message;
         }
         catch (Exception e)
         {
-            //TODO: email
             tblog.Text += Environment.NewLine + "~Error: contact help";
+            Session["ee"] = Environment.NewLine + "~" + e.Message;
         }
 
         connection.Close();
@@ -1585,14 +1584,20 @@ public partial class Manage : System.Web.UI.Page
 
     #endregion LessonDisplay
 
-    #region Email Method
+    #region Email Methods
     /*
      * 
      * This will create an email everytime an error occurs with connection to the database
      * It will send the email and the error message to the email specified 
      */
-    protected void EmailError(String strmess)
+    protected void EmailError()
     {
+
+        if(((string)Session["ee"]).Length <= 0)
+        {
+            return;
+        }
+
         try
         {
             String mypwd = "Nicaragua2017";
@@ -1601,16 +1606,24 @@ public partial class Manage : System.Web.UI.Page
                 Credentials = new NetworkCredential("reachingforenglish@gmail.com", mypwd),
                 EnableSsl = true
             };
-            MailMessage message = new MailMessage("reachingforenglish@gmail.com", "reachingforenglish@gmail.com", "Error Occurred" , strmess);
+            MailMessage message = new MailMessage("reachingforenglish@gmail.com", "reachingforenglish@gmail.com", "Error Occurred - ManageAdd" , (string)Session["ee"]);
             client.Send(message);
         }//end try
         catch (Exception e)
         {
             tblog.Text += Environment.NewLine + "Email failed to send! " + e.ToString();
         }//end catch
+
+        Session["ee"] = "";
+
     }//end method
 
-    #endregion Email Method
+    protected void EmailTimerTick(object sender, EventArgs e)
+    {
+        EmailError();
+    }
+
+    #endregion Email Methods
 
     #endregion Helpers
 
@@ -1622,6 +1635,7 @@ public partial class Manage : System.Web.UI.Page
      */
     protected void Btndeletelink_Click(object sender, EventArgs e)
     {
+        EmailError();
         Response.Redirect("ManageDelete.aspx");
     }//end method
 
@@ -1633,6 +1647,7 @@ public partial class Manage : System.Web.UI.Page
      */
     protected void BtnPdf_Click(object sender, EventArgs e)
     {
+        EmailError();
         Response.Redirect("PDFViewer.aspx");
     }//end method
 

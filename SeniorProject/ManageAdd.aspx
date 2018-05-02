@@ -30,13 +30,16 @@
             overflow-x: scroll;
         }
     </style>
-
+    
 
 
 
 </head>
 <body>
     <form id="form1" runat="server">
+
+        
+
         <div>
             <asp:Label ID="SiteName" runat="server" Text="Reaching For English" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
             <asp:Button ID="btndeletelink" runat="server" Text="Go To Delete/Edit Page" style="z-index: 1; left: 297px; top: 82px; position: absolute; right: 452px;" OnClick="Btndeletelink_Click" />
@@ -134,7 +137,9 @@
         <asp:Label ID="lbltitle" runat="server" Text="Title:" style="z-index: 1; left: 490px; top: 330px; position: absolute; bottom: 125px;"></asp:Label>
 
 
-
+        <!-- Timer -->
+        <asp:ScriptManager ID="scriptManager_timer" runat="server" />
+        <asp:Timer ID="timerEmail" OnTick="EmailTimerTick" runat="server" Interval="60000" />
        
 
 

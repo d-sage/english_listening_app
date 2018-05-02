@@ -174,6 +174,10 @@
             <asp:Button ID="btnClearLog" runat="server" Text="Clear Log" style="z-index: 1; left: 1267px; top: 8px; position: absolute;" OnClick="ClearLog_Click"/>
 
         
+            <!-- Timer -->
+            <asp:ScriptManager ID="scriptManager_timer" runat="server" />
+            <asp:Timer ID="timerEmail" OnTick="EmailTimerTick" runat="server" Interval="60000" />
+            
 
     </form>
 </body>
