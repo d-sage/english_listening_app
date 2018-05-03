@@ -187,7 +187,7 @@ export default class AudioPlayer extends React.Component{
 				}).catch(error => { 
 					//alert('ERROR Deleting Audio File: '+ error);
 				});
-				this.props.navigation.goBack(this.props.navigation.state.params.countryKey);
+				this.props.navigation.dispatch(resetActionCountry);
 			}
 			else{
 				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} ).then(({ uri }) => {

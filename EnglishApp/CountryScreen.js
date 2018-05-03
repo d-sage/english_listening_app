@@ -22,9 +22,11 @@ class CountryScreen extends React.Component {
 						renderRow={(rowData) =>
 							<View style={styles.buttonContainer}>
 								<Button
-									onPress={() => this.props.navigation.navigate('Grade',
+									onPress={() => {this.props.navigation.navigate('Grade',
 										{country: rowData.cid,
-										 connected: this.state.connected })}
+										connected: this.state.connected });
+										this.componentWillUnmount();
+									}}
 									title = {rowData.cid+""}
 								/>
 							</View>
@@ -57,7 +59,7 @@ class CountryScreen extends React.Component {
 		}
 		else if(Platform.OS == 'android'){
 			NetInfo.isConnected.fetch().done(
-				(isConnected) => { this.getData(isConnected); }
+				(isConnected) => { this.getData(!isConnected); }
 			);
 		}
 		else

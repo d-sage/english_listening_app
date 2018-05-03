@@ -35,8 +35,7 @@ class LessonScreen extends React.Component {
 											 name: rowData.filename.replace(' ','_'),
 											 connected: this.props.navigation.state.params.connected,
 											 fromRecoring: false,
-											 ext: rowData.ext+"",
-											 countryKey: this.props.navigation.state.params.countryKey}
+											 ext: rowData.ext+"",}
 										);
 									}
 									else

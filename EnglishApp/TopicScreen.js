@@ -25,8 +25,7 @@ class TopicScreen extends React.Component {
 									{country: this.props.navigation.state.params.country,
 									 grade: this.props.navigation.state.params.grade,
 									 topic: rowData.tid,
-									 connected: this.props.navigation.state.params.connected,
-									 countryKey: this.props.navigation.state.params.countryKey})}
+									 connected: this.props.navigation.state.params.connected,})}
 								title = {rowData.tid+""}
 							/>
 						</View>
