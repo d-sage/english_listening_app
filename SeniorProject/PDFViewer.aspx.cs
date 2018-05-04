@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 public partial class PDFViewer : System.Web.UI.Page
 {
-
+    String link = "";
     #region Page Load
     /*
      * 
@@ -18,7 +18,10 @@ public partial class PDFViewer : System.Web.UI.Page
      */
     protected void Page_Load(object sender, EventArgs e)
     {
+        tblink.Enabled = false;
+        btnlink.Enabled = false;
         UpdateAllData();
+        Checkcred();
     }//end method
 
     #endregion Page Load
@@ -155,6 +158,31 @@ public partial class PDFViewer : System.Web.UI.Page
 
     }//end method
 
+
+    protected void Checkcred()
+    {
+        if ((Session["confirm"]) == null)
+            return;
+        else
+        {
+            bool matching = (bool)Session["confirm"];
+            if (matching)
+            {
+                tblink.Enabled = true;
+                btnlink.Enabled = true;
+            }//end if
+        }//end else
+        return;
+    }//end method
+
     #endregion Button Click Events
+
+
+    protected void btnlink_Click(object sender, EventArgs e)
+    {
+        link = tblink.Text;
+        hplink.NavigateUrl = tblink.Text;
+        tblink.Text = "";
+    }//end method
 
 }//end class
