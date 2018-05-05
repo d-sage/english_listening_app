@@ -59,6 +59,7 @@ public partial class Manage : System.Web.UI.Page
      */
     protected void Page_Load(object sender, EventArgs e)
     {
+        Session["confirm"] = false;
         bool run = GetSession();
         bool isPageRefreshed = false;
         //makes sure they aren't going around the login
@@ -1651,6 +1652,16 @@ public partial class Manage : System.Web.UI.Page
         Response.Redirect("PDFViewer.aspx");
     }//end method
 
+
+    protected void Btnlogout_Click(object sender, EventArgs e)
+    {
+        EmailError();
+        Session["confirm"] = false;
+        Response.Redirect("Login.aspx");
+    }//end method
+
     #endregion Button Click Events
+
+
 
 }//end class

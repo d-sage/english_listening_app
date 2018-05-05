@@ -21,11 +21,12 @@ public partial class PDFViewer : System.Web.UI.Page
         tblink.Enabled = false;
         btnlink.Enabled = false;
         UpdateAllData();
+        hplink.NavigateUrl = link;
         Checkcred();
     }//end method
 
     #endregion Page Load
-    
+
     #region GetConnectionString
     /*
      * 
@@ -106,7 +107,43 @@ public partial class PDFViewer : System.Web.UI.Page
         connection.Close();
     }
 
+
+
     #endregion Update Lessons
+
+    #region Update Url
+
+    public void UpdateUrl(MySqlConnection connection)
+    {
+        try
+        {
+            connection.Open();
+
+            String sql = "SELECT * FROM survey_url";
+
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+            {
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        link = (String)rdr[0];
+                    }//end while
+                }//end 
+            }//end
+            hplink.NavigateUrl = link;
+        }//end try
+        catch (Exception e)
+        {
+            //TODO: email
+            lblerror.Text += Environment.NewLine + "~Error: contact admin";
+        }//end catch
+
+        connection.Close();
+    }//end method
+
+
+    #endregion Update Url
 
     #region Update All Data
     /*
@@ -133,7 +170,7 @@ public partial class PDFViewer : System.Web.UI.Page
         }
 
         UpdateLessonsPDFMP3(connection);
-
+        UpdateUrl(connection);
     }
 
     #endregion Update All Data
@@ -175,14 +212,53 @@ public partial class PDFViewer : System.Web.UI.Page
         return;
     }//end method
 
-    #endregion Button Click Events
-
 
     protected void btnlink_Click(object sender, EventArgs e)
     {
-        link = tblink.Text;
-        hplink.NavigateUrl = tblink.Text;
+        String linkdup = tblink.Text;
         tblink.Text = "";
+        AddURL(linkdup);
     }//end method
+
+    #endregion Button Click Events
+
+    #region Add URL
+
+    public void AddURL(String urllink)
+    {
+        MySqlConnection connection = null;
+        try
+        {
+            connection = GetSqlConnection();
+
+            connection.Open();
+
+            String sql = "UPDATE survey_url SET url = (@url) WHERE url = @oldurl ";
+
+            using (MySqlCommand cmd = new MySqlCommand(sql, connection))
+            {
+
+                cmd.Parameters.AddWithValue("@url", urllink);
+                cmd.Parameters.AddWithValue("@oldurl", link);
+
+                cmd.ExecuteNonQuery();
+
+            }//end cmd
+
+            connection.Close();
+
+            UpdateUrl(connection);
+
+        }//end try
+        catch (Exception e)
+        {
+            //TODO: email
+            lblerror.Text += Environment.NewLine + "~Error: contact admin";
+        }//end catch
+    }
+
+    #endregion Add URL
+
+    
 
 }//end class

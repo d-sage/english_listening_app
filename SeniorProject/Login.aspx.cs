@@ -38,6 +38,8 @@ public partial class _Default : System.Web.UI.Page
         Session["oldLid"] = "";
         Session["oldText"] = "";
 
+        Session["confirm"] = false;
+
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
         
         string text = "";
