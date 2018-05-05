@@ -59,7 +59,6 @@ public partial class Manage : System.Web.UI.Page
      */
     protected void Page_Load(object sender, EventArgs e)
     {
-        Session["confirm"] = false;
         bool run = GetSession();
         bool isPageRefreshed = false;
         //makes sure they aren't going around the login
