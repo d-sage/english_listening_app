@@ -59,7 +59,7 @@ class CountryScreen extends React.Component {
 		}
 		else if(Platform.OS == 'android'){
 			NetInfo.isConnected.fetch().done(
-				(isConnected) => { this.getData(!isConnected); }
+				(isConnected) => { this.getData(isConnected); }
 			);
 		}
 		else

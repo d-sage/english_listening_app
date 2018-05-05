@@ -39,7 +39,7 @@ const DISABLED_OPACITY = 0.5;
 const RATE_MAX = 2.0;
 const RATE_MIN = 0.5;
 const MAX_SAVES = 15;
-const MAX_RECORD_TIME = 1;
+const MAX_RECORD_TIME = 5 * (60*1000);//minutes to milliseconds.
 const db = SQLite.openDatabase('db.db');
 const resetActionCountry = NavigationActions.reset({
   index: 0,
@@ -366,7 +366,7 @@ export default class AudioPlayer extends React.Component{
 					const recStatus = await this.tempRecording.getURI();
 					FileSystem.moveAsync({ 
 						from: recStatus, 
-						to: FileSystem.documentDirectory + 'recordings/' + this.props.navigation.state.params.lid +'_'+ date.getMonth()+ "-" + date.getDay()+ "-" + date.getFullYear()+ "_" + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds()
+						to: FileSystem.documentDirectory + 'recordings/' + this.props.navigation.state.params.lid +'_['+ date.getMonth()+ "-" + date.getDay()+ "-" + date.getFullYear()+ "_" + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds() + "].mp3"
 					}).then(alert('Recording saved'));
 					this.openRecordings();
 					this.tempRecording = null;
@@ -380,7 +380,7 @@ export default class AudioPlayer extends React.Component{
 	async openRecordings(){
 		try{ 
 			this.setState({
-				recordings: await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+'/recordings'),
+				recordings: await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+'recordings'),
 			});
 		}
 		catch(e){alert(e);}
@@ -403,6 +403,8 @@ export default class AudioPlayer extends React.Component{
 					this.recordingStop();
 				}
 			}
+			if(this.state.recordingDuration >= MAX_RECORD_TIME)
+				this.recordingStop();
 		}
 	};
 	

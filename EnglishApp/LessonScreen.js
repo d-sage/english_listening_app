@@ -29,10 +29,10 @@ class LessonScreen extends React.Component {
 											{country: this.props.navigation.state.params.country,
 											 grade: this.props.navigation.state.params.grade,
 											 topic: this.props.navigation.state.params.topic,
-											 lid: rowData.lid,
+											 lid: rowData.lid.split(' ').join('_'),
 											 textSubs: rowData.text+"",
 											 path: rowData.path,
-											 name: rowData.filename.replace(' ','_'),
+											 name: rowData.filename,
 											 connected: this.props.navigation.state.params.connected,
 											 fromRecoring: false,
 											 ext: rowData.ext+"",}
