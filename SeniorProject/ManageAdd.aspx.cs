@@ -1651,6 +1651,16 @@ public partial class Manage : System.Web.UI.Page
         Response.Redirect("PDFViewer.aspx");
     }//end method
 
+
+    protected void Btnlogout_Click(object sender, EventArgs e)
+    {
+        EmailError();
+        Session["confirm"] = false;
+        Response.Redirect("Login.aspx");
+    }//end method
+
     #endregion Button Click Events
+
+
 
 }//end class

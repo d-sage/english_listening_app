@@ -69,6 +69,7 @@
             <asp:Label ID="lblinfo" runat="server" Text="How would you like to change the database:" ></asp:Label>
             <asp:Button ID="btndeletelink" runat="server" Text="Go To Add Page" OnClick="Btnaddlink_Click" />
             <asp:Button ID="Button1" runat="server" Text="File Viewer" OnClick="Button1_Click" style="margin-left: 20px" />
+            <asp:Button ID="btnlogout" runat="server" Text="Log Out" style="z-index: 1; left: 900px; top: 10px; position: absolute;" OnClick="btnlogout_Click"/>
             <br />
         </div>
 
@@ -119,6 +120,8 @@
 	            </Columns>
             </asp:GridView>
         </div>
+
+        
 
         <div class="inlineBlockDiv">
             <!-- Table for Country_Grade_Topic Delete -->

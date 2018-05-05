@@ -1615,8 +1615,8 @@ public partial class ManageDelete : System.Web.UI.Page
     #region GetSession()
     /*
      * 
-     * TODO
-     * 
+     * This checks the session to see if the login was passed
+     * if it was we will load the page if not then takes them back to the login page
      */
     private bool GetSession()
     {
@@ -1700,6 +1700,15 @@ public partial class ManageDelete : System.Web.UI.Page
         EmailError();
         Response.Redirect("PDFViewer.aspx");
     }//end method
+
+
+    protected void btnlogout_Click(object sender, EventArgs e)
+    {
+        EmailError();
+        Session["confirm"] = false;
+        Response.Redirect("Login.aspx");
+    }//end method
+
 
     #endregion Button Click Events
 

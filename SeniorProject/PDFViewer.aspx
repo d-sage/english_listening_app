@@ -26,7 +26,7 @@
         .scrolling-table-container 
         {
             display: inline-block;
-            height: 500px;
+            height: 460px;
             width: 100%;
             overflow-y: scroll;
             overflow-x: scroll;
@@ -39,6 +39,9 @@
         <div>
             <asp:Button ID="btnlogin" runat="server" Text="Login" style="z-index: 1; left: 15px; top: 100px; position: absolute; height: 26px;" OnClick="btnpdf_Click" />
             <asp:Label ID="SiteName" runat="server" Text="Reaching For English" style="z-index: 1; left: 330px; top: 0px; position: absolute" Font-Bold="true" Font-Size="72px" Font-Underline="true" ></asp:Label>
+            <asp:HyperLink ID="hplink" runat="server" style="z-index: 1; left: 800px; top: 100px; position: absolute; height: 19px;">Please Take Our Survey</asp:HyperLink>
+            <asp:TextBox ID="tblink" runat="server" style="z-index: 1; left: 800px; top: 150px; position: absolute"></asp:TextBox>
+            <asp:Button ID="btnlink" runat="server" Text="Update" style="z-index: 1; left: 980px; top: 150px; position: absolute" OnClick="btnlink_Click" />
         </div>
         <br />
         <br />
@@ -47,7 +50,7 @@
         <br />
         <br />
         <br />
-        <br />
+        <br />      
         <br />
         <br />
         <br />
