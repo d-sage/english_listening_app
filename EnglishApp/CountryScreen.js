@@ -13,7 +13,7 @@ class CountryScreen extends React.Component {
 			return(		
 				<View style={styles.mainContainer}>
 					<View style={styles.headerContainer}>
-						<Text style={{fontSize: 20}}>Select a Country</Text>
+						<Text style={{fontSize: 20}}>Select Country</Text>
 					</View>
 					<ListView
 						enableEmptySections
@@ -59,7 +59,7 @@ class CountryScreen extends React.Component {
 		}
 		else if(Platform.OS == 'android'){
 			NetInfo.isConnected.fetch().done(
-				(isConnected) => { this.getData(isConnected); }
+				(isConnected) => { this.getData( isConnected); }
 			);
 		}
 		else

@@ -12,7 +12,7 @@ class TopicScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text style={{fontSize: 20}}>Select a Topic</Text>
+					<Text style={{fontSize: 20}}>Select Topic</Text>
 				</View>
 				<ListView
 					enableEmptySections
@@ -50,7 +50,8 @@ class TopicScreen extends React.Component {
 	}
 
 	fetchOnlineData(){
-		return fetch('http://lambejor-001-site1.htempurl.com/Topics/topicQuery.php?cid=' + this.props.navigation.state.params.country + ' &gid=' + this.props.navigation.state.params.grade)
+		return fetch('http://lambejor-001-site1.htempurl.com/Topics/topicQuery.php?cid=' + this.props.navigation.state.params.country + 
+			' &gid=' + this.props.navigation.state.params.grade)
 		.then((response) => response.json())
 		.then((responseJson) => {
 			if(responseJson){
@@ -63,7 +64,9 @@ class TopicScreen extends React.Component {
 	
 	fetchOfflineData(){
 		db.transaction(tx => {
-			tx.executeSql('SELECT DISTINCT cid,gid,tid FROM lessons WHERE cid = ? AND gid = ?;', [this.props.navigation.state.params.country,this.props.navigation.state.params.grade], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
+			tx.executeSql('SELECT DISTINCT cid,gid,tid FROM lessons WHERE cid = ? AND gid = ?;', 
+			[this.props.navigation.state.params.country,this.props.navigation.state.params.grade], (_, { rows: { _array } }) => 
+				this.setState({ dataSource: ds.cloneWithRows(_array) }));
 		});
 	}
 }

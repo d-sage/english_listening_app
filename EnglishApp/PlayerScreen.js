@@ -78,6 +78,8 @@ export default class AudioPlayer extends React.Component{
 			expandedRecorder: false,
 			expandedPlayer: false,
 			recordings: [],
+			
+			recordingFinishedURI: null,
 		};
 		this.audioPlayPause = this.audioPlayPause.bind(this);
 		this.audioStop = this.audioStop.bind(this);
@@ -104,12 +106,11 @@ export default class AudioPlayer extends React.Component{
 	componentWillUnmount() {
 		this.mounted = false;
 		if(this.audio != null){
-			this.audio.stopAsync();
+			this.audioStop();
 			this.audio.unloadAsync();
 			this.audio = null;
 		}
 		if(this.recording != null){
-			this.recording.stopAndUnloadAsync();
 			this.recording = null;
 		}
 		if(this.recordingFinished != null){
@@ -117,6 +118,8 @@ export default class AudioPlayer extends React.Component{
 			this.recordingFinished.unloadAsync();
 			this.recordingFinished = null; 
 		}
+		if(this.tempRecording != null)
+			this.tempRecording = null;
 	}	
   
 	async loadAudio() {	
@@ -164,41 +167,36 @@ export default class AudioPlayer extends React.Component{
 	audioDownload(){
 		if(!this.props.navigation.state.params.fromRecording){
 			db.transaction(tx => {
-				tx.executeSql('INSERT OR IGNORE INTO lessons (cid, gid, tid, lid, filename, text, path, ext) values (?, ?, ?, ?, ?, ?, ?, ?)', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.name, this.props.navigation.state.params.textSubs, FileSystem.documentDirectory + this.props.navigation.state.params.name, this.props.navigation.state.params.ext]);
+				tx.executeSql('INSERT OR IGNORE INTO lessons (cid, gid, tid, lid, filename, text, path, ext) values (?, ?, ?, ?, ?, ?, ?, ?)', 
+				[this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, 
+				this.props.navigation.state.params.lid, this.props.navigation.state.params.name, this.props.navigation.state.params.textSubs, 
+				FileSystem.documentDirectory + this.props.navigation.state.params.name, this.props.navigation.state.params.ext]);
 			});
-			alert('Downloading File, Please wait. You will get an alert when download has finished.');
 			FileSystem.downloadAsync(this.props.navigation.state.params.path,
-				FileSystem.documentDirectory + this.props.navigation.state.params.name ).then(({ uri }) => {
-					alert('Finished Downloading To Directory:\n ' + uri);
-			}).catch(error => { alert("ERROR Downloading Audio: " + error); });
+				FileSystem.documentDirectory + this.props.navigation.state.params.name )
+			.then(alert('Lesson Downloaded'))
+			.catch(error => { alert(error); });
 		}
-		else
-			alert("Cannot Download Saved Recording");
 	}
 	
 	async audioDelete() {
 		if(this.audio != null){
-			this.audioStop();
 			if(!this.props.navigation.state.params.fromRecording){			
 				db.transaction(tx => {
-					tx.executeSql('DELETE FROM lessons WHERE cid = ? AND gid = ? AND tid = ? AND lid = ? AND path = ?;', [this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, this.props.navigation.state.params.lid, this.props.navigation.state.params.path]);
+					tx.executeSql('DELETE FROM lessons WHERE cid = ? AND gid = ? AND tid = ? AND lid = ? AND path = ?;', 
+					[this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, 
+					this.props.navigation.state.params.lid, this.props.navigation.state.params.path]);
 				});
-				FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} ).then(({ uri }) => {
-					alert('Finished Deleting Audio File');
-				}).catch(error => { 
-					//alert('ERROR Deleting Audio File: '+ error);
-				});
+				FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} )
+				.then(alert('Lesson Deleted'));
 				this.props.navigation.dispatch(resetActionCountry);
 			}
 			else{
-				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} ).then(({ uri }) => {
-					alert('Finished Deleting Recording');})
-				.catch(error => { 
-					//alert("ERROR Deleting Audio: " + error); 
-				});
+				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} )
+				.then(alert('Recording Deleted'));
 				await this.openRecordings();
 				if(this.state.recordings.length == 0){
-					alert('No recordings to load, Please select a new Lesson');
+					alert('Select New Lesson');
 					this.props.navigation.dispatch(resetActionCountry); 
 				}
 				else{
@@ -312,10 +310,7 @@ export default class AudioPlayer extends React.Component{
   
 	async recordingStop() {
 		this.setState({ isLoading: true, });
-		try { 
-			await this.recording.stopAndUnloadAsync();
-			this.tempRecording = this.recording;
-		} 
+		try { await this.recording.stopAndUnloadAsync(); } 
 		catch (error) {}// Do nothing -- we are already unloaded.	
 		await Audio.setAudioModeAsync({
 			allowsRecordingIOS: false,
@@ -331,7 +326,6 @@ export default class AudioPlayer extends React.Component{
 		);
 		this.recordingFinished = sound;
 		this.setState({ isLoading: false, });
-		this.recording = null;
 	}
   
 	recordingPressed(){
@@ -346,10 +340,8 @@ export default class AudioPlayer extends React.Component{
 			if (this.state.isRecordingPlaying)
 				this.recordingFinished.pauseAsync();
 			else
-				this.recordingFinished.playAsync();  
+				this.recordingFinished.playAsync(); 			
 		}
-		else
-			alert('recording is null');
 	};
 	
 	recordingFinishedStop = () => {
@@ -358,21 +350,23 @@ export default class AudioPlayer extends React.Component{
 	};
 	
 	async recordingSave(){
-		if(this.tempRecording != null){
+		if(this.recording != null){
 			try{
 				const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+'recordings');
 				if(files.length < MAX_SAVES){
 					const date = new Date();
-					const recStatus = await this.tempRecording.getURI();
-					FileSystem.moveAsync({ 
+					const recStatus = await this.recording.getURI();
+					FileSystem.copyAsync({ 
 						from: recStatus, 
-						to: FileSystem.documentDirectory + 'recordings/' + this.props.navigation.state.params.lid +'_['+ date.getMonth()+ "-" + date.getDay()+ "-" + date.getFullYear()+ "_" + date.getHours()+ ":" + date.getMinutes()+ ":" + date.getSeconds() + "].mp3"
+						to: FileSystem.documentDirectory + 'recordings/' + this.props.navigation.state.params.lid.split(' ').join('_') + 
+							'_['+ date.getMonth()+ "-" + date.getDay()+ "-" + date.getFullYear()+ "_" + date.getHours()+ ":" + 
+							date.getMinutes()+ ":" + date.getSeconds() + "].mp3"
 					}).then(alert('Recording saved'));
 					this.openRecordings();
-					this.tempRecording = null;
+					this.recording = null;
 				}
 				else
-					alert('You may only save '+MAX_SAVES+' recordings, please delete some recordings to save more.');
+					alert('Delete recordings to save more.');
 			}catch(e){alert(e);}
 		}
 	}
@@ -415,7 +409,10 @@ export default class AudioPlayer extends React.Component{
 					recordingPosition: status.positionMillis, 
 					recordingDuration: status.durationMillis,
 					recordingShouldPlay: status.shouldPlay,
-					isRecordingPlaying: status.isPlaying,  
+					isRecordingPlaying: status.isPlaying,
+					
+					recordingFinishedURI: status.uri,
+					
 					isPlaybackAllowed: true,
 				});
 			} 
@@ -466,7 +463,7 @@ export default class AudioPlayer extends React.Component{
 	
 	setRateUp(){
 		if(Platform.OS == 'android' && Platform.Version < 23)
-			alert('Your operating system is not supported to change the rate.');
+			alert('Cannot change the rate.');
 		else{
 			this.setState({rate: this.state.rate+0.1});
 			this.setRate(this.state.rate, true);
@@ -475,7 +472,7 @@ export default class AudioPlayer extends React.Component{
 	
 	setRateDown(){
 		if(Platform.OS == 'android' && Platform.Version < 23)
-			alert('Your operating system is not supported to change the rate.');
+			alert('Cannot change the rate.');
 		else{		
 			this.setState({rate: this.state.rate-0.1});
 			this.setRate(this.state.rate, true);
@@ -484,7 +481,7 @@ export default class AudioPlayer extends React.Component{
 	
 	setRateDefault(){
 		if(Platform.OS == 'android' && Platform.Version < 23)
-			alert('Your operating system is not supported to change the rate.');
+			alert('Cannot change the rate.');
 		else{
 			this.setState({rate: 1.0,});
 			this.setRate(1.0, true);
@@ -543,7 +540,7 @@ export default class AudioPlayer extends React.Component{
 									underlayColor={BACKGROUND_COLOR}
 									style={styles.wrapper}
 									onPress={this.props.navigation.state.params.connected && !this.props.navigation.state.params.fromRecording ? this.audioDownload : this.audioDelete}
-									disabled={this.state.isLoading}>
+									disabled={this.state.isLoading || this.state.isRecording}>
 									<Image style={styles.image} source={this.props.navigation.state.params.connected && !this.props.navigation.state.params.fromRecording ? ICON_DOWNLOAD_BUTTON : ICON_DELETE_BUTTON} />
 								</TouchableHighlight>
 								<Text>{this.props.navigation.state.params.connected && !this.props.navigation.state.params.fromRecording ? 'Download' : 'Delete'}</Text>
@@ -630,17 +627,17 @@ export default class AudioPlayer extends React.Component{
 									</TouchableHighlight>
 									<Text>{this.state.isRecording ? 'Stop' : 'Record'}</Text>
 								</View>
-								<View style={[styles.buttonsContainers, { opacity: !this.state.isPlaybackAllowed || this.state.isLoading || this.tempRecording == null ? DISABLED_OPACITY : 1.0, },]}>
+								<View style={[styles.buttonsContainers, { opacity: !this.state.isPlaybackAllowed || this.state.isLoading || this.recording == null ? DISABLED_OPACITY : 1.0, },]}>
 									<TouchableHighlight
 										underlayColor={BACKGROUND_COLOR}
 										style={styles.wrapper}
 										onPress={this.recordingSave}
-										disabled={!this.state.isPlaybackAllowed || this.state.isLoading || this.tempRecording == null }>
+										disabled={!this.state.isPlaybackAllowed || this.state.isLoading || this.recording == null }>
 										<Image style={styles.image} source={ICON_SAVE_BUTTON}/>
 									</TouchableHighlight>
 									<Text>{'Save'}</Text>
 								</View>
-								<View style={[styles.buttonsContainers, { opacity: this.state.recordings.length == 0 ? DISABLED_OPACITY : 1.0, }]}>
+								<View style={[styles.buttonsContainers, { opacity: this.state.recordings.length == 0 || this.state.isRecording ? DISABLED_OPACITY : 1.0, }]}>
 									<TouchableHighlight
 										underlayColor={BACKGROUND_COLOR}
 										style={styles.wrapper}
@@ -665,7 +662,7 @@ export default class AudioPlayer extends React.Component{
 											}), 
 											this.props.navigation.dispatch(resetActionPlayer);
 										}}
-										disabled={this.state.recordings.length == 0}>
+										disabled={this.state.recordings.length == 0 || this.state.isRecording}>
 										<Image style={styles.image} source={ICON_OPEN_BUTTON }/>
 									</TouchableHighlight>
 									<Text>{'Open'}</Text>
@@ -699,7 +696,7 @@ export default class AudioPlayer extends React.Component{
 					{this.props.navigation.state.params.fromRecording &&  
 						<Button
 							onPress={() => {this.props.navigation.dispatch(resetActionCountry)}}
-							title = {"Press here to select a new lesson"}
+							title = {"New Lesson"}
 						/> 		
 					}
 				</View>

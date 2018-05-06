@@ -12,7 +12,7 @@ class GradeScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text style={{fontSize: 20}}>Select a Grade</Text>
+					<Text style={{fontSize: 20}}>Select Grade</Text>
 				</View>
 				<ListView
 					enableEmptySections
@@ -62,7 +62,9 @@ class GradeScreen extends React.Component {
 	
 	fetchOfflineData(){
 		db.transaction(tx => {
-			tx.executeSql('SELECT DISTINCT cid, gid FROM lessons WHERE cid = ?;', [this.props.navigation.state.params.country], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
+			tx.executeSql('SELECT DISTINCT cid, gid FROM lessons WHERE cid = ?;', 
+			[this.props.navigation.state.params.country], (_, { rows: { _array } }) => 
+				this.setState({ dataSource: ds.cloneWithRows(_array) }));
 		});
 	}
 }

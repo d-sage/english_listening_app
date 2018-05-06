@@ -12,7 +12,7 @@ class RecordingsScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text style={{fontSize: 20}}>Select a Recording</Text>
+					<Text style={{fontSize: 20}}>Select Recording</Text>
 				</View>
 				<ListView
 					enableEmptySections
@@ -50,7 +50,7 @@ class RecordingsScreen extends React.Component {
 							grade: this.props.navigation.state.params.grade,
 							topic: this.props.navigation.state.params.topic,
 							lid: this.props.navigation.state.params.lid,
-							textSubs: 'No Text Saved With Recordings',
+							textSubs: 'No Text',
 							path: FileSystem.documentDirectory + 'recordings/' + rowData,
 							name: rowData,
 							connected: this.props.navigation.state.params.connected,
