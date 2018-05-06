@@ -1,12 +1,7 @@
-//TODO
-//figure out why deleteAsync throws error every time in .catch but still deletes.
-
-
 import React from 'react';
 import {
   Image,
   Slider,
-  StyleSheet,
   Text,
   TouchableHighlight,
   View,
@@ -17,7 +12,7 @@ import {
   TouchableOpacity,
   Button,
 } from 'react-native';
-import { Audio, SQLite, FileSystem, Asset } from 'expo';
+import { Audio, SQLite, FileSystem } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import styles from "./Styles.js";
 
@@ -77,8 +72,6 @@ export default class AudioPlayer extends React.Component{
 			expandedRecorder: false,
 			expandedPlayer: false,
 			recordings: [],
-			
-			recordingFinishedURI: null,
 		};
 		this.audioPlayPause = this.audioPlayPause.bind(this);
 		this.audioStop = this.audioStop.bind(this);
@@ -406,10 +399,7 @@ export default class AudioPlayer extends React.Component{
 					recordingPosition: status.positionMillis, 
 					recordingDuration: status.durationMillis,
 					recordingShouldPlay: status.shouldPlay,
-					isRecordingPlaying: status.isPlaying,
-					
-					recordingFinishedURI: status.uri,
-					
+					isRecordingPlaying: status.isPlaying,		
 					isPlaybackAllowed: true,
 				});
 			} 
@@ -507,7 +497,7 @@ export default class AudioPlayer extends React.Component{
 	}
 	
 	render(){
-		var texts = "No Text To Display";
+		var texts = "No Text";
 		if(this.props.navigation.state.params.textSubs != '' || this.props.navigation.state.params.textSubs == 'undefined') 
 			texts = this.props.navigation.state.params.textSubs;
 		return(
