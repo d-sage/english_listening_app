@@ -53,7 +53,6 @@ export default class AudioPlayer extends React.Component{
 		this.audio = null;
 		this.recordingFinished = null;
 		this.recording = null;
-		this.tempRecording = null;
 		this.audioIsSeeking = false;
 		this.recordingIsSeeking = false;
 		this.audioShouldPlayAtEndOfSeek = false;
@@ -118,8 +117,6 @@ export default class AudioPlayer extends React.Component{
 			this.recordingFinished.unloadAsync();
 			this.recordingFinished = null; 
 		}
-		if(this.tempRecording != null)
-			this.tempRecording = null;
 	}	
   
 	async loadAudio() {	
