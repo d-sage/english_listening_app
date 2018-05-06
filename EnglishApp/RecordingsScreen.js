@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Button, ListView } from 'react-native';
 import styles from "./Styles.js";
-import Expo, { SQLite, FileSystem } from 'expo';
+import { FileSystem } from 'expo';
 import { NavigationActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });

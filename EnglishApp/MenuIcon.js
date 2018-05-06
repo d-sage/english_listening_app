@@ -2,7 +2,7 @@
 //NEED TO FILL IN THE "ABOUT" PART.
 
 import React from 'react';
-import { View, Text, Button, Image, ScrollView, Linking } from 'react-native';
+import { View, Text, Image, Linking } from 'react-native';
 import email from 'react-native-email';
 import styles from "./Styles.js";
 import {

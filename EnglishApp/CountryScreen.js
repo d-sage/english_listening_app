@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from "./Styles.js";
-import Expo, { SQLite, Permissions, Asset } from 'expo';
+import { SQLite, Permissions } from 'expo';
 import { View, Text, Button, ListView, NetInfo, Platform } from 'react-native';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
