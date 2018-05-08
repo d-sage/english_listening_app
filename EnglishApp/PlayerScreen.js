@@ -507,7 +507,7 @@ export default class AudioPlayer extends React.Component{
 	
 	render(){
 		var texts = "No Text";
-		if(this.props.navigation.state.params.textSubs != '' || this.props.navigation.state.params.textSubs == 'undefined') 
+		if(this.props.navigation.state.params.textSubs != '' && this.props.navigation.state.params.textSubs != 'undefined') 
 			texts = this.props.navigation.state.params.textSubs;
 		return(
 			<View style={styles.mainContainer}>
