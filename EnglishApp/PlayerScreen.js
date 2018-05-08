@@ -177,8 +177,17 @@ export default class AudioPlayer extends React.Component{
 					[this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, 
 					this.props.navigation.state.params.lid, this.props.navigation.state.params.path]);
 				});
-				FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} )
-				.then(alert('Lesson Deleted'));
+				db.transaction(tx => {//only delete if no other references to that mp3 path.
+					tx.executeSql('SELECT * FROM lessons WHERE path = ?;', 
+						[this.props.navigation.state.params.path], 
+						(_, { rows: { _array } }) => {
+							if(_array.length == 0){
+								FileSystem.deleteAsync( FileSystem.documentDirectory + this.props.navigation.state.params.name, {idempotent: true} )
+								.then(alert('Lesson Deleted'));
+							}
+						}
+					);
+				});
 				this.props.navigation.dispatch(resetActionCountry);
 			}
 			else{
