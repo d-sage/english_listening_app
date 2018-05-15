@@ -210,13 +210,13 @@ public partial class _Default : System.Web.UI.Page
     {
         try
         {
-            String mypwd = "";
+            String mypwd = "Nicaragua2017";
             var client = new SmtpClient("smtp.gmail.com", 587)
             {
-                Credentials = new NetworkCredential("yourEmail@gmail.com", mypwd),
+                Credentials = new NetworkCredential("reachingforenglish@gmail.com", mypwd),
                 EnableSsl = true
             };
-            MailMessage message = new MailMessage("yourEmail@gmail.com", "EmailToSendTo", "Error Occurred", strmess);
+            MailMessage message = new MailMessage("reachingforenglish@gmail.com", "reachingforenglish@gmail.com", "Error Occurred", strmess);
             client.Send(message);
         }//end try
         catch (Exception e)
