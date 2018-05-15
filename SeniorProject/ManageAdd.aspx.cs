@@ -735,7 +735,9 @@ public partial class Manage : System.Web.UI.Page
 
         if(!Regex_CountryCheck(country))
         {
-            tblog.Text += Environment.NewLine + "~Country: Countries can only contain: alphabetical characters, spaces, and dashes. Max length = up to 30 characters.";
+            tblog.Text += Environment.NewLine + "~Country: Invalid Country, ensure these requirements are met:";
+            tblog.Text += Environment.NewLine + "1)can only contain: alphabetical characters, spaces, and dashes";
+            tblog.Text += Environment.NewLine + "2)max length = up to 30 characters";
             return;
         }
 
@@ -818,7 +820,9 @@ public partial class Manage : System.Web.UI.Page
 
         if (!Regex_TopicCheck(topic))
         {
-            tblog.Text += Environment.NewLine + "~Topic: Topics can only contain: alphanumeric characters, spaces, commas, dashes and colons. Max length = up to 50 characters.";
+            tblog.Text += Environment.NewLine + "~Topic: Invalid Topic, ensure these requirements are met:";
+            tblog.Text += Environment.NewLine + "1)can only contain: alphanumeric characters, spaces, commas, dashes and colons";
+            tblog.Text += Environment.NewLine + "2)max length = up to 50 characters";
             return;
         }
 
@@ -1330,13 +1334,18 @@ public partial class Manage : System.Web.UI.Page
         #region Filename Regex and LID Regex
         if (!Regex_FilenameCheck(filename))
         {
-            tblog.Text += Environment.NewLine + "~Lesson: Filename can only contain: alphanumeric characters and dashes. Max length = up to 50 characters with '.mp3 or .pdf' extension.";
+            tblog.Text += Environment.NewLine + "~Lesson: Invalid filename, ensure these requirements are met:";
+            tblog.Text += Environment.NewLine + "1)can only contain: alphanumeric characters and dashes";
+            tblog.Text += Environment.NewLine + "2)max length = up to 50 characters";
+            tblog.Text += Environment.NewLine + "3)'.mp3' or '.pdf' extension is provided (check if your files show extensions)";
             return;
         }
 
         if(!Regex_LidCheck(lid))
         {
-            tblog.Text += Environment.NewLine + "~Lesson: Lesson title can only contain: alphanumeric characters, spaces, commas, dashes, and colons. Max length = up to 100 characters.";
+            tblog.Text += Environment.NewLine + "~Lesson: Invalid lesson name, ensure these requirements are met:";
+            tblog.Text += Environment.NewLine + "1)can only contain: alphanumeric characters, spaces, commas, dashes, and colons";
+            tblog.Text += Environment.NewLine + "2)max length = up to 100 characters";
             return;
         }
         #endregion Filename Regex and LID Regex
@@ -1638,8 +1647,7 @@ public partial class Manage : System.Web.UI.Page
         EmailError();
         Response.Redirect("ManageDelete.aspx");
     }//end method
-
-
+    
     /*
      * 
      * Redirects them to the PDF Viewer page if clicked
@@ -1650,8 +1658,7 @@ public partial class Manage : System.Web.UI.Page
         EmailError();
         Response.Redirect("PDFViewer.aspx");
     }//end method
-
-
+    
     protected void Btnlogout_Click(object sender, EventArgs e)
     {
         EmailError();

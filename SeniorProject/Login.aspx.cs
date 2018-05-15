@@ -31,13 +31,12 @@ public partial class _Default : System.Web.UI.Page
      */
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        //TODO
+        
         Session["oldCid"] = "";
         Session["oldTid"] = "";
         Session["oldLid"] = "";
         Session["oldText"] = "";
-
+        
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
         
         string text = "";
