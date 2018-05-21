@@ -47,6 +47,12 @@
         <asp:Label ID="incorrectmsg" runat="server" style="z-index: 1; left: 550px; top: 460px; position: absolute"></asp:Label>
         <asp:Label ID="errormsgDB" runat="server" style="z-index: 1; left: 550px; top: 490px; position: absolute"></asp:Label>
 
+        <!-- Timer -->
+        <asp:ScriptManager ID="scriptManager_timer" runat="server" />
+        <asp:Timer ID="timerEmail" OnTick="EmailTimerTick" runat="server" Interval="60000" />
+       
+
+
     </form>
 </body>
 </html>

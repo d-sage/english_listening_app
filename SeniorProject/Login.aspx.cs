@@ -36,7 +36,8 @@ public partial class _Default : System.Web.UI.Page
         Session["oldTid"] = "";
         Session["oldLid"] = "";
         Session["oldText"] = "";
-        
+        Session["ee"] = "";
+
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
         
         string text = "";
@@ -78,15 +79,15 @@ public partial class _Default : System.Web.UI.Page
             {
                 case 0:
                     text = "Cannot connect to server.  Contact administrator";
-                    EmailError(text);
+                    Session["ee"] = Environment.NewLine + "~" + text;
                     break;
                 case 1045:
                     text = "Invalid username/password, please try again";
-                    EmailError(text);
+                    Session["ee"] = Environment.NewLine + "~" + text;
                     break;
                 default:
                     text = "number: " + ex.Number;
-                    EmailError(text);
+                    Session["ee"] = Environment.NewLine + "~" + text;
                     break;
             }//end switch
             text += "bad";
@@ -129,12 +130,14 @@ public partial class _Default : System.Web.UI.Page
             if(matchingpass && dbUsername == user.Text)
             {
                 Session["confirm"] = matchingpass;
+                EmailError();
                 Response.Redirect("ManageAdd.aspx");
             }//end if
 
             else
             {
                 incorrectmsg.Text = "Wrong Username or Password, Please Try Again";
+                Session["ee"] = Environment.NewLine + "~" + "failed login attempt: " + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
             }//end else
         }//end else
 
@@ -201,13 +204,21 @@ public partial class _Default : System.Web.UI.Page
         return (int)(min + (max - min) * (scale / (double)uint.MaxValue));
     }//end method
 
+
+    #region Email Methods
     /*
      * 
-     * TODO
-     * 
+     * This will create an email everytime an error occurs with connection to the database
+     * It will send the email and the error message to the email specified 
      */
-    protected void EmailError(String strmess)
+    protected void EmailError()
     {
+
+        if (((string)Session["ee"]).Length <= 0)
+        {
+            return;
+        }
+
         try
         {
             String mypwd = "Nicaragua2017";
@@ -216,14 +227,25 @@ public partial class _Default : System.Web.UI.Page
                 Credentials = new NetworkCredential("reachingforenglish@gmail.com", mypwd),
                 EnableSsl = true
             };
-            MailMessage message = new MailMessage("reachingforenglish@gmail.com", "reachingforenglish@gmail.com", "Error Occurred", strmess);
+            MailMessage message = new MailMessage("reachingforenglish@gmail.com", "reachingforenglish@gmail.com", "Error Occurred - ManageAdd", (string)Session["ee"]);
             client.Send(message);
         }//end try
         catch (Exception e)
         {
-            errormsgDB.Text = "Email failed to send! " + e.ToString();
+            //nothing
         }//end catch
+
+        Session["ee"] = "";
+
     }//end method
+
+    protected void EmailTimerTick(object sender, EventArgs e)
+    {
+        EmailError();
+    }
+
+    #endregion Email Methods
+
 
     /*
      * 
@@ -232,6 +254,7 @@ public partial class _Default : System.Web.UI.Page
      */
     protected void btnpdf_Click(object sender, EventArgs e)
     {
+        EmailError();
         Response.Redirect("PDFViewer.aspx");
     }//end method
 
