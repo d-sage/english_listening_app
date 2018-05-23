@@ -41,10 +41,10 @@ public partial class _Default : System.Web.UI.Page
         this.lblTime.Text = DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString();
         
         string text = "";
-        string server = "mysql5018.site4now.net";
-        string database = "db_a38d8d_lambe";
-        string uid = "a38d8d_lambe";
-        string password = "Lambejor000";
+        string server = "mysql5012.site4now.net";
+        string database = "db_a3acac_engdata";
+        string uid = "db_a3acac_admin";
+        string password = "Reaching4English";
         string connectionString = "SERVER=" + server + ";" + "DATABASE=" +
         database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
 

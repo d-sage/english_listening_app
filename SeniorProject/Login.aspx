@@ -1,5 +1,13 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Login.aspx.cs" Inherits="_Default" %>
 
+<!--
+    Developed By:
+    Jared Regan
+    Daric Sage
+    Jordan Lambert
+    Justin O'Neel
+-->
+
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
