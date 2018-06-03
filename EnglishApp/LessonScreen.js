@@ -12,7 +12,7 @@ class LessonScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text style={{fontSize: 20}}>Select Lesson</Text>
+					<Text style={{fontSize: 20}}>Select a Lesson</Text>
 				</View>
 				<ListView
 					enableEmptySections
@@ -32,10 +32,11 @@ class LessonScreen extends React.Component {
 											 lid: rowData.lid,
 											 textSubs: rowData.text+"",
 											 path: rowData.path,
-											 name: rowData.filename,
+											 name: rowData.filename.replace(' ','_'),
 											 connected: this.props.navigation.state.params.connected,
 											 fromRecoring: false,
-											 ext: rowData.ext+"",}
+											 ext: rowData.ext+"",
+											 countryKey: this.props.navigation.state.params.countryKey}
 										);
 									}
 									else
@@ -65,9 +66,7 @@ class LessonScreen extends React.Component {
 	}
 
 	fetchOnlineData(){
-		return fetch('http://lambejor-001-site1.htempurl.com/Lessons/lessonQuery.php?cid=' + this.props.navigation.state.params.country + 
-			' &gid=' + this.props.navigation.state.params.grade + 
-			' &tid=' + this.props.navigation.state.params.topic)
+		return fetch('http://reaching4english-001-site1.itempurl.com/Lessons/lessonQuery.php?cid=' + this.props.navigation.state.params.country + ' &gid=' + this.props.navigation.state.params.grade + ' &tid=' + this.props.navigation.state.params.topic)
 		.then((response) => response.json())
 		.then((responseJson) => {
 			if(responseJson){
@@ -80,9 +79,7 @@ class LessonScreen extends React.Component {
 
 	fetchOfflineData(){
 		db.transaction(tx => {
-			tx.executeSql('SELECT DISTINCT cid,gid,tid,lid,filename,text,path,ext FROM lessons WHERE cid = ? AND gid = ? AND tid = ?;', 
-			[this.props.navigation.state.params.country,this.props.navigation.state.params.grade,this.props.navigation.state.params.topic], 
-			(_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
+			tx.executeSql('SELECT DISTINCT cid,gid,tid,lid,filename,text,path,ext FROM lessons WHERE cid = ? AND gid = ? AND tid = ?;', [this.props.navigation.state.params.country,this.props.navigation.state.params.grade,this.props.navigation.state.params.topic], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
 		});
 	}
 }

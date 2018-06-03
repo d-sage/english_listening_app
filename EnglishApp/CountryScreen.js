@@ -1,19 +1,19 @@
 import React from 'react';
 import styles from "./Styles.js";
-import { SQLite, Permissions } from 'expo';
+import Expo, { SQLite, Permissions, Asset } from 'expo';
 import { View, Text, Button, ListView, NetInfo, Platform } from 'react-native';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
 const db = SQLite.openDatabase('db.db');
 
 class CountryScreen extends React.Component {
-	
+
 	render(){
 		if(this.state.haveRecordingPermissions){
-			return(		
+			return(
 				<View style={styles.mainContainer}>
 					<View style={styles.headerContainer}>
-						<Text style={{fontSize: 20}}>Select Country</Text>
+						<Text style={{fontSize: 20}}>Select a Country</Text>
 					</View>
 					<ListView
 						enableEmptySections
@@ -22,11 +22,9 @@ class CountryScreen extends React.Component {
 						renderRow={(rowData) =>
 							<View style={styles.buttonContainer}>
 								<Button
-									onPress={() => {this.props.navigation.navigate('Grade',
+									onPress={() => this.props.navigation.navigate('Grade',
 										{country: rowData.cid,
-										connected: this.state.connected });
-										this.componentWillUnmount();
-									}}
+										 connected: this.state.connected })}
 									title = {rowData.cid+""}
 								/>
 							</View>
@@ -54,7 +52,7 @@ class CountryScreen extends React.Component {
 			//tx.executeSql('DROP TABLE IF EXISTS lessons;');
 			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (cid varchar(30) NOT NULL, gid tinyint(4) NOT NULL, tid varchar(50) NOT NULL, lid varchar(100) NOT NULL, filename varchar(100) NOT NULL, text varchar(2500) NOT NULL, path varchar(260) NOT NULL, ext varchar(5) NOT NULL, PRIMARY KEY (cid, gid, tid, lid));');
 		});
-		if(Platform.OS == 'ios'){		
+		if(Platform.OS == 'ios'){
 			NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectionChange);
 		}
 		else if(Platform.OS == 'android'){
@@ -65,16 +63,16 @@ class CountryScreen extends React.Component {
 		else
 			alert('Only Android and IOS are supported');
 	}
-	
+
 	componentWillUnmount() {
 		if(Platform.OS == 'ios')
 			NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectionChange);
 	}
-	
+
 	handleConnectionChange = (isConnected) => {
 		this.getData(isConnected);
 	}
-	
+
 	askForPermissions = async () => {
 		const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
 		this.setState({
@@ -91,7 +89,7 @@ class CountryScreen extends React.Component {
 	}
 
 	fetchOnlineData(){
-		return fetch('http://lambejor-001-site1.htempurl.com/Countries/countryQuery.php')
+		return fetch('http://reaching4english-001-site1.itempurl.com/Countries/countryQuery.php')
 		.then((response) => response.json())
 		.then((responseJson) => {
 			if(responseJson){

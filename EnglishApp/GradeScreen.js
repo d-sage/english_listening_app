@@ -12,7 +12,7 @@ class GradeScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text style={{fontSize: 20}}>Select Grade</Text>
+					<Text style={{fontSize: 20}}>Select a Grade</Text>
 				</View>
 				<ListView
 					enableEmptySections
@@ -24,7 +24,8 @@ class GradeScreen extends React.Component {
 								onPress={() => this.props.navigation.navigate('Topic',
 									{country: this.props.navigation.state.params.country,
 									 grade: rowData.gid,
-									 connected: this.props.navigation.state.params.connected})}
+									 connected: this.props.navigation.state.params.connected,
+									 countryKey: this.props.navigation.state.key})}
 								title = {rowData.gid+""}
 							/>
 						</View>
@@ -49,7 +50,7 @@ class GradeScreen extends React.Component {
 	}
 
 	fetchOnlineData(){
-		return fetch('http://lambejor-001-site1.htempurl.com/Grades/gradeQuery.php?cid=' + this.props.navigation.state.params.country)
+		return fetch('http://reaching4english-001-site1.itempurl.com/Grades/gradeQuery.php?cid=' + this.props.navigation.state.params.country)
 		.then((response) => response.json())
 		.then((responseJson) => {
 			if(responseJson){
@@ -59,12 +60,10 @@ class GradeScreen extends React.Component {
 			}
 		}).done();
 	}
-	
+
 	fetchOfflineData(){
 		db.transaction(tx => {
-			tx.executeSql('SELECT DISTINCT cid, gid FROM lessons WHERE cid = ?;', 
-			[this.props.navigation.state.params.country], (_, { rows: { _array } }) => 
-				this.setState({ dataSource: ds.cloneWithRows(_array) }));
+			tx.executeSql('SELECT DISTINCT cid, gid FROM lessons WHERE cid = ?;', [this.props.navigation.state.params.country], (_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
 		});
 	}
 }

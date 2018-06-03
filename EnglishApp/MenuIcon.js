@@ -1,8 +1,8 @@
-//NOT SURE IF THE TRY CATCH WILL WORK WHILE OFFLINE (LINE 27, 28)
+//NEED TO CHANGE WHO WE EMAIL THE BUG TO (LINE 23)
 //NEED TO FILL IN THE "ABOUT" PART.
 
 import React from 'react';
-import { View, Text, Image, Linking } from 'react-native';
+import { View, Text, Button, Image, ScrollView, Linking } from 'react-native';
 import email from 'react-native-email';
 import styles from "./Styles.js";
 import {
@@ -23,10 +23,8 @@ export default class MenuIcon extends React.Component {
 						alert(about);
 					else if(value == "report")
 						email('reachingforenglish@gmail.com', {subject: 'Report A Bug', body: 'Please report your bug here.'}).catch(console.error);
-					else if(value == "survey"){
-						try{ Linking.openURL('http://lambejor-001-site1.htempurl.com/PDFViewer.aspx'); }
-						catch(e){ alert('Cannot open survey');}
-					}
+					else if(value == "survey")
+						Linking.openURL('https://google.com');
 				}}>
 					<MenuTrigger > 
 						<Image source={require('./assets/images/menu_button.png')} />
