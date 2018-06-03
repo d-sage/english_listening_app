@@ -1,19 +1,25 @@
 import React from 'react';
 import styles from "./Styles.js";
-import Expo, { SQLite, Permissions, Asset } from 'expo';
-import { View, Text, Button, ListView, NetInfo, Platform } from 'react-native';
+import { SQLite, Permissions } from 'expo';
+import { View, Text, Button, ListView, NetInfo, Platform, Image, TouchableHighlight } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
 const db = SQLite.openDatabase('db.db');
+const ICON_REFRESH_BUTTON = require('./assets/images/refresh_button.png');
+const resetActionCountry = StackActions.reset({
+  index: 0,
+  actions: [NavigationActions.navigate({ routeName: 'Country' })],
+}); 
 
 class CountryScreen extends React.Component {
-
+	
 	render(){
 		if(this.state.haveRecordingPermissions){
-			return(
+			return(		
 				<View style={styles.mainContainer}>
 					<View style={styles.headerContainer}>
-						<Text style={{fontSize: 20}}>Select a Country</Text>
+						<Text style={{fontSize: 20}}>Select Country</Text>
 					</View>
 					<ListView
 						enableEmptySections
@@ -22,14 +28,23 @@ class CountryScreen extends React.Component {
 						renderRow={(rowData) =>
 							<View style={styles.buttonContainer}>
 								<Button
-									onPress={() => this.props.navigation.navigate('Grade',
+									onPress={() => {this.props.navigation.navigate('Grade',
 										{country: rowData.cid,
-										 connected: this.state.connected })}
+										connected: this.state.connected });
+										this.componentWillUnmount();
+									}}
 									title = {rowData.cid+""}
 								/>
 							</View>
 						}
 					/>
+					<View style={{ alignItems:'center', bottom: 1, }}>
+						<TouchableHighlight
+							onPress={() => {this.props.navigation.dispatch(resetActionCountry)}}>
+							<Image source={ICON_REFRESH_BUTTON}/>
+						</TouchableHighlight>
+						<Text>{'Refresh'}</Text>
+					</View>
 				</View>
 			);
 		}
@@ -52,7 +67,7 @@ class CountryScreen extends React.Component {
 			//tx.executeSql('DROP TABLE IF EXISTS lessons;');
 			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (cid varchar(30) NOT NULL, gid tinyint(4) NOT NULL, tid varchar(50) NOT NULL, lid varchar(100) NOT NULL, filename varchar(100) NOT NULL, text varchar(2500) NOT NULL, path varchar(260) NOT NULL, ext varchar(5) NOT NULL, PRIMARY KEY (cid, gid, tid, lid));');
 		});
-		if(Platform.OS == 'ios'){
+		if(Platform.OS == 'ios'){		
 			NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectionChange);
 		}
 		else if(Platform.OS == 'android'){
@@ -63,16 +78,16 @@ class CountryScreen extends React.Component {
 		else
 			alert('Only Android and IOS are supported');
 	}
-
+	
 	componentWillUnmount() {
 		if(Platform.OS == 'ios')
 			NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectionChange);
 	}
-
+	
 	handleConnectionChange = (isConnected) => {
 		this.getData(isConnected);
 	}
-
+	
 	askForPermissions = async () => {
 		const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
 		this.setState({
