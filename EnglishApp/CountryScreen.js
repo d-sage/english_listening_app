@@ -40,7 +40,10 @@ class CountryScreen extends React.Component {
 					/>
 					<View style={{ alignItems:'center', bottom: 1, }}>
 						<TouchableHighlight
-							onPress={() => {this.props.navigation.dispatch(resetActionCountry)}}>
+							onPress={() => {
+								this.props.navigation.dispatch(resetActionCountry);
+								this.componentWillUnmount();
+							}}>
 							<Image source={ICON_REFRESH_BUTTON}/>
 						</TouchableHighlight>
 						<Text>{'Refresh'}</Text>
