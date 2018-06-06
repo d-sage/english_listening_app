@@ -14,7 +14,7 @@ import {
   NetInfo,
 } from 'react-native';
 import { Audio, SQLite, FileSystem } from 'expo';
-import { NavigationActions, StackActions } from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
 import styles from "./Styles.js";
 
 const ICON_RECORD_BUTTON = require('./assets/images/record_button.png');
@@ -38,7 +38,7 @@ const RATE_MIN = 0.5;
 const MAX_SAVES = 15;
 const MAX_RECORD_TIME = 5 * (60*1000);//minutes to milliseconds.
 const db = SQLite.openDatabase('db.db');
-const resetActionCountry = StackActions.reset({
+const resetActionCountry = NavigationActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: 'Country' })],
 }); 
@@ -250,7 +250,7 @@ export default class AudioPlayer extends React.Component{
 					this.props.navigation.dispatch(resetActionCountry); 
 				}
 				else{
-					resetActionPlayer = StackActions.reset({
+					resetActionPlayer = NavigationActions.reset({
 											index: 0,
 											actions: [
 												NavigationActions.navigate({ routeName: 'Recordings', 
@@ -689,7 +689,7 @@ export default class AudioPlayer extends React.Component{
 										underlayColor={BACKGROUND_COLOR}
 										style={styles.wrapper}
 										onPress={() => {
-											resetActionPlayer = StackActions.reset({
+											resetActionPlayer = NavigationActions.reset({
 												index: 0,
 												actions: [
 													NavigationActions.navigate({ routeName: 'Recordings', 

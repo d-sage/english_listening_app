@@ -2,12 +2,12 @@ import React from 'react';
 import styles from "./Styles.js";
 import { SQLite, Permissions } from 'expo';
 import { View, Text, Button, ListView, NetInfo, Platform, Image, TouchableHighlight } from 'react-native';
-import { NavigationActions, StackActions } from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
 const db = SQLite.openDatabase('db.db');
 const ICON_REFRESH_BUTTON = require('./assets/images/refresh_button.png');
-const resetActionCountry = StackActions.reset({
+const resetActionCountry = NavigationActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: 'Country' })],
 }); 

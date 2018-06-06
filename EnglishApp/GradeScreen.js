@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, Button, NetInfo, Platform, ListView } from 'react-native';
 import Expo, { SQLite } from 'expo';
 import styles from "./Styles.js";
-import { NavigationActions, StackActions } from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
 const db = SQLite.openDatabase('db.db');
-const resetActionCountry = StackActions.reset({
+const resetActionCountry = NavigationActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: 'Country' })],
 }); 
