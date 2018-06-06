@@ -742,7 +742,10 @@ export default class AudioPlayer extends React.Component{
 				<View style={{ alignItems:'center', bottom: 1, backgroundColor: BACKGROUND_COLOR }}>
 					{this.props.navigation.state.params.fromRecording &&  
 						<TouchableHighlight
-							onPress={() => {this.props.navigation.dispatch(resetActionCountry)}}>
+							onPress={() => {
+								this.props.navigation.dispatch(resetActionCountry);
+								this.componentWillUnmount();
+							}}>
 							<Image source={ICON_REFRESH_BUTTON}/>
 						</TouchableHighlight>
 					}
