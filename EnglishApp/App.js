@@ -9,29 +9,29 @@
 
 
 import React from 'react';
-import CountryScreen from "./CountryScreen.js";
-import GradeScreen from "./GradeScreen.js";
+import UserScreen from "./UserScreen.js";
+import EnvironmentScreen from "./EnvironmentScreen.js";
 import TopicScreen from "./TopicScreen.js";
 import LessonScreen from "./LessonScreen.js";
 import PlayerScreen from "./PlayerScreen.js";
 import RecordingsScreen from "./RecordingsScreen.js";
 import MenuIcon from "./MenuIcon.js";
 import { FileSystem } from 'expo';
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 import { MenuProvider } from 'react-native-popup-menu';
 	
-const RootNavigator = StackNavigator({
-	Country: {
-		screen: CountryScreen,
+const RootNavigator = createStackNavigator({
+	User: {
+		screen: UserScreen,
 		navigationOptions: {
-			headerTitle: 'Country',
+			headerTitle: 'User',
 			headerRight: <MenuIcon />
 		},
 	},
-	Grade: {
-		screen: GradeScreen,
+	Environment: {
+		screen: EnvironmentScreen,
 		navigationOptions: {
-			headerTitle: 'Grade',
+			headerTitle: 'Environment',
 			headerRight: <MenuIcon />
 		},
 	},

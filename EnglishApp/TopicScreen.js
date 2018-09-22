@@ -2,13 +2,13 @@ import React from 'react';
 import { View, Text, Button, NetInfo, Platform, ListView } from 'react-native';
 import Expo, { SQLite } from 'expo';
 import styles from "./Styles.js";
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
 const db = SQLite.openDatabase('db.db');
-const resetActionCountry = NavigationActions.reset({
+const resetActionUser = StackActions.reset({
   index: 0,
-  actions: [NavigationActions.navigate({ routeName: 'Country' })],
+  actions: [NavigationActions.navigate({ routeName: 'User' })],
 }); 
 
 class TopicScreen extends React.Component {
@@ -27,8 +27,8 @@ class TopicScreen extends React.Component {
 						<View style={styles.buttonContainer}>
 							<Button
 								onPress={() => {this.props.navigation.navigate('Lesson',
-									{country: this.props.navigation.state.params.country,
-									 grade: this.props.navigation.state.params.grade,
+									{user: this.props.navigation.state.params.user,
+									 environment: this.props.navigation.state.params.environment,
 									 topic: rowData.tid,
 									 connected: this.props.navigation.state.params.connected});
 									 this.componentWillUnmount();
@@ -77,7 +77,7 @@ class TopicScreen extends React.Component {
 				alert("Online");
 			else
 				alert("Offline");
-			this.props.navigation.dispatch(resetActionCountry);
+			this.props.navigation.dispatch(resetActionUser);
 			this.componentWillUnmount();
 		}
 		else if(isConnected)
@@ -87,8 +87,8 @@ class TopicScreen extends React.Component {
 	}
 
 	fetchOnlineData(){
-		return fetch('http://reaching4english-001-site1.itempurl.com/Topics/topicQuery.php?cid=' + this.props.navigation.state.params.country + 
-			' &gid=' + this.props.navigation.state.params.grade)
+		return fetch('http://reaching4english-001-site1.itempurl.com/Topics/topicQuery.php?userType=' + this.props.navigation.state.params.user + 
+			' &env=' + this.props.navigation.state.params.environment)
 		.then((response) => response.json())
 		.then((responseJson) => {
 			if(responseJson){
@@ -101,8 +101,8 @@ class TopicScreen extends React.Component {
 	
 	fetchOfflineData(){
 		db.transaction(tx => {
-			tx.executeSql('SELECT DISTINCT cid,gid,tid FROM lessons WHERE cid = ? AND gid = ?;', 
-			[this.props.navigation.state.params.country,this.props.navigation.state.params.grade], (_, { rows: { _array } }) => 
+			tx.executeSql('SELECT DISTINCT userType,env,tid FROM lessons WHERE userType = ? AND env = ?;', 
+			[this.props.navigation.state.params.user,this.props.navigation.state.params.environment], (_, { rows: { _array } }) => 
 				this.setState({ dataSource: ds.cloneWithRows(_array) }));
 		});
 	}

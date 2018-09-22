@@ -18,7 +18,7 @@ const about =   "Version: 1.0.0 \n"+
 				"Jared Regan \n\n"+
 
 				"English listening assistant for Educative English Material. \n"+
-				"For information on how to use the app please visit: (Enter URL to website with info on using the app since the apple store requires one?) \n";
+				"For information on how to use the app please visit: http://reaching4english-001-site1.itempurl.com/support.html \n";
 
 export default class MenuIcon extends React.Component {	
 	render(){

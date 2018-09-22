@@ -14,7 +14,7 @@ import {
   NetInfo,
 } from 'react-native';
 import { Audio, SQLite, FileSystem } from 'expo';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 import styles from "./Styles.js";
 
 const ICON_RECORD_BUTTON = require('./assets/images/record_button.png');
@@ -38,9 +38,9 @@ const RATE_MIN = 0.5;
 const MAX_SAVES = 15;
 const MAX_RECORD_TIME = 5 * (60*1000);//minutes to milliseconds.
 const db = SQLite.openDatabase('db.db');
-const resetActionCountry = NavigationActions.reset({
+const resetActionUser = StackActions.reset({
   index: 0,
-  actions: [NavigationActions.navigate({ routeName: 'Country' })],
+  actions: [NavigationActions.navigate({ routeName: 'User' })],
 }); 
 
 export default class AudioPlayer extends React.Component{
@@ -85,7 +85,6 @@ export default class AudioPlayer extends React.Component{
 		this.setRateDefault = this.setRateDefault.bind(this);
 		this.openRecordings = this.openRecordings.bind(this);
 		this.recordingSave = this.recordingSave.bind(this);
-		this.recordingSettings = JSON.parse(JSON.stringify(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY));
 		if( Platform.OS === 'android' )
 			UIManager.setLayoutAnimationEnabledExperimental( true )
 	}
@@ -103,7 +102,7 @@ export default class AudioPlayer extends React.Component{
 							alert("Data Connected");
 						else
 							alert("Data Not Connected");
-						this.props.navigation.dispatch(resetActionCountry);
+						this.props.navigation.dispatch(resetActionUser);
 						this.componentWillUnmount();
 					}			
 				}
@@ -141,7 +140,7 @@ export default class AudioPlayer extends React.Component{
 				alert("Online");
 			else
 				alert("Offline");
-			this.props.navigation.dispatch(resetActionCountry);
+			this.props.navigation.dispatch(resetActionUser);
 			this.componentWillUnmount();
 			
 		}
@@ -188,7 +187,7 @@ export default class AudioPlayer extends React.Component{
 								alert("Online");
 							else
 								alert("Offline");
-							this.props.navigation.dispatch(resetActionCountry);
+							this.props.navigation.dispatch(resetActionUser);
 							this.componentWillUnmount();
 						}			
 					}
@@ -208,8 +207,8 @@ export default class AudioPlayer extends React.Component{
 	audioDownload(){
 		if(!this.props.navigation.state.params.fromRecording){
 			db.transaction(tx => {
-				tx.executeSql('INSERT OR IGNORE INTO lessons (cid, gid, tid, lid, filename, text, path, ext) values (?, ?, ?, ?, ?, ?, ?, ?)', 
-				[this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, 
+				tx.executeSql('INSERT OR IGNORE INTO lessons (userType, env, tid, lid, filename, text, path, ext) values (?, ?, ?, ?, ?, ?, ?, ?)', 
+				[this.props.navigation.state.params.user, this.props.navigation.state.params.environment, this.props.navigation.state.params.topic, 
 				this.props.navigation.state.params.lid, this.props.navigation.state.params.name, this.props.navigation.state.params.textSubs, 
 				FileSystem.documentDirectory + this.props.navigation.state.params.name, this.props.navigation.state.params.ext]);
 			});
@@ -224,8 +223,8 @@ export default class AudioPlayer extends React.Component{
 		if(this.audio != null){
 			if(!this.props.navigation.state.params.fromRecording){			
 				db.transaction(tx => {
-					tx.executeSql('DELETE FROM lessons WHERE cid = ? AND gid = ? AND tid = ? AND lid = ? AND path = ?;', 
-					[this.props.navigation.state.params.country, this.props.navigation.state.params.grade, this.props.navigation.state.params.topic, 
+					tx.executeSql('DELETE FROM lessons WHERE userType = ? AND env = ? AND tid = ? AND lid = ? AND path = ?;', 
+					[this.props.navigation.state.params.user, this.props.navigation.state.params.environment, this.props.navigation.state.params.topic, 
 					this.props.navigation.state.params.lid, this.props.navigation.state.params.path]);
 				});
 				db.transaction(tx => {//only delete if no other references to that mp3 path.
@@ -239,7 +238,7 @@ export default class AudioPlayer extends React.Component{
 						}
 					);
 				});
-				this.props.navigation.dispatch(resetActionCountry);
+				this.props.navigation.dispatch(resetActionUser);
 			}
 			else{
 				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} )
@@ -247,16 +246,16 @@ export default class AudioPlayer extends React.Component{
 				await this.openRecordings();
 				if(this.state.recordings.length == 0){
 					alert('Select New Lesson');
-					this.props.navigation.dispatch(resetActionCountry); 
+					this.props.navigation.dispatch(resetActionUser); 
 				}
 				else{
-					resetActionPlayer = NavigationActions.reset({
+					resetActionPlayer = StackActions.reset({
 											index: 0,
 											actions: [
 												NavigationActions.navigate({ routeName: 'Recordings', 
 													params:{
-														country: this.props.navigation.state.params.country,
-														grade: this.props.navigation.state.params.grade,
+														user: this.props.navigation.state.params.user,
+														environment: this.props.navigation.state.params.environment,
 														topic: this.props.navigation.state.params.topic,
 														lid: this.props.navigation.state.params.lid,
 														textSubs: this.props.navigation.state.params.textSubs,
@@ -350,7 +349,7 @@ export default class AudioPlayer extends React.Component{
 		}
 
 		const recording = new Audio.Recording();
-		await recording.prepareToRecordAsync(this.recordingSettings);
+		await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
 		recording.setOnRecordingStatusUpdate(this.updateRecordingStatus);
 
 		this.recording = recording;
@@ -689,13 +688,13 @@ export default class AudioPlayer extends React.Component{
 										underlayColor={BACKGROUND_COLOR}
 										style={styles.wrapper}
 										onPress={() => {
-											resetActionPlayer = NavigationActions.reset({
+											resetActionPlayer = StackActions.reset({
 												index: 0,
 												actions: [
 													NavigationActions.navigate({ routeName: 'Recordings', 
 														params:{
-															country: this.props.navigation.state.params.country,
-															grade: this.props.navigation.state.params.grade,
+															user: this.props.navigation.state.params.user,
+															environment: this.props.navigation.state.params.environment,
 															topic: this.props.navigation.state.params.topic,
 															lid: this.props.navigation.state.params.lid,
 															textSubs: this.props.navigation.state.params.textSubs,
@@ -743,7 +742,7 @@ export default class AudioPlayer extends React.Component{
 					{this.props.navigation.state.params.fromRecording &&  
 						<TouchableHighlight
 							onPress={() => {
-								this.props.navigation.dispatch(resetActionCountry);
+								this.props.navigation.dispatch(resetActionUser);
 								this.componentWillUnmount();
 							}}>
 							<Image source={ICON_REFRESH_BUTTON}/>

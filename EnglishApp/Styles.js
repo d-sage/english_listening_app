@@ -83,6 +83,13 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
+	usersContainer: {
+		flex: 1,
+		flexDirection: 'column',
+		alignItems: 'center',
+		height: (DEVICE_HEIGHT / 4),
+		marginTop: 30,
+	},
 },{ headerMode: 'none' })
 
 export default styles; 

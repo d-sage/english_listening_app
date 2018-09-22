@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Button, ListView } from 'react-native';
 import styles from "./Styles.js";
 import { FileSystem } from 'expo';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
 
@@ -41,13 +41,13 @@ class RecordingsScreen extends React.Component {
 	
 	async getInfo(rowData){
 		await this.setState({
-			resetActionPlayer: NavigationActions.reset({
+			resetActionPlayer: StackActions.reset({
 				index: 0,
 				actions: [
 					NavigationActions.navigate({ routeName: 'Player', 
 						params: {
-							country: this.props.navigation.state.params.country,
-							grade: this.props.navigation.state.params.grade,
+							user: this.props.navigation.state.params.user,
+							environment: this.props.navigation.state.params.environment,
 							topic: this.props.navigation.state.params.topic,
 							lid: this.props.navigation.state.params.lid,
 							textSubs: 'No Text',

@@ -2,13 +2,13 @@ import React from 'react';
 import { View, Text, Button, NetInfo, Platform, ListView } from 'react-native';
 import Expo, { SQLite } from 'expo';
 import styles from "./Styles.js";
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
 const db = SQLite.openDatabase('db.db');
-const resetActionCountry = NavigationActions.reset({
+const resetActionUser = StackActions.reset({
   index: 0,
-  actions: [NavigationActions.navigate({ routeName: 'Country' })],
+  actions: [NavigationActions.navigate({ routeName: 'User' })],
 }); 
 
 class LessonScreen extends React.Component {
@@ -33,8 +33,8 @@ class LessonScreen extends React.Component {
 									}
 									else if(rowData.ext == "mp3"){
 										this.props.navigation.navigate('Player',
-											{country: this.props.navigation.state.params.country,
-											 grade: this.props.navigation.state.params.grade,
+											{user: this.props.navigation.state.params.user,
+											 environment: this.props.navigation.state.params.environment,
 											 topic: this.props.navigation.state.params.topic,
 											 lid: rowData.lid,
 											 textSubs: rowData.text+"",
@@ -93,7 +93,7 @@ class LessonScreen extends React.Component {
 				alert("Online");
 			else
 				alert("Offline");
-			this.props.navigation.dispatch(resetActionCountry);
+			this.props.navigation.dispatch(resetActionUser);
 			this.componentWillUnmount();
 		}
 		else if(isConnected)
@@ -103,8 +103,8 @@ class LessonScreen extends React.Component {
 	}
 
 	fetchOnlineData(){
-		return fetch('http://reaching4english-001-site1.itempurl.com/Lessons/lessonQuery.php?cid=' + this.props.navigation.state.params.country + 
-			' &gid=' + this.props.navigation.state.params.grade + 
+		return fetch('http://reaching4english-001-site1.itempurl.com/Lessons/lessonQuery.php?userType=' + this.props.navigation.state.params.user + 
+			' &env=' + this.props.navigation.state.params.environment + 
 			' &tid=' + this.props.navigation.state.params.topic)
 		.then((response) => response.json())
 		.then((responseJson) => {
@@ -118,8 +118,8 @@ class LessonScreen extends React.Component {
 
 	fetchOfflineData(){
 		db.transaction(tx => {
-			tx.executeSql('SELECT DISTINCT cid,gid,tid,lid,filename,text,path,ext FROM lessons WHERE cid = ? AND gid = ? AND tid = ?;', 
-			[this.props.navigation.state.params.country,this.props.navigation.state.params.grade,this.props.navigation.state.params.topic], 
+			tx.executeSql('SELECT DISTINCT userType,env,tid,lid,filename,text,path,ext FROM lessons WHERE userType = ? AND env = ? AND tid = ?;', 
+			[this.props.navigation.state.params.user,this.props.navigation.state.params.environment,this.props.navigation.state.params.topic], 
 			(_, { rows: { _array } }) => this.setState({ dataSource: ds.cloneWithRows(_array) }));
 		});
 	}
