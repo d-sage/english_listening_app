@@ -19,7 +19,7 @@ class LessonScreen extends React.Component {
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
 					<Image source={ICON_LESSONS_BUTTON}/>
-					<Text style={{fontSize: 20}}>Select Lesson</Text>
+					<Text style={{fontSize: 20}}>Lesson</Text>
 				</View>
 				<ListView
 					enableEmptySections
