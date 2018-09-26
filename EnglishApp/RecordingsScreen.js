@@ -12,7 +12,7 @@ class RecordingsScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
-					<Text style={{fontSize: 20}}>Recording</Text>
+					<Text style={{fontSize: 20}}>Recordings</Text>
 				</View>
 				<ListView
 					enableEmptySections
