@@ -406,9 +406,7 @@ export default class AudioPlayer extends React.Component{
 					const recStatus = await this.recording.getURI();
 					FileSystem.copyAsync({ 
 						from: recStatus, 
-						to: FileSystem.documentDirectory + 'recordings/' + this.props.navigation.state.params.lid.split(' ').join('_') + 
-							'_['+ date.getMonth()+ '-' + date.getDay()+ '-' + date.getFullYear()+ '_' + date.getHours()+ ':' + 
-							date.getMinutes()+ ':' + date.getSeconds() + '].mp3'
+						to: FileSystem.documentDirectory + 'recordings/' + this.props.navigation.state.params.lid.split(' ').join('_')
 					}).then(alert('Recording saved'));
 					this.openRecordings();
 					this.recording = null;
