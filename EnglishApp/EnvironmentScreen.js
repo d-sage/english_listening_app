@@ -36,7 +36,7 @@ class EnvironmentScreen extends React.Component {
 											}}>
 											<Image source={ICON_INDEPENDENT_BUTTON}/>
 										</TouchableHighlight>
-										<Text>{rowData.env+""}</Text>
+										<Text style={{fontSize: 20}}>{rowData.env+""}</Text>
 									</View>	
 								);
 							}
@@ -53,7 +53,7 @@ class EnvironmentScreen extends React.Component {
 											}}>
 											<Image source={ICON_CLASSROOM_BUTTON}/>
 										</TouchableHighlight>
-										<Text>{rowData.env+""}</Text>
+										<Text style={{fontSize: 20}}>{rowData.env+""}</Text>
 									</View>	
 								);
 							}

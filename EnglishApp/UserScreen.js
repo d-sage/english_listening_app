@@ -37,7 +37,7 @@ class UserScreen extends React.Component {
 											}}>
 											<Image source={ICON_TEACHER_BUTTON}/>
 										</TouchableHighlight>
-										<Text>{rowData.userType+""}</Text>
+										<Text style={{fontSize: 20}}>{rowData.userType+""}</Text>
 									</View>	
 								);
 							}
@@ -53,7 +53,7 @@ class UserScreen extends React.Component {
 											}}>
 											<Image source={ICON_STUDENT_BUTTON}/>
 										</TouchableHighlight>
-										<Text>{rowData.userType+""}</Text>
+							<Text style={{fontSize: 20}}>{rowData.userType+""}</Text>
 									</View>	
 								);
 							}
