@@ -19,7 +19,7 @@ class TopicScreen extends React.Component {
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
 					<Image source={ICON_TOPICS_BUTTON}/>
-					<Text style={{fontSize: 20}}>Select Topic</Text>
+					<Text style={{fontSize: 20}}>Topic</Text>
 				</View>
 				<ListView
 					enableEmptySections
