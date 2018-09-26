@@ -96,7 +96,7 @@ class UserScreen extends React.Component {
 		this.askForPermissions();
 		db.transaction(tx => {
 			//tx.executeSql('DROP TABLE IF EXISTS lessons;');
-			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (userType varchar(30) NOT NULL, env tinyint(4) NOT NULL, tid varchar(50) NOT NULL, lid varchar(100) NOT NULL, filename varchar(100) NOT NULL, text varchar(2500) NOT NULL, path varchar(260) NOT NULL, ext varchar(5) NOT NULL, PRIMARY KEY (userType, gid, tid, lid));');
+			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (userType varchar(30) NOT NULL, env varchar(30) NOT NULL, tid varchar(50) NOT NULL, lid varchar(100) NOT NULL, filename varchar(100) NOT NULL, text varchar(2500) NOT NULL, path varchar(260) NOT NULL, ext varchar(5) NOT NULL, PRIMARY KEY (userType, env, tid, lid));');
 		});
 		if(Platform.OS == 'ios'){		
 			NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectionChange);

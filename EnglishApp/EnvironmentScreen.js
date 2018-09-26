@@ -129,7 +129,7 @@ class EnvironmentScreen extends React.Component {
 	
 	fetchOfflineData(){
 		db.transaction(tx => {
-			tx.executeSql('SELECT DISTINCT userType, env FROM lessons WHERE user = ?;', 
+			tx.executeSql('SELECT DISTINCT env FROM lessons WHERE userType = ?;', 
 			[this.props.navigation.state.params.user], (_, { rows: { _array } }) => 
 				this.setState({ dataSource: ds.cloneWithRows(_array) }));
 		});

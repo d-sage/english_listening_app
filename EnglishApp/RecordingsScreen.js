@@ -20,7 +20,7 @@ class RecordingsScreen extends React.Component {
 					dataSource={this.state.dataSource}
 					renderRow={(rowData) =>
 						<View style={styles.buttonContainer}>
-							<Button
+							<Button color='#396FB6'
 								onPress={ () => { this.getInfo(rowData+"") }}
 								title = {rowData+""}
 							/>
@@ -65,7 +65,7 @@ class RecordingsScreen extends React.Component {
 	}
 	
 	componentDidMount() {
-		this.setState({ dataSource: ds.cloneWithRows(this.props.navigation.state.params.recordings)})
+		this.setState({ dataSource: ds.cloneWithRows(this.props.navigation.state.params.recordings)});
 	}
 }
 

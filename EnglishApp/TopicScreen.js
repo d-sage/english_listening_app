@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, Button, NetInfo, Platform, ListView } from 'react-native';
+import { View, Text, Button, NetInfo, Platform, Image, ListView } from 'react-native';
 import Expo, { SQLite } from 'expo';
 import styles from "./Styles.js";
 import { NavigationActions, StackActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
 const db = SQLite.openDatabase('db.db');
+const ICON_TOPICS_BUTTON = require('./assets/images/topics_button.png');
 const resetActionUser = StackActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: 'User' })],
@@ -17,6 +18,7 @@ class TopicScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
+					<Image source={ICON_TOPICS_BUTTON}/>
 					<Text style={{fontSize: 20}}>Select Topic</Text>
 				</View>
 				<ListView
@@ -25,7 +27,7 @@ class TopicScreen extends React.Component {
 					dataSource={this.state.dataSource}
 					renderRow={(rowData) =>
 						<View style={styles.buttonContainer}>
-							<Button
+							<Button color='#396FB6' 
 								onPress={() => {this.props.navigation.navigate('Lesson',
 									{user: this.props.navigation.state.params.user,
 									 environment: this.props.navigation.state.params.environment,

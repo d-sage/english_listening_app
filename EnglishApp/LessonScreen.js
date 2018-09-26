@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, Button, NetInfo, Platform, ListView } from 'react-native';
+import { View, Text, Button, NetInfo, Platform, Image, ListView } from 'react-native';
 import Expo, { SQLite } from 'expo';
 import styles from "./Styles.js";
 import { NavigationActions, StackActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
 const db = SQLite.openDatabase('db.db');
+const ICON_LESSONS_BUTTON = require('./assets/images/lessons_button.png');
 const resetActionUser = StackActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: 'User' })],
@@ -17,6 +18,7 @@ class LessonScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
+					<Image source={ICON_LESSONS_BUTTON}/>
 					<Text style={{fontSize: 20}}>Select Lesson</Text>
 				</View>
 				<ListView
@@ -25,7 +27,7 @@ class LessonScreen extends React.Component {
 					dataSource={this.state.dataSource}
 					renderRow={(rowData) =>
 						<View style={styles.buttonContainer}>
-							<Button
+							<Button color='#396FB6' 
 								onPress={() => {
 									if(rowData.ext == "pdf"){
 										Linking.openURL(rowData.path);

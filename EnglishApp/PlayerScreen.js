@@ -18,7 +18,6 @@ import { NavigationActions, StackActions } from 'react-navigation';
 import styles from "./Styles.js";
 
 const ICON_RECORD_BUTTON = require('./assets/images/record_button.png');
-const ICON_RECORDING = require('./assets/images/record_icon.png');
 const ICON_PLAY_BUTTON = require('./assets/images/play_button.png');
 const ICON_PAUSE_BUTTON = require('./assets/images/pause_button.png');
 const ICON_STOP_BUTTON = require('./assets/images/stop_button.png');
@@ -408,8 +407,8 @@ export default class AudioPlayer extends React.Component{
 					FileSystem.copyAsync({ 
 						from: recStatus, 
 						to: FileSystem.documentDirectory + 'recordings/' + this.props.navigation.state.params.lid.split(' ').join('_') + 
-							'_['+ date.getMonth()+ "-" + date.getDay()+ "-" + date.getFullYear()+ "_" + date.getHours()+ ":" + 
-							date.getMinutes()+ ":" + date.getSeconds() + "].mp3"
+							'_['+ date.getMonth()+ '-' + date.getDay()+ '-' + date.getFullYear()+ '_' + date.getHours()+ ':' + 
+							date.getMinutes()+ ':' + date.getSeconds() + '].mp3'
 					}).then(alert('Recording saved'));
 					this.openRecordings();
 					this.recording = null;
@@ -709,7 +708,7 @@ export default class AudioPlayer extends React.Component{
 											this.props.navigation.dispatch(resetActionPlayer);
 										}}
 										disabled={this.state.recordings.length == 0 || this.state.isRecording}>
-										<Image style={styles.image} source={ICON_OPEN_BUTTON }/>
+										<Image style={styles.image} source={ICON_OPEN_BUTTON}/>
 									</TouchableHighlight>
 									<Text>{'Open'}</Text>
 								</View>								

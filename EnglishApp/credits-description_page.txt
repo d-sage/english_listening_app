@@ -1,0 +1,21 @@
+Place the attribution on the credits/description page of the application.
+
+Menu Icon: Icon made by Freepick from www.flaticon.com
+Play Icon: Icon made by Freepick from www.flaticon.com
+RateUp Icon: Icon made by Freepick from www.flaticon.com
+RateDown Icon: Icon made by Freepick from www.flaticon.com
+Open Icon: Icon made by Freepick from www.flaticon.com
+Delete Icon: Icon made by Freepick from www.flaticon.com
+Download Icon: Icon made by Freepick from www.flaticon.com
+Lessons Icon: Icon made by Freepick from www.flaticon.com
+Classroom Icon: Icon made by Freepick from www.flaticon.com
+Independent Icon: Icon made by Freepick from www.flaticon.com
+Student Icon: Icon made by Freepick from www.flaticon.com
+Teacher Icon: Icon made by Freepick from www.flaticon.com
+Pause Icon: Icon made by Chanut from www.flaticon.com
+Stop Icon: Icon made by Elegant Themes from www.flaticon.com
+Save Icon: Icon made by Google from www.flaticon.com
+Refresh Icon: Icon made by Dave Gandy from www.flaticon.com
+RateReset Icon: Icon made by Those Icons from www.flaticon.com
+Record Icon: Icon made by Smashicons from www.flaticon.com
+Topics Icon: Icon made by monkik from www.flaticon.com
