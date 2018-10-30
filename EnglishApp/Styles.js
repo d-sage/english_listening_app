@@ -10,11 +10,30 @@ const styles = StyleSheet.create({
 		paddingTop: (Platform.OS === 'ios') ? 20 : 0, 
 	},
 	buttonContainer: {
-		margin: 15
+		margin: 15,	
+	},
+	SeparatorLine :{
+		backgroundColor : '#fff',
+		width: 1,
+		height: 40
+	},
+	ButtonWithIcon: {
+		flexDirection: 'row',
+		borderWidth: .5,
+		borderColor: '#fff',
+		backgroundColor: '#4272b8',
+		alignItems: 'center',
+		borderRadius: 5,
 	},
 	headerContainer: {
 		margin: 20,
 		alignItems: 'center',
+	},
+	homeContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: 'white',
 	},
 	dataContainer: {
 		flex: 1,

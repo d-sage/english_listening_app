@@ -1,5 +1,16 @@
 {
-  "expo": {
-    "sdkVersion": "25.0.0"
-  }
-}
+   "expo": {
+    "name": "Reaching For English",
+    "icon": "./logo.png",
+    "version": "2.1.1",
+    "sdkVersion": "27.0.0",
+	"orientation": "portrait",
+    "ios": {
+      "bundleIdentifier": "com.reachingforenglish.reachingforenglish",
+    },
+    "android": {
+      "package": "com.reaching4english.reaching4english",
+	  "versionCode": 12
+    }
+   }
+ }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, NetInfo, Platform, Image, ListView } from 'react-native';
+import { View, Text, Button, NetInfo, Platform, Image, ListView, Linking, TouchableOpacity } from 'react-native';
 import Expo, { SQLite } from 'expo';
 import styles from "./Styles.js";
 import { NavigationActions, StackActions } from 'react-navigation';
@@ -7,6 +7,8 @@ import { NavigationActions, StackActions } from 'react-navigation';
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
 const db = SQLite.openDatabase('db.db');
 const ICON_LESSONS_BUTTON = require('./assets/images/lessons_button.png');
+const ICON_PDF = require('./assets/images/pdf_icon.png');
+const ICON_MP3 = require('./assets/images/mp3_icon.png');
 const resetActionUser = StackActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: 'User' })],
@@ -25,39 +27,44 @@ class LessonScreen extends React.Component {
 					enableEmptySections
 					style={styles.dataContainer}
 					dataSource={this.state.dataSource}
-					renderRow={(rowData) =>
-						<View style={styles.buttonContainer}>
-							<Button color='#396FB6' 
-								onPress={() => {
-									if(rowData.ext == "pdf"){
-										Linking.openURL(rowData.path);
-										this.componentWillUnmount();
-									}
-									else if(rowData.ext == "mp3"){
-										this.props.navigation.navigate('Player',
-											{user: this.props.navigation.state.params.user,
-											 environment: this.props.navigation.state.params.environment,
-											 topic: this.props.navigation.state.params.topic,
-											 lid: rowData.lid,
-											 textSubs: rowData.text+"",
-											 path: rowData.path,
-											 name: rowData.filename,
-											 connected: this.props.navigation.state.params.connected,
-											 fromRecoring: false,
-											 ext: rowData.ext+"",}
-										);
-										this.componentWillUnmount();
-									}
-									else
-										alert("File type not supported");
-								}}
-								title = {rowData.lid+""}
-							/>
-						</View>
-					}
+					renderRow={(rowData) => {
+						return (	
+							<View style={styles.buttonContainer}>
+								<View style={styles.ButtonWithIcon}>
+									<Image source={rowData.ext == "pdf" ? ICON_PDF : ICON_MP3} /> 
+									<View style={styles.SeparatorLine} />
+									<TouchableOpacity style={{ flex: 1, alignItems: 'center', }}
+										activeOpacity={0.5}
+										onPress={() => {
+											if(rowData.ext == "pdf"){
+												Linking.openURL(rowData.path).catch(err => alert(err));
+												this.componentWillUnmount();
+											}
+											else if(rowData.ext == "mp3"){
+												this.props.navigation.navigate('Player',
+													{user: this.props.navigation.state.params.user,
+													environment: this.props.navigation.state.params.environment,
+													topic: this.props.navigation.state.params.topic,
+													lid: rowData.lid,
+													textSubs: rowData.text+"",
+													path: rowData.path,
+													name: this.props.navigation.state.params.connected ? rowData.filename.split(' ').join('_') +"."+ rowData.ext : rowData.filename.split(' ').join('_'),
+													connected: this.props.navigation.state.params.connected,
+													fromRecoring: false,
+													ext: rowData.ext+"",}
+												);
+												this.componentWillUnmount();
+											}
+										}}>
+										<Text style={{color: '#fff', fontSize: 15, fontWeight: 'bold'}} > {rowData.lid} </Text>
+									</TouchableOpacity>
+								</View>
+							</View>
+						);
+					}}
 				/>
 			</View>
-		)
+		);
 	}
 
 	constructor(props){

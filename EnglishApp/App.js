@@ -9,6 +9,7 @@
 
 
 import React from 'react';
+import HomeScreen from "./HomeScreen.js";
 import UserScreen from "./UserScreen.js";
 import EnvironmentScreen from "./EnvironmentScreen.js";
 import TopicScreen from "./TopicScreen.js";
@@ -21,17 +22,23 @@ import { createStackNavigator } from 'react-navigation';
 import { MenuProvider } from 'react-native-popup-menu';
 	
 const RootNavigator = createStackNavigator({
+	Home: {
+		screen:HomeScreen,
+		navigationOptions: {
+			header: null,
+		},
+	},
 	User: {
 		screen: UserScreen,
 		navigationOptions: {
-			headerTitle: 'User',
+			//headerTitle: 'User',
 			headerRight: <MenuIcon />
 		},
 	},
 	Environment: {
 		screen: EnvironmentScreen,
 		navigationOptions: {
-			headerTitle: 'Environment',
+			//headerTitle: 'Environment',
 			headerRight: <MenuIcon />
 		},
 	},

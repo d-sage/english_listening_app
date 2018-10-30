@@ -152,7 +152,11 @@ export default class AudioPlayer extends React.Component{
 			await this.audio.loadAsync({uri: this.props.navigation.state.params.path });
 			await this.audio.setIsLoopingAsync(true);			
 		} 
-		catch (e) {  }
+		catch (e) { 
+			alert("Error loading audio\n"+e); 
+			this.props.navigation.state.params.fromRecording ? this.props.navigation.dispatch(resetActionUser) : this.props.navigation.goBack();
+			this.componentWillUnmount();
+		}
 		this.setState({ isLoading: false, });
 	}
 	
@@ -205,16 +209,17 @@ export default class AudioPlayer extends React.Component{
 	
 	audioDownload(){
 		if(!this.props.navigation.state.params.fromRecording){
-			db.transaction(tx => {
-				tx.executeSql('INSERT OR IGNORE INTO lessons (userType, env, tid, lid, filename, text, path, ext) values (?, ?, ?, ?, ?, ?, ?, ?)', 
-				[this.props.navigation.state.params.user, this.props.navigation.state.params.environment, this.props.navigation.state.params.topic, 
-				this.props.navigation.state.params.lid, this.props.navigation.state.params.name, this.props.navigation.state.params.textSubs, 
-				FileSystem.documentDirectory + this.props.navigation.state.params.name, this.props.navigation.state.params.ext]);
-			});
-			FileSystem.downloadAsync(this.props.navigation.state.params.path,
-				FileSystem.documentDirectory + this.props.navigation.state.params.name )
-			.then(alert('Lesson Downloaded'))
-			.catch(error => { alert(error); });
+			db.transaction( tx => {
+				tx.executeSql('INSERT OR REPLACE INTO lessons (userType, env, tid, lid, filename, text, path, ext) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+					[this.props.navigation.state.params.user, this.props.navigation.state.params.environment, this.props.navigation.state.params.topic, 
+					this.props.navigation.state.params.lid, this.props.navigation.state.params.name, this.props.navigation.state.params.textSubs, 
+					FileSystem.documentDirectory + this.props.navigation.state.params.name, this.props.navigation.state.params.ext]);
+				}, () => {alert("Error Downloading");}, () => { FileSystem.downloadAsync(this.props.navigation.state.params.path,
+														FileSystem.documentDirectory + this.props.navigation.state.params.name )
+														.then(({ uri }) => { alert('Finished Downloading'); })
+														.catch(error => { alert(error); });
+													}
+			);
 		}
 	}
 	
@@ -240,8 +245,8 @@ export default class AudioPlayer extends React.Component{
 				this.props.navigation.dispatch(resetActionUser);
 			}
 			else{
-				FileSystem.deleteAsync( FileSystem.documentDirectory +'recordings/' + this.props.navigation.state.params.name, {idempotent: true} )
-				.then(alert('Recording Deleted'));
+				FileSystem.deleteAsync( FileSystem.documentDirectory + 'recordings/' + this.props.navigation.state.params.name, {idempotent: true} )
+				.then(alert('Recording Deleted')).catch(err => { alert(err); });
 				await this.openRecordings();
 				if(this.state.recordings.length == 0){
 					alert('Select New Lesson');
@@ -401,13 +406,13 @@ export default class AudioPlayer extends React.Component{
 		if(this.recording != null){
 			try{
 				const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+'recordings');
+				const saveLoc = FileSystem.documentDirectory + 'recordings/' + this.props.navigation.state.params.name;
 				if(files.length < MAX_SAVES){
-					const date = new Date();
 					const recStatus = await this.recording.getURI();
 					FileSystem.copyAsync({ 
 						from: recStatus, 
-						to: FileSystem.documentDirectory + 'recordings/' + this.props.navigation.state.params.lid.split(' ').join('_')
-					}).then(alert('Recording saved'));
+						to: saveLoc
+					}).then(alert('Recording saved')).catch(error => { alert(error); });
 					this.openRecordings();
 					this.recording = null;
 				}
@@ -704,6 +709,7 @@ export default class AudioPlayer extends React.Component{
 												],
 											}), 
 											this.props.navigation.dispatch(resetActionPlayer);
+											this.componentWillUnmount();
 										}}
 										disabled={this.state.recordings.length == 0 || this.state.isRecording}>
 										<Image style={styles.image} source={ICON_OPEN_BUTTON}/>

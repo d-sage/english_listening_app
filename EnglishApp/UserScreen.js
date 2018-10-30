@@ -11,13 +11,12 @@ const ICON_TEACHER_BUTTON = require('./assets/images/teacher_button.png');
 const ICON_STUDENT_BUTTON = require('./assets/images/student_button.png');
 const resetActionUser = StackActions.reset({
   index: 0,
-  actions: [NavigationActions.navigate({ routeName: 'User' })],
+  actions: [NavigationActions.navigate({ routeName: 'Home' })],
 }); 
 
 class UserScreen extends React.Component {
 	
 	render(){
-		if(this.state.haveRecordingPermissions){
 			return(		
 				<View style={styles.mainContainer}>
 					<ListView
@@ -78,9 +77,6 @@ class UserScreen extends React.Component {
 					</View>
 				</View>
 			);
-		}
-		else
-			return(<View><Text style={{fontSize: 20, color: 'red'}}>You must enable permissions to use this app.</Text></View>);
 	}
 
 	constructor(props){
@@ -88,16 +84,10 @@ class UserScreen extends React.Component {
         this.state = {
           dataSource: ds.cloneWithRows([]),
 		  connected: false,
-		  haveRecordingPermissions: false,
         };
 	}
 
 	componentDidMount() {
-		this.askForPermissions();
-		db.transaction(tx => {
-			//tx.executeSql('DROP TABLE IF EXISTS lessons;');
-			tx.executeSql('CREATE TABLE IF NOT EXISTS lessons (userType varchar(30) NOT NULL, env varchar(30) NOT NULL, tid varchar(50) NOT NULL, lid varchar(100) NOT NULL, filename varchar(100) NOT NULL, text varchar(2500) NOT NULL, path varchar(260) NOT NULL, ext varchar(5) NOT NULL, PRIMARY KEY (userType, env, tid, lid));');
-		});
 		if(Platform.OS == 'ios'){		
 			NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectionChange);
 		}
@@ -118,13 +108,6 @@ class UserScreen extends React.Component {
 	handleConnectionChange = (isConnected) => {
 		this.getData(isConnected);
 	}
-	
-	askForPermissions = async () => {
-		const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-		this.setState({
-			haveRecordingPermissions: response.status === 'granted',
-		});
-	};
 
 	getData(isConnected){
 		this.setState({ connected: isConnected });

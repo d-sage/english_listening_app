@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, Button, ListView } from 'react-native';
+import { View, Text, Button, ListView, Image } from 'react-native';
 import styles from "./Styles.js";
 import { FileSystem } from 'expo';
 import { NavigationActions, StackActions } from 'react-navigation';
 
 var ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
+const ICON_RECORD_BUTTON = require('./assets/images/recordings_button.png');
 
 class RecordingsScreen extends React.Component {
 
@@ -12,6 +13,7 @@ class RecordingsScreen extends React.Component {
 		return(
 			<View style={styles.mainContainer}>
 				<View style={styles.headerContainer}>
+					<Image source={ICON_RECORD_BUTTON}/>
 					<Text style={{fontSize: 20}}>Recordings</Text>
 				</View>
 				<ListView
